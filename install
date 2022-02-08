@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+chdir(__DIR__);
+
+shell_exec('composer install');
+
+if (!is_file('configs' . DIRECTORY_SEPARATOR . 'IdTokens.php'))
+{
+    shell_exec('cp configs/IdTokens.example.php configs/IdTokens.php');
+}
