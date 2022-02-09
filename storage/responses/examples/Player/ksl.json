@@ -1,0 +1,55 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "profile": {
+            "_id": "5ee861bfde761126de71ea59",
+            "agi": 166,
+            "atk": 74,
+            "color": "black",
+            "dead": false,
+            "def": 185,
+            "defDeath": 21,
+            "defKill": 0,
+            "floor": 81,
+            "hp": 3495,
+            "int": 252,
+            "kill": 0,
+            "lck": 308,
+            "lose": 28,
+            "lv": 60,
+            "murder": 4,
+            "nickname": "ksl",
+            "rattrs": {
+                "hp": 0,
+                "atk": 0,
+                "def": 0,
+                "stm": 0,
+                "agi": 0,
+                "spd": 0,
+                "tec": 0,
+                "int": 0,
+                "lck": 139
+            },
+            "reincarnation": 147,
+            "reset": 71,
+            "spd": 102,
+            "status": "爬塔ing",
+            "stm": 212,
+            "tec": 113,
+            "title": "聖誕鍛造師",
+            "totalDeath": 25,
+            "totalDefKill": 21,
+            "totalKill": 9,
+            "totalLose": 1451,
+            "totalWin": 1229,
+            "win": 18,
+            "achievementPoints": 813,
+            "character": "聖誕莉茲貝特",
+            "avatar": "xmasLisbeth"
+        }
+    }
+}

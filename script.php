@@ -31,7 +31,7 @@ $player = 'Taras';
 // echo json_encode($result, 448);
 
 # 從暱稱搜尋玩家詳細資訊
-// $result = MyKirito::getInstance()->getDetailByPlayerName($player, '水電工阿誠');
+// $result = MyKirito::getInstance()->getDetailByPlayerName($player, 'TSK');
 // echo json_encode($result, 448);
 
 # 挑戰對手（打架）
