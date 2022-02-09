@@ -20,15 +20,15 @@ if (!isset($option['player']) || $option['player'] === '')
 # 玩家暱稱
 $player = $option['player'];
 
-# 輸出模式（預設為寫入檔案）
-$writeToFile = isset($option['output']) ? false : true;
-
 # 玩家暱稱必須在 configs/IdTokens.php 中有建檔
 if (!in_array($player, array_keys(PLAYER)))
 {
     echo CliHelper::colorText('玩家暱稱尚未納入紀錄！', '#ff8080', true);
     exit(1);
 }
+
+# 輸出模式（預設為寫入檔案）
+$writeToFile = isset($option['output']) ? false : true;
 
 # 取得玩家基本資訊
 $result = MyKirito::getInstance()->getPersonalData($player);

@@ -114,7 +114,7 @@ class MyKirito
      *                          可用值（參見 `self::ACTION` 行動列表常數）：  
      *                          - `Bonus`: 領取樓層獎勵  
      *                          - `Hunt`:  狩獵兔肉  
-     *                          - `Train`: 狩獵兔肉  
+     *                          - `Train`: 自主訓練  
      *                          - `Eat`:   外出野餐  
      *                          - `Girl`:  汁妹  
      *                          - `Good`:  做善事  
@@ -131,7 +131,7 @@ class MyKirito
         $uid = PLAYER[$player]['ID'];
         $token = PLAYER[$player]['Token'];
         $payload = [
-            'action' => $action
+            'action' => self::ACTION[$action]
         ];
         return $this->_conn->post("my-kirito/doaction?u={$uid}", $token, $payload);
     }

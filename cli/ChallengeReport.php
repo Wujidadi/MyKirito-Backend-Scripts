@@ -4,12 +4,10 @@ chdir(__DIR__);
 
 require_once '../entrypoint.php';
 
-use Lib\Helper;
 use Lib\CliHelper;
-use App\Constant;
 use App\MyKirito;
 
-# 由命令行參數指定戰報 ID
+# 由命令行參數指定戰報 ID 及輸出模式
 $option = getopt('', ['rid:', 'output']);
 if (!isset($option['rid']) || $option['rid'] === '')
 {

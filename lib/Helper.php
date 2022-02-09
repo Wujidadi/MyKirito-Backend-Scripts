@@ -73,4 +73,17 @@ class Helper
             return self::Time($Timestamp);
         }
     }
+
+    public static function isInteger(mixed $number): bool
+    {
+        if (!is_numeric($number))
+        {
+            return false;
+        }
+        if (bcsub((float) $number, (int) $number, 16) !== '0.0000000000000000')
+        {
+            return false;
+        }
+        return true;
+    }
 }

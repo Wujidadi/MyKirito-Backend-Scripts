@@ -5,6 +5,8 @@ chdir(__DIR__);
 
 shell_exec('composer install');
 
+shell_exec('mkdir storage/logs');
+
 if (!is_file('configs' . DIRECTORY_SEPARATOR . 'IdTokens.php'))
 {
     shell_exec('cp configs/IdTokens.example.php configs/IdTokens.php');
