@@ -1,0 +1,641 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "reports": [
+            {
+                "_id": "61fcbd435d8eb3992a11c71f",
+                "a": {
+                    "lv": 51,
+                    "character": "西莉卡",
+                    "nickname": "TSK",
+                    "title": "馴獸師",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "silica.s"
+                },
+                "a2": {
+                    "lv": 51,
+                    "character": "西莉卡",
+                    "nickname": "Amon",
+                    "title": "馴獸師",
+                    "uid": "61f57efa5d8eb3992a0ee1f3"
+                },
+                "b": {
+                    "character": "獨眼的鎖鏈康妮",
+                    "nickname": "獨眼的鎖鏈康妮",
+                    "uid": "singleEyeConnie",
+                    "avatar": "singleEyeConnie"
+                },
+                "hasShout": false,
+                "result": "半勝",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643953475868
+            },
+            {
+                "_id": "61fcbc075d8eb3992a11c67d",
+                "a": {
+                    "lv": 51,
+                    "character": "西莉卡",
+                    "nickname": "Amon",
+                    "title": "馴獸師",
+                    "uid": "61f57efa5d8eb3992a0ee1f3",
+                    "avatar": "silica.s"
+                },
+                "a2": {
+                    "lv": 51,
+                    "character": "西莉卡",
+                    "nickname": "TSK",
+                    "title": "馴獸師",
+                    "uid": "61d3d82ecd5e087f62e67974"
+                },
+                "b": {
+                    "character": "星爆的康妮",
+                    "nickname": "星爆的康妮",
+                    "uid": "starBurstConnie",
+                    "avatar": "starBurstConnie"
+                },
+                "hasShout": false,
+                "result": "勝利",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643953159452
+            },
+            {
+                "_id": "61fcbad95d8eb3992a11c5ec",
+                "a": {
+                    "lv": 51,
+                    "character": "西莉卡",
+                    "nickname": "TSK",
+                    "title": "馴獸師",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "silica.s"
+                },
+                "a2": {
+                    "lv": 51,
+                    "character": "西莉卡",
+                    "nickname": "Amon",
+                    "title": "馴獸師",
+                    "uid": "61f57efa5d8eb3992a0ee1f3"
+                },
+                "b": {
+                    "character": "鎖鏈的康妮",
+                    "nickname": "鎖鏈的康妮",
+                    "uid": "connie",
+                    "avatar": "connie"
+                },
+                "hasShout": false,
+                "result": "勝利",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643952857611
+            },
+            {
+                "_id": "61fcb93c5d8eb3992a11c51c",
+                "a": {
+                    "lv": 51,
+                    "character": "西莉卡",
+                    "nickname": "TSK",
+                    "title": "馴獸師",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "silica.s"
+                },
+                "a2": {
+                    "lv": 50,
+                    "character": "西莉卡",
+                    "nickname": "Amon",
+                    "title": "馴獸師",
+                    "uid": "61f57efa5d8eb3992a0ee1f3"
+                },
+                "b": {
+                    "character": "一開始就拿野太刀的狗頭人之王伊爾凡格",
+                    "nickname": "一開始就拿野太刀的狗頭人之王伊爾凡格",
+                    "uid": "illfang2",
+                    "avatar": "illfang2"
+                },
+                "hasShout": false,
+                "result": "勝利",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643952444083
+            },
+            {
+                "_id": "61fc20fc5d8eb3992a1190df",
+                "a": {
+                    "lv": 49,
+                    "character": "西莉卡",
+                    "nickname": "TSK",
+                    "title": "馴獸師",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "silica.s"
+                },
+                "a2": {
+                    "lv": 49,
+                    "character": "西莉卡",
+                    "nickname": "Amon",
+                    "title": "馴獸師",
+                    "uid": "61f57efa5d8eb3992a0ee1f3"
+                },
+                "b": {
+                    "character": "狗頭人之王伊爾凡格",
+                    "nickname": "狗頭人之王伊爾凡格",
+                    "uid": "illfang",
+                    "avatar": "illfang"
+                },
+                "hasShout": false,
+                "result": "勝利",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643913468597
+            },
+            {
+                "_id": "61fa4df05d8eb3992a10cae2",
+                "a": {
+                    "lv": 12,
+                    "character": "閃耀魔眼",
+                    "nickname": "TSK",
+                    "title": "第74層頭目",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "theGleameyes"
+                },
+                "a2": null,
+                "b": {
+                    "character": "狗頭人之王伊爾凡格",
+                    "nickname": "狗頭人之王伊爾凡格",
+                    "uid": "illfang",
+                    "avatar": "illfang"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643793904668
+            },
+            {
+                "_id": "61fa2bc65d8eb3992a10ba26",
+                "a": {
+                    "lv": 20,
+                    "character": "桐人",
+                    "nickname": "TSK",
+                    "title": "幹你娘",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "kirito.fuckyou"
+                },
+                "a2": null,
+                "b": {
+                    "character": "狗頭人之王伊爾凡格",
+                    "nickname": "狗頭人之王伊爾凡格",
+                    "uid": "illfang",
+                    "avatar": "illfang"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643785158659
+            },
+            {
+                "_id": "61f9f8025d8eb3992a10a430",
+                "a": {
+                    "lv": 14,
+                    "character": "日番谷冬獅郎",
+                    "nickname": "TSK",
+                    "title": "十番隊隊長",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "hitsugaya"
+                },
+                "a2": null,
+                "b": {
+                    "character": "狗頭人之王伊爾凡格",
+                    "nickname": "狗頭人之王伊爾凡格",
+                    "uid": "illfang",
+                    "avatar": "illfang"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643771906605
+            },
+            {
+                "_id": "61f941225d8eb3992a1061ef",
+                "a": {
+                    "lv": 1,
+                    "character": "西莉卡",
+                    "nickname": "TSK",
+                    "title": "馴獸師",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "silica.s"
+                },
+                "a2": null,
+                "b": {
+                    "character": "狗頭人之王伊爾凡格",
+                    "nickname": "狗頭人之王伊爾凡格",
+                    "uid": "illfang",
+                    "avatar": "illfang"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643725090870
+            },
+            {
+                "_id": "61f939f45d8eb3992a105e36",
+                "a": {
+                    "lv": 1,
+                    "character": "莉茲貝特",
+                    "nickname": "TSK",
+                    "title": "鍛造師",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "lisbeth"
+                },
+                "a2": null,
+                "b": {
+                    "character": "狗頭人之王伊爾凡格",
+                    "nickname": "狗頭人之王伊爾凡格",
+                    "uid": "illfang",
+                    "avatar": "illfang"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643723252303
+            },
+            {
+                "_id": "61f924735d8eb3992a105452",
+                "a": {
+                    "lv": 63,
+                    "character": "星爆隆隆石",
+                    "nickname": "TSK",
+                    "title": "岩石寶可夢",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "graveler"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643717747966
+            },
+            {
+                "_id": "61f91dcc5d8eb3992a105118",
+                "a": {
+                    "lv": 63,
+                    "character": "星爆隆隆石",
+                    "nickname": "TSK",
+                    "title": "岩石寶可夢",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "graveler"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "平手",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643716044284
+            },
+            {
+                "_id": "61f91c8f5d8eb3992a105077",
+                "a": {
+                    "lv": 63,
+                    "character": "星爆隆隆石",
+                    "nickname": "TSK",
+                    "title": "岩石寶可夢",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "graveler"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "平手",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643715727286
+            },
+            {
+                "_id": "61f91a6d5d8eb3992a104f73",
+                "a": {
+                    "lv": 63,
+                    "character": "星爆隆隆石",
+                    "nickname": "TSK",
+                    "title": "岩石寶可夢",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "graveler"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "平手",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643715181043
+            },
+            {
+                "_id": "61f592475d8eb3992a0ee842",
+                "a": {
+                    "lv": 63,
+                    "character": "星爆小拳石",
+                    "nickname": "TSK",
+                    "title": "岩石寶可夢",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "geodude"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643483719827
+            },
+            {
+                "_id": "61f28f075d8eb3992a0da61f",
+                "a": {
+                    "lv": 55,
+                    "character": "ALO桐人",
+                    "nickname": "TSK",
+                    "title": "守衛精靈",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "aloKirito.s"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643286279245
+            },
+            {
+                "_id": "61f0c57e5d8eb3992a0cd8c4",
+                "a": {
+                    "lv": 57,
+                    "character": "初見泉",
+                    "nickname": "TSK",
+                    "title": "浮雲",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "hatsumi"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643169150499
+            },
+            {
+                "_id": "61f0ae7f5d8eb3992a0ccf1f",
+                "a": {
+                    "lv": 56,
+                    "character": "初見泉",
+                    "nickname": "TSK",
+                    "title": "浮雲",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "hatsumi"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643163263898
+            },
+            {
+                "_id": "61ee5ff45d8eb3992a0bbd34",
+                "a": {
+                    "lv": 55,
+                    "character": "愛麗絲",
+                    "nickname": "TSK",
+                    "title": "整合騎士",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "alice"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643012084624
+            },
+            {
+                "_id": "61ee5e785d8eb3992a0bbc63",
+                "a": {
+                    "lv": 55,
+                    "character": "愛麗絲",
+                    "nickname": "TSK",
+                    "title": "整合騎士",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "alice"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1643011704024
+            },
+            {
+                "_id": "61ead30c5d8eb3992a0a27ab",
+                "a": {
+                    "lv": 51,
+                    "character": "鎖鏈的康妮",
+                    "nickname": "TSK",
+                    "title": "第三層頭目",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "connie"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1642779404441
+            },
+            {
+                "_id": "61e939c75d8eb3992a096afa",
+                "a": {
+                    "lv": 66,
+                    "character": "有紀",
+                    "nickname": "TSK",
+                    "title": "絕劍",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "yuuki.s"
+                },
+                "a2": null,
+                "b": {
+                    "character": "猩爆戰象",
+                    "nickname": "猩爆戰象",
+                    "uid": "gorilla",
+                    "avatar": "gorilla"
+                },
+                "hasShout": false,
+                "result": "戰敗",
+                "dead": true,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1642674631867
+            },
+            {
+                "_id": "61e938075d8eb3992a096a2c",
+                "a": {
+                    "lv": 66,
+                    "character": "有紀",
+                    "nickname": "TSK",
+                    "title": "絕劍",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "yuuki.s"
+                },
+                "a2": null,
+                "b": {
+                    "character": "隱形左輪槍手田中鮑勃",
+                    "nickname": "隱形左輪槍手田中鮑勃",
+                    "uid": "bob",
+                    "avatar": "bob"
+                },
+                "hasShout": false,
+                "result": "勝利",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1642674183778
+            },
+            {
+                "_id": "61e936a25d8eb3992a096983",
+                "a": {
+                    "lv": 66,
+                    "character": "有紀",
+                    "nickname": "TSK",
+                    "title": "絕劍",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "yuuki.s"
+                },
+                "a2": null,
+                "b": {
+                    "character": "雙頭鎖鏈康妮",
+                    "nickname": "雙頭鎖鏈康妮",
+                    "uid": "twoHeadsConnie",
+                    "avatar": "twoHeadsConnie"
+                },
+                "hasShout": false,
+                "result": "勝利",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1642673826798
+            },
+            {
+                "_id": "61e935755d8eb3992a0968ec",
+                "a": {
+                    "lv": 65,
+                    "character": "有紀",
+                    "nickname": "TSK",
+                    "title": "絕劍",
+                    "uid": "61d3d82ecd5e087f62e67974",
+                    "avatar": "yuuki.s"
+                },
+                "a2": null,
+                "b": {
+                    "character": "愛麗絲",
+                    "nickname": "愛麗絲",
+                    "uid": "theAlice",
+                    "avatar": "theAlice"
+                },
+                "hasShout": false,
+                "result": "勝利",
+                "dead": false,
+                "type": 99,
+                "v": 5,
+                "timestamp": 1642673525534
+            }
+        ]
+    }
+}

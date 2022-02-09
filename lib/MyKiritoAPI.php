@@ -90,21 +90,24 @@ class MyKiritoAPI
     /**
      * 發出 GET 請求
      *
-     * @param  string  $url    網址
-     * @param  string  $token  玩家 Token
+     * @param  string       $url    網址
+     * @param  string|null  $token  玩家 Token
      * @return array
      */
-    public function get(string $url, string $token): array
+    public function get(string $url, ?string $token = null): array
     {
         $this->_reset();
 
         $url = (!preg_match('/^http/', $url)) ? "{$this->_baseUrl}/{$url}" : $url;
         
         curl_setopt($this->_cUrl, CURLOPT_URL, $url);
-        curl_setopt($this->_cUrl, CURLOPT_HTTPHEADER, [
-            "token: {$token}",
-            "user-agent: {$this->_userAgent}"
-        ]);
+        if (!is_null($token))
+        {
+            curl_setopt($this->_cUrl, CURLOPT_HTTPHEADER, [
+                "token: {$token}",
+                "user-agent: {$this->_userAgent}"
+            ]);
+        }
         curl_setopt($this->_cUrl, CURLOPT_HTTPGET, true);
 
         $response = $this->_exec();

@@ -1,0 +1,30 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "boss": {
+            "_id": "5eddb76a6cc47c800e2b9b50",
+            "name": "smileOtes",
+            "kill": 4350,
+            "win": 6960,
+            "lose": 27867,
+            "draw": 3287,
+            "floor": 6,
+            "character": "smileOtes",
+            "nickname": "狂暴的微笑殺手奧特斯",
+            "exp": 600,
+            "hp": 15000,
+            "atk": 70,
+            "def": 210,
+            "stm": 80,
+            "agi": 100,
+            "spd": 70,
+            "tec": 250,
+            "int": 160,
+            "lck": 60
+        }
+    }
+}

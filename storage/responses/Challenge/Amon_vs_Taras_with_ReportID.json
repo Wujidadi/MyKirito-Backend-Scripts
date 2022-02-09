@@ -1,0 +1,48 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "result": "勝利",
+        "messages": [
+            {
+                "m": "Taras攻擊，被Amon閃開了",
+                "s": "special"
+            },
+            {
+                "m": "Amon的畢娜使出了泡泡吐息",
+                "s": "skill"
+            },
+            {
+                "m": "Amon攻擊，Taras受到 378 點傷害"
+            },
+            {
+                "m": "Taras 倒下了，Amon 還有 2885 點血量"
+            }
+        ],
+        "myKirito": {
+            "exp": 67820,
+            "lv": 68,
+            "lastChallenge": 1644375423477,
+            "challengeCount": 894
+        },
+        "gained": {
+            "hp": null,
+            "atk": null,
+            "def": null,
+            "stm": null,
+            "agi": null,
+            "spd": null,
+            "tec": null,
+            "int": null,
+            "lck": null,
+            "prevLV": 68,
+            "nextLV": 68,
+            "exp": 0,
+            "prevTitle": "馴獸師"
+        }
+    },
+    "reportId": "62032d7f5d8eb3992a147d78"
+}

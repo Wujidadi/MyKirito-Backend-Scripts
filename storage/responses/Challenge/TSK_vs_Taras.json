@@ -1,0 +1,43 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "result": "勝利",
+        "messages": [
+            {
+                "m": "Taras攻擊，被TSK閃開了",
+                "s": "special"
+            },
+            {
+                "m": "TSK攻擊，Taras受到 330 點傷害"
+            },
+            {
+                "m": "Taras 倒下了，TSK 還有 2590 點血量"
+            }
+        ],
+        "myKirito": {
+            "exp": 32327,
+            "lv": 55,
+            "lastChallenge": 1644373564771,
+            "challengeCount": 2248
+        },
+        "gained": {
+            "hp": null,
+            "atk": null,
+            "def": null,
+            "stm": null,
+            "agi": null,
+            "spd": null,
+            "tec": null,
+            "int": null,
+            "lck": null,
+            "prevLV": 55,
+            "nextLV": 55,
+            "exp": 0,
+            "prevTitle": "馴獸師"
+        }
+    }
+}
