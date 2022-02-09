@@ -144,7 +144,10 @@ class MyKiritoAPI
             "user-agent: {$this->_userAgent}"
         ]);
         curl_setopt($this->_cUrl, CURLOPT_POST, true);
-        curl_setopt($this->_cUrl, CURLOPT_POSTFIELDS, json_encode($payload, 320));
+        if (!is_null($payload))
+        {
+            curl_setopt($this->_cUrl, CURLOPT_POSTFIELDS, json_encode($payload, 320));
+        }
 
         $response = $this->_exec();
 

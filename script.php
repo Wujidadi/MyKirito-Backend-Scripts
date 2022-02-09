@@ -4,9 +4,10 @@ chdir(__DIR__);
 require_once './entrypoint.php';
 
 use Lib\Helper;
+use Lib\MyKiritoAPI;
 use App\MyKirito;
 
-$player = 'TSK';
+$player = 'Taras';
 
 # 玩家個人資料
 // $result = MyKirito::getInstance()->getPersonalData($player);
@@ -39,6 +40,10 @@ $player = 'TSK';
 
 # 取得 BOSS 資料
 // $result = MyKirito::getInstance()->getBoss($player);
+// echo json_encode($result, 448);
+
+# 挑戰 BOSS
+// $result = MyKirito::getInstance()->challengeBoss($player);
 // echo json_encode($result, 448);
 
 # 成就

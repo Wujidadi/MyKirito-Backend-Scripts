@@ -267,6 +267,25 @@ class MyKirito
     }
 
     /**
+     * 挑戰玩家所在樓層 BOSS
+     *
+     * @param  string  $player  當前玩家暱稱
+     * @return array
+     */
+    public function challengeBoss(string $player): array
+    {
+        # 對戰
+        $result = $this->_conn->post('boss/challenge', PLAYER[$player]['Token']);
+
+        # 從對戰時間取得戰報 ID，並加入回應資料
+        $challengeTime = $result['response']['myKirito']['lastBossChallenge'];
+        $report = $this->getThisBossReport($player, $challengeTime);
+        $result['reportId'] = $report['_id'];
+
+        return $result;
+    }
+
+    /**
      * 取得玩家成就資料
      *
      * @param  string  $player  玩家暱稱
@@ -386,6 +405,27 @@ class MyKirito
     public function getBossReports(string $player): array
     {
         return $this->_conn->get('reports?filter=boss', PLAYER[$player]['Token']);
+    }
+
+    /**
+     * 依當前玩家暱稱及對戰時間查詢 BOSS 戰報
+     *
+     * @param  string   $player      玩家暱稱
+     * @param  integer  $timestamp   對戰時間（毫秒級時間戳）
+     * @return array
+     */
+    public function getThisBossReport(string $player, int $timestamp): array
+    {
+        $result = $this->getBossReports($player);
+        $reports = $result['response']['reports'];
+        foreach ($reports as $report)
+        {
+            if ($report['timestamp'] === $timestamp)
+            {
+                return $report;
+            }
+        }
+        return [];
     }
 
     /**

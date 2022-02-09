@@ -1,0 +1,71 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "result": "戰敗",
+        "messages": [
+            {
+                "m": "Taras攻擊，雖然命中但是這一擊狗頭人之王伊爾凡格完全不痛不癢"
+            },
+            {
+                "m": "狗頭人之王伊爾凡格攻擊，Taras抱頭一蹲意外閃開了",
+                "s": "special"
+            },
+            {
+                "m": "狗頭人之王伊爾凡格 2 連擊！Taras受到 115 點傷害",
+                "s": "special"
+            },
+            {
+                "m": "Taras攻擊， 被狗頭人之王伊爾凡格擋下了",
+                "s": "special"
+            },
+            {
+                "m": "狗頭人之王伊爾凡格攻擊，Taras受到 71 點傷害"
+            },
+            {
+                "m": "Taras攻擊，但是遭到狗頭人之王伊爾凡格的反擊，Taras受到 117 點傷害",
+                "s": "special"
+            },
+            {
+                "m": "Taras 倒下了，狗頭人之王伊爾凡格 還有 5500 點血量"
+            },
+            {
+                "m": "Taras 被BOSS擊殺身亡了",
+                "s": "critical"
+            }
+        ],
+        "myKirito": {
+            "exp": 80,
+            "lv": 3,
+            "lastBossChallenge": 1644401751589,
+            "dead": true,
+            "hp": 300,
+            "atk": 33,
+            "def": 26,
+            "stm": 27,
+            "agi": 41,
+            "spd": 54,
+            "tec": 34,
+            "int": 27,
+            "lck": 17
+        },
+        "gained": {
+            "hp": 25,
+            "atk": 3,
+            "def": 2,
+            "stm": 2,
+            "agi": 3,
+            "spd": 6,
+            "tec": 2,
+            "int": 1,
+            "lck": 1,
+            "prevLV": 2,
+            "nextLV": 3,
+            "exp": 40
+        }
+    },
+    "reportId": "620394575d8eb3992a14a536"
+}

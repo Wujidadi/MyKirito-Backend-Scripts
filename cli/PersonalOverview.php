@@ -13,7 +13,7 @@ use App\MyKirito;
 $option = getopt('', ['player:', 'output']);
 if (!isset($option['player']) || $option['player'] === '')
 {
-    echo CliHelper::colorText('必須指定玩家暱稱！', '#ff8080', true);
+    echo CliHelper::colorText('必須指定玩家暱稱（player）！', '#ff8080', true);
     exit(1);
 }
 
@@ -161,7 +161,9 @@ $data['已解鎖角色'] = $characters;
 if ($writeToFile)
 {
     # 寫入 JSON 檔案
-    $file = STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $player . '.json';
+    $directory = STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'PersonalOverview';
+    if (!is_dir($directory)) mkdir($directory);
+    $file = $directory . DIRECTORY_SEPARATOR . $player . '.json';
     file_put_contents($file, json_encode($data, 448));
 }
 else
