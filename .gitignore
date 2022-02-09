@@ -23,3 +23,5 @@ vendor/
 # For this project
 API.http
 configs/IdTokens.php
+storage/responses/*
+!storage/responses/examples

@@ -1,0 +1,57 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "profile": {
+            "_id": "5edcebdc89d61730871119d7",
+            "agi": 0,
+            "atk": 0,
+            "color": "black",
+            "dead": false,
+            "def": 100,
+            "defDeath": 69,
+            "defKill": 0,
+            "floor": 145,
+            "hp": 200,
+            "int": 0,
+            "kill": 0,
+            "lck": 80,
+            "lose": 907,
+            "lv": 1,
+            "murder": 11,
+            "nickname": "Dandi",
+            "rattrs": {
+                "hp": 692,
+                "atk": 5,
+                "def": 0,
+                "stm": 0,
+                "agi": 0,
+                "spd": 0,
+                "tec": 0,
+                "int": 0,
+                "lck": 0
+            },
+            "reincarnation": 563,
+            "reset": 179,
+            "spd": 0,
+            "status": "使用前可以在DC動物園@我 騙人的吧 死掉了",
+            "stm": 0,
+            "tec": 0,
+            "title": "石頭",
+            "totalDeath": 15,
+            "totalDefKill": 253,
+            "totalKill": 134,
+            "totalLose": 54803,
+            "totalWin": 18113,
+            "win": 91,
+            "achievementPoints": 3642,
+            "cleared": 1604566137476,
+            "fragment": "austonAndAlice",
+            "character": "石頭",
+            "avatar": "stone"
+        }
+    }
+}

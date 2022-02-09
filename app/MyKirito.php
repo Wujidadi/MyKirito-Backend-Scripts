@@ -30,6 +30,20 @@ class MyKirito
     ];
 
     /**
+     * 預設空回應
+     *
+     * @var array
+     */
+    const DEFAULT_RESPONSE = [
+        'httpStatusCode' => 0,
+        'error' => [
+            'code' => 0,
+            'message' => ''
+        ],
+        'response' => []
+    ];
+
+    /**
      * API 連接物件
      *
      * @var MyKiritoAPI
@@ -147,6 +161,7 @@ class MyKirito
     public function getPlayerByName(string $player, string $userName): array
     {
         $token = PLAYER[$player]['Token'];
+        $userName = urlencode($userName);
         return $this->_conn->get("search?nickname={$userName}", $token);
     }
 
@@ -161,6 +176,30 @@ class MyKirito
     {
         $token = PLAYER[$player]['Token'];
         return $this->_conn->get("profile/{$userId}", $token);
+    }
+
+    /**
+     * 指定玩家暱稱（完全比對），查詢較詳細的玩家資料
+     *
+     * 為 `self::getPlayerByName` 和 `self::getPlayerById` 的綜合
+     *
+     * @param  string $player    當前玩家暱稱
+     * @param  string $userName  要搜尋的玩家暱稱
+     * @return array
+     */
+    public function getDetailByPlayerName(string $player, string $userName): array
+    {
+        $token = PLAYER[$player]['Token'];
+        $userName = urlencode($userName);
+        $userData = $this->_conn->get("search?nickname={$userName}", $token);
+        if (count($userData['response']['userList']) > 0)
+        {
+            # 查得玩家 ID
+            $userId = $userData['response']['userList'][0]['uid'];
+            return $this->_conn->get("profile/{$userId}", $token);
+        }
+
+        return self::DEFAULT_RESPONSE;
     }
 
     /**
@@ -181,44 +220,39 @@ class MyKirito
     {
         $token = PLAYER[$player]['Token'];
 
-        # 從對手暱稱取得 ID
-        $opponent = $this->getPlayerByName($player, $userName);
-        if (count($opponent['response']['userList']) > 0)
+        $opponent = $this->getDetailByPlayerName($player, $userName);
+        if (isset($opponent['response']['profile']))
         {
-            $opponentUID = $opponent['response']['userList'][0]['uid'];
+            $opponentUID = $opponent['response']['profile']['_id'];
+            $opponentLevel = $opponent['response']['profile']['lv'];
+            $payload = [
+                'type' => $challengeType,
+                'opponentUID' => $opponentUID,
+                'shout' => $shout,
+                'lv' => $opponentLevel
+            ];
 
-            # 從對手 ID 取得對手當前等級
-            $opponentDetail = $this->getPlayerById($player, $opponentUID);
-            if (isset($opponentDetail['response']['profile']))
-            {
-                $opponentLevel = $opponentDetail['response']['profile']['lv'];
-                $payload = [
-                    'type' => $challengeType,
-                    'opponentUID' => $opponentUID,
-                    'shout' => $shout,
-                    'lv' => $opponentLevel
-                ];
+            # 對戰
+            $result = $this->_conn->post('challenge', $token, $payload);
 
-                # 對戰
-                $result = $this->_conn->post('challenge', $token, $payload);
+            # 從對戰時間取得戰報 ID，並加入回應資料
+            $challengeTime = $result['response']['myKirito']['lastChallenge'];
+            $report = $this->getThisAttackReport($player, $opponentUID, $challengeTime);
+            $result['reportId'] = $report['_id'];
 
-                # 從對戰時間取得戰報 ID，並加入回應資料
-                $challengeTime = $result['response']['myKirito']['lastChallenge'];
-                $report = $this->getThisAttackReport($player, $opponentUID, $challengeTime);
-                $result['reportId'] = $report['_id'];
-                return $result;
-            }
+            # 查詢當前玩家是否死亡，並加入回應資料
+            $personalData = $this->getPersonalData($player);
+            $result['dead']['me'] = $personalData['response']['dead'];
+
+            # 查詢對手玩家是否死亡，並加入回應資料
+            $opponentData = $this->getDetailByPlayerName($player, $userName);
+            $result['dead']['opponent'] = $opponentData['response']['profile']['dead'];
+
+            return $result;
         }
 
-        # 對手不存在時的預設回應
-        return [
-            'httpStatusCode' => 0,
-            'error' => [
-                'code' => 0,
-                'message' => ""
-            ],
-            'response' => []
-        ];
+        # 對手不存在時回應預設的空值陣列
+        return self::DEFAULT_RESPONSE;
     }
 
     /**

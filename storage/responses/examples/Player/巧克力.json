@@ -1,0 +1,57 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "profile": {
+            "_id": "5edde67d47bd0432d49ae438",
+            "agi": 92,
+            "atk": 153,
+            "color": "orange",
+            "dead": true,
+            "def": 216,
+            "defDeath": 157,
+            "defKill": 1,
+            "floor": 128,
+            "hp": 2100,
+            "int": 154,
+            "kill": 0,
+            "lck": 213,
+            "lose": 157,
+            "lv": 54,
+            "murder": 35,
+            "nickname": "巧克力",
+            "rattrs": {
+                "hp": 0,
+                "atk": 0,
+                "def": 0,
+                "stm": 0,
+                "agi": 444,
+                "spd": 275,
+                "tec": 0,
+                "int": 0,
+                "lck": 0
+            },
+            "reincarnation": 603,
+            "reset": 252,
+            "spd": 141,
+            "status": "隨你用 I 我帶戲法 不會連錘",
+            "stm": 211,
+            "tec": 155,
+            "title": "鍛造師",
+            "totalDeath": 43,
+            "totalDefKill": 64,
+            "totalKill": 127,
+            "totalLose": 24500,
+            "totalWin": 13769,
+            "win": 6,
+            "achievementPoints": 4166,
+            "cleared": 1606006223445,
+            "fragment": "legend",
+            "character": "莉茲貝特",
+            "avatar": "lisbeth"
+        }
+    }
+}

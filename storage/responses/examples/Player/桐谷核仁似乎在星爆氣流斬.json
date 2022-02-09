@@ -1,0 +1,57 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "profile": {
+            "_id": "5edf5f2452ed1f22bf2ba139",
+            "agi": 96,
+            "atk": 206,
+            "color": "black",
+            "dead": false,
+            "def": 174,
+            "defDeath": 30,
+            "defKill": 7,
+            "floor": 182,
+            "hp": 2090,
+            "int": 169,
+            "kill": 0,
+            "lck": 120,
+            "lose": 3,
+            "lv": 47,
+            "murder": 8,
+            "nickname": "桐谷核仁似乎在星爆氣流斬",
+            "rattrs": {
+                "hp": 250,
+                "atk": 301,
+                "def": 0,
+                "stm": 50,
+                "agi": 0,
+                "spd": 0,
+                "tec": 100,
+                "int": 200,
+                "lck": 60
+            },
+            "reincarnation": 551,
+            "reset": 231,
+            "spd": 34,
+            "status": "新好三寶",
+            "stm": 129,
+            "tec": 133,
+            "title": "尊爵不凡的風精靈",
+            "totalDeath": 48,
+            "totalDefKill": 322,
+            "totalKill": 217,
+            "totalLose": 4255,
+            "totalWin": 13727,
+            "win": 48,
+            "achievementPoints": 5080,
+            "cleared": 1605440210488,
+            "fragment": "legend",
+            "character": "黃金雷根",
+            "avatar": "goldenRecon"
+        }
+    }
+}

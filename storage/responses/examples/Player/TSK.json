@@ -1,0 +1,55 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "profile": {
+            "_id": "61d3d82ecd5e087f62e67974",
+            "agi": 223,
+            "atk": 162,
+            "color": "black",
+            "dead": false,
+            "def": 168,
+            "defDeath": 5,
+            "defKill": 0,
+            "floor": 4,
+            "hp": 2580,
+            "int": 158,
+            "kill": 0,
+            "lck": 147,
+            "lose": 14,
+            "lv": 57,
+            "murder": 3,
+            "nickname": "TSK",
+            "rattrs": {
+                "hp": 10,
+                "atk": 19,
+                "def": 13,
+                "stm": 10,
+                "agi": 6,
+                "spd": 17,
+                "tec": 19,
+                "int": 13,
+                "lck": 14
+            },
+            "reincarnation": 45,
+            "reset": 22,
+            "spd": 143,
+            "status": "刷畢娜中｜300敗已達成｜友切死2次了QQ｜打算入手小說",
+            "stm": 229,
+            "tec": 160,
+            "title": "馴獸師",
+            "totalDeath": 4,
+            "totalDefKill": 4,
+            "totalKill": 3,
+            "totalLose": 1072,
+            "totalWin": 1280,
+            "win": 153,
+            "achievementPoints": 574,
+            "character": "西莉卡",
+            "avatar": "silica"
+        }
+    }
+}

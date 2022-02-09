@@ -1,0 +1,57 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "profile": {
+            "_id": "5edcb4d2ff4f982ba007f8e8",
+            "agi": 254,
+            "atk": 182,
+            "color": "red",
+            "dead": false,
+            "def": 221,
+            "defDeath": 256,
+            "defKill": 2,
+            "floor": 199,
+            "hp": 1895,
+            "int": 112,
+            "kill": 5,
+            "lck": 94,
+            "lose": 1,
+            "lv": 60,
+            "murder": 89,
+            "nickname": "水電工阿誠",
+            "rattrs": {
+                "hp": 200,
+                "atk": 200,
+                "def": 0,
+                "stm": 0,
+                "agi": 0,
+                "spd": 0,
+                "tec": 0,
+                "int": 600,
+                "lck": 0
+            },
+            "reincarnation": 1084,
+            "reset": 326,
+            "spd": 355,
+            "status": "水電問題dc@水電工",
+            "stm": 95,
+            "tec": 314,
+            "title": "絕劍",
+            "totalDeath": 165,
+            "totalDefKill": 1100,
+            "totalKill": 1408,
+            "totalLose": 5933,
+            "totalWin": 48622,
+            "win": 30,
+            "achievementPoints": 6961,
+            "cleared": 1606822056363,
+            "fragment": "austonAndAlice",
+            "character": "有紀",
+            "avatar": "theYuuki"
+        }
+    }
+}

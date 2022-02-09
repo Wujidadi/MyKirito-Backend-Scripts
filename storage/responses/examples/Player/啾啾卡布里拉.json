@@ -1,0 +1,57 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "profile": {
+            "_id": "5edf2b19f038151e5c3a6eba",
+            "agi": 64,
+            "atk": 97,
+            "color": "black",
+            "dead": false,
+            "def": 504,
+            "defDeath": 68,
+            "defKill": 4,
+            "floor": 199,
+            "hp": 4925,
+            "int": 263,
+            "kill": 0,
+            "lck": 388,
+            "lose": 77,
+            "lv": 70,
+            "murder": 11,
+            "nickname": "啾啾卡布里拉",
+            "rattrs": {
+                "hp": 0,
+                "atk": 0,
+                "def": 700,
+                "stm": 0,
+                "agi": 0,
+                "spd": 0,
+                "tec": 0,
+                "int": 0,
+                "lck": 300
+            },
+            "reincarnation": 1009,
+            "reset": 519,
+            "spd": 122,
+            "status": "高歌離席",
+            "stm": 287,
+            "tec": 274,
+            "title": "聖誕快樂",
+            "totalDeath": 182,
+            "totalDefKill": 1239,
+            "totalKill": 483,
+            "totalLose": 10796,
+            "totalWin": 59993,
+            "win": 12689,
+            "achievementPoints": 9134,
+            "cleared": 1604566137476,
+            "fragment": "animals",
+            "character": "聖誕桐人",
+            "avatar": "xmasKirito"
+        }
+    }
+}

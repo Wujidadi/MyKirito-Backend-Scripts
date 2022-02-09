@@ -3,6 +3,7 @@
 chdir(__DIR__);
 require_once './entrypoint.php';
 
+use Lib\Helper;
 use App\MyKirito;
 
 $player = 'TSK';
@@ -28,8 +29,12 @@ $player = 'TSK';
 // $result = MyKirito::getInstance()->getPlayerById($player, '61d923745d8eb3992a01e7c3');
 // echo json_encode($result, 448);
 
+# 從暱稱搜尋玩家詳細資訊
+// $result = MyKirito::getInstance()->getDetailByPlayerName($player, '水電工阿誠');
+// echo json_encode($result, 448);
+
 # 挑戰對手（打架）
-// $result = MyKirito::getInstance()->chellenge($player, 'Tarassssss', 0, '測試對戰');
+// $result = MyKirito::getInstance()->chellenge($player, 'Taras', 0, '測試對戰');
 // echo json_encode($result, 448);
 
 # 取得 BOSS 資料
@@ -85,6 +90,6 @@ $player = 'TSK';
 // echo json_encode($result, 448);
 
 # 查看詳細戰報
-$reportId = '61fcbd435d8eb3992a11c71f';
-$result = MyKirito::getInstance()->getDetailReport($reportId);
-echo json_encode($result, 448);
+// $reportId = '61fcbd435d8eb3992a11c71f';
+// $result = MyKirito::getInstance()->getDetailReport($reportId);
+// echo json_encode($result, 448);

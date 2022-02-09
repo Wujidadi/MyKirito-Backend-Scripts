@@ -1,0 +1,57 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "profile": {
+            "_id": "5edcafa87ac4e62b084fec8c",
+            "agi": 84,
+            "atk": 141,
+            "color": "orange",
+            "dead": false,
+            "def": 200,
+            "defDeath": 78,
+            "defKill": 0,
+            "floor": 199,
+            "hp": 1960,
+            "int": 143,
+            "kill": 0,
+            "lck": 199,
+            "lose": 278,
+            "lv": 50,
+            "murder": 7,
+            "nickname": "oceandeep",
+            "rattrs": {
+                "hp": 0,
+                "atk": 0,
+                "def": 0,
+                "stm": 0,
+                "agi": 500,
+                "spd": 500,
+                "tec": 0,
+                "int": 0,
+                "lck": 0
+            },
+            "reincarnation": 771,
+            "reset": 360,
+            "spd": 131,
+            "status": "閃閃包",
+            "stm": 195,
+            "tec": 144,
+            "title": "鍛造師",
+            "totalDeath": 29,
+            "totalDefKill": 1078,
+            "totalKill": 165,
+            "totalLose": 55957,
+            "totalWin": 32963,
+            "win": 2,
+            "achievementPoints": 6044,
+            "cleared": 1604597327869,
+            "fragment": "legend",
+            "character": "莉茲貝特",
+            "avatar": "lisbeth"
+        }
+    }
+}
