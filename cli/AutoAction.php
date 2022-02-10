@@ -11,13 +11,13 @@ use App\MyKirito;
 
 # 由命令行參數指定玩家暱稱、行動標的及輸出模式
 $option = getopt('', ['player:', 'action:', 'output']);
+
+# 玩家暱稱
 if (!isset($option['player']) || $option['player'] === '')
 {
     echo CliHelper::colorText('必須指定玩家暱稱（player）！', '#ff8080', true);
     exit(1);
 }
-
-# 玩家暱稱
 $player = $option['player'];
 
 # 玩家暱稱必須在 configs/IdTokens.php 中有建檔
@@ -41,7 +41,7 @@ $detailLogFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
 $action = [];
 if (!isset($option['action']) || $option['action'] === '')
 {
-    echo CliHelper::colorText('未指定行動標的（action：須為數字 0 - 6 並以逗號分隔），將從 7 種一般行動中隨機執行！', '#ffc080', true);
+    echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6 並以逗號分隔），將從 7 種一般行動中隨機執行！', '#ffc080', true);
     $action = range(0, 6);
 }
 else
@@ -56,19 +56,17 @@ else
     }
     if (count($action) <= 0)
     {
-        echo CliHelper::colorText('行動標的（action：須為數字 0 - 6 並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', '#ffc080', true);
+        echo CliHelper::colorText('行動標的（action：須為數字 0～6 並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', '#ffc080', true);
         $action = range(0, 6);
     }
 }
 
 # 輸出模式（預設為同步寫入檔案並顯示於終端機）
-$syncOutput = isset($option['output']) ? true : false;
+$syncOutput = isset($option['output']);
 
 # 循環執行
 while (true)
 {
-    $retry = 0;
-
     # 取得玩家基本資訊
     $result = MyKirito::getInstance()->getPersonalData($player);
     if ($result['httpStatusCode'] !== 200)
@@ -92,11 +90,14 @@ while (true)
     $now = Helper::Timestamp() * 1000;
 
     # 在指定的行動標的範圍內隨機執行
-    if (($now - $lastAction) > (Constant::ActionCD + Constant::ActionCDBuffer))
+    if (($now - $lastAction) > (Constant::ActionCD + Constant::CooldownBuffer))
     {
         $seed = mt_rand(0, count($action) - 1);
         $actionKey = $action[$seed];
         $actionAlias = Constant::NormalAction[$actionKey];
+
+        # 重試次數
+        $retry = 0;
 
         # 在最大重試次數內，發送行動請求
         while ($retry < Constant::MaxRetry)
@@ -105,26 +106,8 @@ while (true)
 
             if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
             {
-                $logTime = Helper::Time();
-
-                if ($result['httpStatusCode'] !== 200)
-                {
-                    $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') HTTP 狀態碼：{$result['httpStatusCode']}";
-                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') Response: " . json_encode($result, 320);
-                }
-                else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
-                {
-                    $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}";
-                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') Response: " . json_encode($result, 320);
-                }
-
-                file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
-
-                if ($syncOutput)
-                {
-                    echo CliHelper::colorText($logMessage, '#ff8080', true);
-                }
+                $function = "MyKirito::doAction('{$player}', '{$actionAlias}')";
+                CliHelper::logError($result, $function, $logFile, $detailLogFile, $syncOutput);
 
                 $retry++;
 
@@ -142,22 +125,35 @@ while (true)
                 # 記錄解鎖角色
                 if (isset($result['response']['myKirito']['unlockedCharacters']))
                 {
-                    $last = count($result['response']['myKirito']['unlockedCharacters']) - 1;
-                    $newestUnlockedCharacter = $result['response']['myKirito']['unlockedCharacters'][$last];
-                    $characterName = $newestUnlockedCharacter['name'];
+                    $characterName = CliHelper::getNewestUnlockedCharacter($result)['name'];
                     $logMessage = "{$logMessage}，解鎖角色：{$characterName}";
                 }
-        
+
                 file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
                 file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
-        
+
                 if ($syncOutput)
                 {
-                    # 命令行輸出
                     echo CliHelper::colorText($logMessage, '#aaffff', true);
                 }
 
                 break;
+            }
+        }
+
+        # 達到重試次數上限仍然失敗
+        if ($retry >= Constant::MaxRetry)
+        {
+            $logTime = Helper::Time();
+
+            $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 重試 {$retry} 次失敗";
+
+            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+            file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+
+            if ($syncOutput)
+            {
+                echo CliHelper::colorText($logMessage, '#ff8080', true);
             }
         }
     }
@@ -169,9 +165,12 @@ while (true)
     $now = Helper::Timestamp() * 1000;
 
     # 當前位於 1 層以上，且已超過領取獎勵冷卻時間時，發送領取樓層獎勵請求
-    if ($floor > 0 && !is_null($lastFloorBonus) && ($now - $lastFloorBonus) > (Constant::FloorBonusCD + Constant::ActionCDBuffer))
+    if ($floor > 0 && !is_null($lastFloorBonus) && ($now - $lastFloorBonus) > (Constant::FloorBonusCD + Constant::CooldownBuffer))
     {
         $actionAlias = 'Bonus';
+
+        # 重設重試次數
+        $retry = 0;
 
         # 在最大重試次數內，發送行動請求
         while ($retry < Constant::MaxRetry)
@@ -180,26 +179,8 @@ while (true)
 
             if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
             {
-                $logTime = Helper::Time();
-
-                if ($result['httpStatusCode'] !== 200)
-                {
-                    $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') HTTP 狀態碼：{$result['httpStatusCode']}";
-                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') Response: " . json_encode($result, 320);
-                }
-                else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
-                {
-                    $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}";
-                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') Response: " . json_encode($result, 320);
-                }
-
-                file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
-
-                if ($syncOutput)
-                {
-                    echo CliHelper::colorText($logMessage, '#ff8080', true);
-                }
+                $function = "MyKirito::doAction('{$player}', '{$actionAlias}')";
+                CliHelper::logError($result, $function, $logFile, $detailLogFile, $syncOutput);
 
                 $retry++;
 
@@ -213,17 +194,32 @@ while (true)
 
                 $logMessage = "[{$logTime}] {$actionName}";
                 $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
-        
+
                 file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
                 file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
-        
+
                 if ($syncOutput)
                 {
-                    # 命令行輸出
                     echo CliHelper::colorText($logMessage, '#aaffff', true);
                 }
 
                 break;
+            }
+        }
+
+        # 達到重試次數上限仍然失敗
+        if ($retry >= Constant::MaxRetry)
+        {
+            $logTime = Helper::Time();
+
+            $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 重試 {$retry} 次失敗";
+
+            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+            file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+
+            if ($syncOutput)
+            {
+                echo CliHelper::colorText($logMessage, '#ff8080', true);
             }
         }
     }

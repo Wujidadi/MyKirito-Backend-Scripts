@@ -22,18 +22,18 @@ class Constant
     const RetryInterval = 1;
 
     /**
+     * 冷卻時間緩衝（毫秒），避免本地與伺服器時間誤差
+     *
+     * @var integer
+     */
+    const CooldownBuffer = 3000;
+
+    /**
      * 一般行動冷卻時間（毫秒）
      *
      * @var integer
      */
     const ActionCD = 66000;
-
-    /**
-     * 行動冷卻時間緩衝（毫秒），避免本地與伺服器時間誤差
-     *
-     * @var integer
-     */
-    const ActionCDBuffer = 3000;
 
     /**
      * 領取樓層獎勵冷卻時間（毫秒）
@@ -55,6 +55,20 @@ class Constant
      * @var integer
      */
     const ActionRoundInterval = 70;
+
+    /**
+     * 挑戰冷卻時間（毫秒）
+     *
+     * @var integer
+     */
+    const ChallengeCD = 173000;
+
+    /**
+     * 每次挑戰的時間間隔（秒）
+     *
+     * @var integer
+     */
+    const ChallengeInterval = 180;
 
     /**
      * 一般行動列表（不含修行和領取樓層獎勵），與 `MyKirito::ACTION` 中對應項的 key 一致

@@ -99,7 +99,7 @@ class MyKiritoAPI
         $this->_reset();
 
         $url = (!preg_match('/^http/', $url)) ? "{$this->_baseUrl}/{$url}" : $url;
-        
+
         curl_setopt($this->_cUrl, CURLOPT_URL, $url);
         if (!is_null($token))
         {
@@ -135,7 +135,7 @@ class MyKiritoAPI
         $this->_reset();
 
         $url = (!preg_match('/^http/', $url)) ? "{$this->_baseUrl}/{$url}" : $url;
-        
+
         curl_setopt($this->_cUrl, CURLOPT_URL, $url);
         curl_setopt($this->_cUrl, CURLOPT_HTTPHEADER, [
             "content-type: {$this->_contentType}",

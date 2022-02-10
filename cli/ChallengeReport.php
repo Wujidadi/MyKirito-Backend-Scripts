@@ -9,17 +9,17 @@ use App\MyKirito;
 
 # 由命令行參數指定戰報 ID 及輸出模式
 $option = getopt('', ['rid:', 'output']);
+
+# 戰報 ID
 if (!isset($option['rid']) || $option['rid'] === '')
 {
     echo CliHelper::colorText('必須指定戰報 ID（rid）！', '#ff8080', true);
     exit(1);
 }
-
-# 戰報 ID
 $reportId = $option['rid'];
 
-# 輸出模式（預設為寫入檔案）
-$writeToFile = isset($option['output']) ? false : true;
+# 輸出模式（預設為直接顯示於終端，而不寫入檔案）
+$writeToFile = !isset($option['output']);
 
 # 查閱戰報
 $result = MyKirito::getInstance()->getDetailReport($reportId);

@@ -2,6 +2,9 @@
 
 namespace Lib;
 
+/**
+ * 輔助工具類別
+ */
 class Helper
 {
     /**

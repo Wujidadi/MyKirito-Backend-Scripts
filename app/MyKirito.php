@@ -249,23 +249,30 @@ class MyKirito
             # 對戰
             $result = $this->_conn->post('challenge', $token, $payload);
 
-            # 從對戰時間取得戰報 ID，並加入回應資料
-            $challengeTime = $result['response']['myKirito']['lastChallenge'];
-            $report = $this->getThisAttackReport($player, $opponentUID, $challengeTime);
-            $result['reportId'] = $report['_id'];
+            if (isset($result['response']['myKirito']))
+            {
+                # 從對戰時間取得戰報 ID，並加入回應資料
+                $challengeTime = $result['response']['myKirito']['lastChallenge'];
+                $report = $this->getThisAttackReport($player, $opponentUID, $challengeTime);
+                $result['reportId'] = $report['_id'];
 
-            # 查詢當前玩家是否死亡，並加入回應資料
-            $personalData = $this->getPersonalData($player);
-            $result['dead']['me'] = $personalData['response']['dead'];
+                # 查詢當前玩家是否死亡，並加入回應資料
+                $personalData = $this->getPersonalData($player);
+                $result['dead']['me'] = $personalData['response']['dead'];
 
-            # 查詢對手玩家是否死亡，並加入回應資料
-            $opponentData = $this->getDetailByPlayerName($player, $userName);
-            $result['dead']['opponent'] = $opponentData['response']['profile']['dead'];
+                # 查詢對手玩家是否死亡，並加入回應資料
+                $opponentData = $this->getDetailByPlayerName($player, $userName);
+                $result['dead']['opponent'] = $opponentData['response']['profile']['dead'];
 
-            return $result;
+                return $result;
+            }
+            else
+            {
+                return $result;
+            }
         }
 
-        # 對手不存在時回應預設的空值陣列
+        # 對手不存在時或回應錯誤時，返回預設的空值陣列
         return self::DEFAULT_RESPONSE;
     }
 
@@ -291,12 +298,19 @@ class MyKirito
         # 對戰
         $result = $this->_conn->post('boss/challenge', PLAYER[$player]['Token']);
 
-        # 從對戰時間取得戰報 ID，並加入回應資料
-        $challengeTime = $result['response']['myKirito']['lastBossChallenge'];
-        $report = $this->getThisBossReport($player, $challengeTime);
-        $result['reportId'] = $report['_id'];
+        if (isset($result['response']['myKirito']) && isset($result['response']['myKirito']['lastBossChallenge']))
+        {
+            # 從對戰時間取得戰報 ID，並加入回應資料
+            $challengeTime = $result['response']['myKirito']['lastBossChallenge'];
+            $report = $this->getThisBossReport($player, $challengeTime);
+            $result['reportId'] = $report['_id'];
 
-        return $result;
+            return $result;
+        }
+        else
+        {
+            return $result;
+        }
     }
 
     /**

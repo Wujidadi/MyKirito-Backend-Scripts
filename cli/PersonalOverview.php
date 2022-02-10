@@ -11,13 +11,13 @@ use App\MyKirito;
 
 # 由命令行參數指定玩家暱稱及輸出模式
 $option = getopt('', ['player:', 'output']);
+
+# 玩家暱稱
 if (!isset($option['player']) || $option['player'] === '')
 {
     echo CliHelper::colorText('必須指定玩家暱稱（player）！', '#ff8080', true);
     exit(1);
 }
-
-# 玩家暱稱
 $player = $option['player'];
 
 # 玩家暱稱必須在 configs/IdTokens.php 中有建檔
@@ -28,7 +28,7 @@ if (!in_array($player, array_keys(PLAYER)))
 }
 
 # 輸出模式（預設為寫入檔案）
-$writeToFile = isset($option['output']) ? false : true;
+$writeToFile = isset($option['output']);
 
 # 取得玩家基本資訊
 $result = MyKirito::getInstance()->getPersonalData($player);
