@@ -110,12 +110,12 @@ while (true)
                 if ($result['httpStatusCode'] !== 200)
                 {
                     $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') HTTP 狀態碼：{$result['httpStatusCode']}";
-                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') \n" . json_encode($result, 320);
+                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') Response: " . json_encode($result, 320);
                 }
                 else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
                 {
                     $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}";
-                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') \n" . json_encode($result, 320);
+                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') Response: " . json_encode($result, 320);
                 }
 
                 file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
@@ -138,7 +138,7 @@ while (true)
                 $actionName = Constant::ActionName[$actionAlias];
 
                 $logMessage = "[{$logTime}] {$actionName}";
-                $detailLogMessage = "[{$logTime}] \n" . json_encode($result, 320);
+                $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
 
                 # 記錄解鎖角色
                 if (isset($result['response']['myKirito']['unlockedCharacters']))
@@ -186,12 +186,12 @@ while (true)
                 if ($result['httpStatusCode'] !== 200)
                 {
                     $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') HTTP 狀態碼：{$result['httpStatusCode']}";
-                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') \n" . json_encode($result, 320);
+                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') Response: " . json_encode($result, 320);
                 }
                 else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
                 {
                     $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}";
-                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') \n" . json_encode($result, 320);
+                    $detailLogMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') Response: " . json_encode($result, 320);
                 }
 
                 file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
@@ -214,7 +214,7 @@ while (true)
                 $logTime = Helper::Time($now / 1000);
                 $actionName = Constant::ActionName[$actionAlias];
                 $logMessage = "[{$logTime}] {$actionName}";
-                $detailLogMessage = "[{$logTime}] \n" . json_encode($result, 320);
+                $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
         
                 file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
                 file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
