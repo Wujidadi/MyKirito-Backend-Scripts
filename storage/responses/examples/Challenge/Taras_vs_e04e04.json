@@ -1,0 +1,223 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "result": "戰敗",
+        "messages": [
+            {
+                "m": "e04e04攻擊，Taras受到 17 點傷害"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 8 點傷害"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 16 點傷害"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 9 點傷害"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 16 點傷害"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 4 點傷害"
+            },
+            {
+                "m": "e04e04攻擊， 被Taras擋下了",
+                "s": "special"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 5 點傷害"
+            },
+            {
+                "m": "Taras開始有點累了",
+                "s": "strong"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 17 點傷害"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 2 點傷害"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 17 點傷害"
+            },
+            {
+                "m": "Taras右腳滑了一下被 e04e04趁勢攻擊受到 11 點傷害",
+                "s": "special"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 2 點傷害"
+            },
+            {
+                "m": "e04e04開始有點累了",
+                "s": "strong"
+            },
+            {
+                "m": "e04e04攻擊，被Taras閃開了",
+                "s": "special"
+            },
+            {
+                "m": "Taras攻擊，命中要害，e04e04受到 13 點傷害",
+                "s": "strong"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 12 點傷害"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 3 點傷害"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 11 點傷害"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 4 點傷害"
+            },
+            {
+                "m": "e04e04攻擊， 被Taras擋下了",
+                "s": "special"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 6 點傷害"
+            },
+            {
+                "m": "Taras 2 連擊！e04e04受到 8 點傷害",
+                "s": "special"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 10 點傷害"
+            },
+            {
+                "m": "e04e04 2 連擊！Taras受到 11 點傷害",
+                "s": "special"
+            },
+            {
+                "m": "Taras已經精疲力盡了",
+                "s": "critical"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 1 點傷害"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 14 點傷害"
+            },
+            {
+                "m": "Taras攻擊，命中要害，e04e04受到 2 點傷害",
+                "s": "strong"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 16 點傷害"
+            },
+            {
+                "m": "e04e04已經精疲力盡了",
+                "s": "critical"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 6 點傷害"
+            },
+            {
+                "m": "e04e04使出了緋扇",
+                "s": "skill"
+            },
+            {
+                "m": "第 1 擊對Taras造成 23 點傷害",
+                "s": "skill"
+            },
+            {
+                "m": "第 2 擊對Taras造成 27 點傷害",
+                "s": "skill"
+            },
+            {
+                "m": "第 3 擊被Taras閃開了",
+                "s": "skill"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 5 點傷害"
+            },
+            {
+                "m": "e04e04攻擊，被Taras閃開了",
+                "s": "special"
+            },
+            {
+                "m": "Taras攻擊，命中要害，e04e04受到 8 點傷害",
+                "s": "strong"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 10 點傷害"
+            },
+            {
+                "m": "Taras攻擊，e04e04受到 5 點傷害"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 8 點傷害"
+            },
+            {
+                "m": "Taras攻擊，e04e04抱頭一蹲意外閃開了",
+                "s": "special"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 9 點傷害"
+            },
+            {
+                "m": "Taras攻擊，被e04e04閃開了",
+                "s": "special"
+            },
+            {
+                "m": "e04e04攻擊，Taras受到 7 點傷害"
+            },
+            {
+                "m": "Taras 倒下了，e04e04 還有 309 點血量"
+            }
+        ],
+        "myKirito": {
+            "exp": 30,
+            "lv": 2,
+            "lastChallenge": 1644471284346,
+            "challengeCount": 1,
+            "hp": 275,
+            "atk": 30,
+            "def": 24,
+            "stm": 25,
+            "agi": 38,
+            "spd": 48,
+            "tec": 32,
+            "int": 26,
+            "lck": 16,
+            "unlockedCharacters": [
+                {
+                    "character": "kirito",
+                    "name": "桐人",
+                    "avatar": "kirito"
+                },
+                {
+                    "character": "diavel",
+                    "name": "提亞貝魯",
+                    "avatar": "diavel"
+                },
+                {
+                    "character": "originalKirito",
+                    "name": "起源桐人",
+                    "avatar": "originalKirito"
+                }
+            ]
+        },
+        "gained": {
+            "hp": 25,
+            "atk": 3,
+            "def": 2,
+            "stm": 2,
+            "agi": 3,
+            "spd": 6,
+            "tec": 2,
+            "int": 1,
+            "lck": 1,
+            "prevLV": 1,
+            "nextLV": 2,
+            "exp": 30
+        }
+    },
+    "reportId": "6204a3f45d8eb3992a150712"
+}
