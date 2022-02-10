@@ -41,7 +41,7 @@ $detailLogFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
 $action = [];
 if (!isset($option['action']) || $option['action'] === '')
 {
-    echo CliHelper::colorText('未指定行動標的（action：須為數字 0 - 6 並以逗號分隔），將從 7 種普通行動中隨機執行！', '#ffc080', true);
+    echo CliHelper::colorText('未指定行動標的（action：須為數字 0 - 6 並以逗號分隔），將從 7 種一般行動中隨機執行！', '#ffc080', true);
     $action = range(0, 6);
 }
 else
@@ -56,7 +56,7 @@ else
     }
     if (count($action) <= 0)
     {
-        echo CliHelper::colorText('行動標的（action：須為數字 0 - 6 並以逗號分隔）未正確指定，將從 7 種普通行動中隨機執行！', '#ffc080', true);
+        echo CliHelper::colorText('行動標的（action：須為數字 0 - 6 並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', '#ffc080', true);
         $action = range(0, 6);
     }
 }
