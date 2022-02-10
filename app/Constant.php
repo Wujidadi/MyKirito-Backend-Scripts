@@ -15,6 +15,13 @@ class Constant
     const MaxRetry = 5;
 
     /**
+     * 失敗重試間隔（秒）
+     *
+     * @var integer
+     */
+    const RetryInterval = 1;
+
+    /**
      * 一般行動冷卻時間（毫秒）
      *
      * @var integer
@@ -34,6 +41,20 @@ class Constant
      * @var integer
      */
     const FloorBonusCD = 14400000;
+
+    /**
+     * 嘗試行動與領取樓層獎勵之間的時間間隔（秒）
+     *
+     * @var integer
+     */
+    const ActionBonusInterval = 1;
+
+    /**
+     * 行動及領取樓層獎勵檢查循環執行的時間間隔（秒）
+     *
+     * @var integer
+     */
+    const ActionRoundInterval = 70;
 
     /**
      * 一般行動列表（不含修行和領取樓層獎勵），與 `MyKirito::ACTION` 中對應項的 key 一致

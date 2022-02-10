@@ -105,7 +105,7 @@ while (true)
 
             if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
             {
-                $logTime = Helper::Time($now / 1000);
+                $logTime = Helper::Time();
 
                 if ($result['httpStatusCode'] !== 200)
                 {
@@ -126,15 +126,14 @@ while (true)
                     echo CliHelper::colorText($logMessage, '#ff8080', true);
                 }
 
-                $now = Helper::Timestamp() * 1000;
                 $retry++;
 
                 # 每次重試間隔
-                sleep(2);
+                sleep(Constant::RetryInterval);
             }
             else
             {
-                $logTime = Helper::Time($now / 1000);
+                $logTime = Helper::Time();
                 $actionName = Constant::ActionName[$actionAlias];
 
                 $logMessage = "[{$logTime}] {$actionName}";
@@ -163,8 +162,8 @@ while (true)
         }
     }
 
-    # 領取樓層獎勵前間隔
-    sleep(1);
+    # 嘗試行動與領取樓層獎勵之間的時間間隔
+    sleep(Constant::ActionBonusInterval);
 
     # 更新現在時間
     $now = Helper::Timestamp() * 1000;
@@ -181,7 +180,7 @@ while (true)
 
             if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
             {
-                $logTime = Helper::Time($now / 1000);
+                $logTime = Helper::Time();
 
                 if ($result['httpStatusCode'] !== 200)
                 {
@@ -202,17 +201,16 @@ while (true)
                     echo CliHelper::colorText($logMessage, '#ff8080', true);
                 }
 
-                $now = Helper::Timestamp() * 1000;
                 $retry++;
 
                 # 每次重試間隔
-                sleep(2);
+                sleep(Constant::RetryInterval);
             }
             else
             {
-
-                $logTime = Helper::Time($now / 1000);
+                $logTime = Helper::Time();
                 $actionName = Constant::ActionName[$actionAlias];
+
                 $logMessage = "[{$logTime}] {$actionName}";
                 $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
         
@@ -231,5 +229,5 @@ while (true)
     }
 
     # 每次執行間隔
-    sleep(70);
+    sleep(Constant::ActionRoundInterval);
 }
