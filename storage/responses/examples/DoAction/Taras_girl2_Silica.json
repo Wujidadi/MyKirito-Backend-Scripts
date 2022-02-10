@@ -1,0 +1,88 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "message": "行動成功！",
+        "myKirito": {
+            "exp": 551,
+            "lv": 11,
+            "lastAction": 1644479381749,
+            "actionCount": 25,
+            "unlockedCharacters": [
+                {
+                    "character": "kirito",
+                    "name": "桐人",
+                    "avatar": "kirito"
+                },
+                {
+                    "character": "diavel",
+                    "name": "提亞貝魯",
+                    "avatar": "diavel"
+                },
+                {
+                    "character": "originalKirito",
+                    "name": "起源桐人",
+                    "avatar": "originalKirito"
+                },
+                {
+                    "character": "hitsugaya",
+                    "name": "日番谷冬獅郎",
+                    "avatar": "hitsugaya"
+                },
+                {
+                    "character": "klein",
+                    "name": "克萊因",
+                    "avatar": "klein"
+                },
+                {
+                    "character": "kibaou",
+                    "name": "牙王",
+                    "avatar": "kibaou"
+                },
+                {
+                    "character": "muguruma",
+                    "name": "六車拳西",
+                    "avatar": "muguruma"
+                },
+                {
+                    "character": "xmasKirito",
+                    "name": "聖誕桐人",
+                    "avatar": "xmasKirito"
+                },
+                {
+                    "character": "agil",
+                    "name": "艾基爾",
+                    "avatar": "agil"
+                },
+                {
+                    "character": "asuna",
+                    "name": "亞絲娜",
+                    "avatar": "asuna"
+                },
+                {
+                    "character": "silica",
+                    "name": "西莉卡",
+                    "avatar": "silica"
+                }
+            ]
+        },
+        "gained": {
+            "hp": null,
+            "atk": null,
+            "def": null,
+            "stm": null,
+            "agi": null,
+            "spd": null,
+            "tec": null,
+            "int": null,
+            "lck": null,
+            "prevLV": 11,
+            "nextLV": 11,
+            "exp": 18,
+            "prevTitle": "幹你娘"
+        }
+    }
+}

@@ -1,0 +1,78 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "message": "行動成功！",
+        "myKirito": {
+            "exp": 217,
+            "lv": 6,
+            "lastAction": 1644475572767,
+            "actionCount": 9,
+            "unlockedCharacters": [
+                {
+                    "character": "kirito",
+                    "name": "桐人",
+                    "avatar": "kirito"
+                },
+                {
+                    "character": "diavel",
+                    "name": "提亞貝魯",
+                    "avatar": "diavel"
+                },
+                {
+                    "character": "originalKirito",
+                    "name": "起源桐人",
+                    "avatar": "originalKirito"
+                },
+                {
+                    "character": "hitsugaya",
+                    "name": "日番谷冬獅郎",
+                    "avatar": "hitsugaya"
+                },
+                {
+                    "character": "klein",
+                    "name": "克萊因",
+                    "avatar": "klein"
+                },
+                {
+                    "character": "kibaou",
+                    "name": "牙王",
+                    "avatar": "kibaou"
+                },
+                {
+                    "character": "muguruma",
+                    "name": "六車拳西",
+                    "avatar": "muguruma"
+                },
+                {
+                    "character": "xmasKirito",
+                    "name": "聖誕桐人",
+                    "avatar": "xmasKirito"
+                },
+                {
+                    "character": "agil",
+                    "name": "艾基爾",
+                    "avatar": "agil"
+                }
+            ]
+        },
+        "gained": {
+            "hp": null,
+            "atk": null,
+            "def": null,
+            "stm": null,
+            "agi": null,
+            "spd": null,
+            "tec": null,
+            "int": null,
+            "lck": null,
+            "prevLV": 6,
+            "nextLV": 6,
+            "exp": 15,
+            "prevTitle": "幹你娘"
+        }
+    }
+}

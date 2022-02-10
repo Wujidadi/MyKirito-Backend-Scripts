@@ -1,0 +1,123 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "result": "戰敗",
+        "messages": [
+            {
+                "m": "Taras右腳滑了一下被 Amon趁勢攻擊受到 75 點傷害",
+                "s": "special"
+            },
+            {
+                "m": "Amon攻擊，Taras受到 382 點傷害"
+            },
+            {
+                "m": "一名醉漢突然衝過來襲擊Taras，纏鬥後Taras受到 382 點傷害",
+                "s": "strong"
+            },
+            {
+                "m": "Taras 倒下了，Amon 還有 2955 點血量"
+            }
+        ],
+        "myKirito": {
+            "exp": 667,
+            "lv": 12,
+            "lastChallenge": 1644480080495,
+            "challengeCount": 7,
+            "hp": 525,
+            "atk": 60,
+            "def": 65,
+            "stm": 45,
+            "agi": 68,
+            "spd": 108,
+            "tec": 57,
+            "int": 56,
+            "lck": 26,
+            "unlockedCharacters": [
+                {
+                    "character": "kirito",
+                    "name": "桐人",
+                    "avatar": "kirito"
+                },
+                {
+                    "character": "diavel",
+                    "name": "提亞貝魯",
+                    "avatar": "diavel"
+                },
+                {
+                    "character": "originalKirito",
+                    "name": "起源桐人",
+                    "avatar": "originalKirito"
+                },
+                {
+                    "character": "hitsugaya",
+                    "name": "日番谷冬獅郎",
+                    "avatar": "hitsugaya"
+                },
+                {
+                    "character": "klein",
+                    "name": "克萊因",
+                    "avatar": "klein"
+                },
+                {
+                    "character": "kibaou",
+                    "name": "牙王",
+                    "avatar": "kibaou"
+                },
+                {
+                    "character": "muguruma",
+                    "name": "六車拳西",
+                    "avatar": "muguruma"
+                },
+                {
+                    "character": "xmasKirito",
+                    "name": "聖誕桐人",
+                    "avatar": "xmasKirito"
+                },
+                {
+                    "character": "agil",
+                    "name": "艾基爾",
+                    "avatar": "agil"
+                },
+                {
+                    "character": "asuna",
+                    "name": "亞絲娜",
+                    "avatar": "asuna"
+                },
+                {
+                    "character": "silica",
+                    "name": "西莉卡",
+                    "avatar": "silica"
+                },
+                {
+                    "character": "lisbeth",
+                    "name": "莉茲貝特",
+                    "avatar": "lisbeth"
+                },
+                {
+                    "character": "rosalia",
+                    "name": "羅莎莉雅",
+                    "avatar": "rosalia"
+                }
+            ]
+        },
+        "gained": {
+            "hp": 25,
+            "atk": 3,
+            "def": 2,
+            "stm": 2,
+            "agi": 3,
+            "spd": 6,
+            "tec": 3,
+            "int": 1,
+            "lck": 1,
+            "prevLV": 11,
+            "nextLV": 12,
+            "exp": 80
+        }
+    },
+    "reportId": "6204c6505d8eb3992a15167d"
+}
