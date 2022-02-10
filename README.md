@@ -36,3 +36,12 @@
 
 * `php cli/AutoChallenge.php --player=TSK --opp=Taras --type=0 --rez --output`
 * `php cli/AutoChallenge.php --player=Amon --opp=TSK,Taras --type=3 --shout=我要超渡你 --rez --output`
+
+## PHP 批次檔參考
+
+```php
+exec("/usr/bin/php cli/AutoAction.php --player=TSK > /dev/null &");
+exec("/usr/bin/php cli/AutoChallenge.php --player=TSK --opp=Taras --type=0 --rez > /dev/null &");
+exec("/usr/bin/php cli/AutoAction.php --player=Amon --action=4 > /dev/null &");
+exec("/usr/bin/php cli/AutoChallenge.php --player=Amon --opp=Taras --type=0 --rez > /dev/null &");
+```
