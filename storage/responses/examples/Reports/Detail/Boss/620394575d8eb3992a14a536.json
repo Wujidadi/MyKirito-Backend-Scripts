@@ -1,0 +1,78 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "a": {
+            "lv": 2,
+            "character": "桐人",
+            "nickname": "Taras",
+            "title": "獨行玩家",
+            "uid": "61fce0a05d8eb3992a11d940",
+            "hp": 275,
+            "atk": 30,
+            "def": 24,
+            "stm": 25,
+            "agi": 38,
+            "spd": 48,
+            "tec": 32,
+            "int": 26,
+            "lck": 16,
+            "avatar": "kirito"
+        },
+        "a2": null,
+        "b": {
+            "character": "狗頭人之王伊爾凡格",
+            "nickname": "狗頭人之王伊爾凡格",
+            "uid": "illfang",
+            "hp": 5500,
+            "atk": 75,
+            "def": 150,
+            "stm": 200,
+            "agi": 50,
+            "spd": 50,
+            "tec": 80,
+            "int": 80,
+            "lck": 70,
+            "avatar": "illfang"
+        },
+        "messages": [
+            {
+                "m": "Taras攻擊，雖然命中但是這一擊狗頭人之王伊爾凡格完全不痛不癢"
+            },
+            {
+                "m": "狗頭人之王伊爾凡格攻擊，Taras抱頭一蹲意外閃開了",
+                "s": "special"
+            },
+            {
+                "m": "狗頭人之王伊爾凡格 2 連擊！Taras受到 115 點傷害",
+                "s": "special"
+            },
+            {
+                "m": "Taras攻擊， 被狗頭人之王伊爾凡格擋下了",
+                "s": "special"
+            },
+            {
+                "m": "狗頭人之王伊爾凡格攻擊，Taras受到 71 點傷害"
+            },
+            {
+                "m": "Taras攻擊，但是遭到狗頭人之王伊爾凡格的反擊，Taras受到 117 點傷害",
+                "s": "special"
+            },
+            {
+                "m": "Taras 倒下了，狗頭人之王伊爾凡格 還有 5500 點血量"
+            },
+            {
+                "m": "Taras 被BOSS擊殺身亡了",
+                "s": "critical"
+            }
+        ],
+        "result": "戰敗",
+        "dead": true,
+        "type": 99,
+        "boss": true,
+        "timestamp": 1644401751589
+    }
+}
