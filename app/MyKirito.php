@@ -3,6 +3,7 @@
 namespace App;
 
 use Lib\MyKiritoAPI;
+use Lib\FakeAPI;
 
 /**
  * 「我的桐人」動作處理類別
@@ -117,7 +118,7 @@ class MyKirito
     }
 
     /**
-     * Undocumented function
+     * 行動
      *
      * @param  string  $player  當前玩家暱稱
      * @param  string  $action  行動代碼  
@@ -138,6 +139,9 @@ class MyKirito
      */
     public function doAction(string $player, string $action): array
     {
+        # 偽請求
+        // return FakeAPI::getInstance()->request();
+
         $uid = PLAYER[$player]['ID'];
         $token = PLAYER[$player]['Token'];
         $payload = [

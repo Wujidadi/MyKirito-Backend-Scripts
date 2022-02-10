@@ -4,6 +4,7 @@ chdir(__DIR__);
 require_once './entrypoint.php';
 
 use Lib\Helper;
+use Lib\CliHelper;
 use Lib\MyKiritoAPI;
 use App\MyKirito;
 
@@ -17,6 +18,23 @@ $player = 'Taras';
 // $status = '刷畢娜中｜300敗達成｜友切死了2次QQ｜打算入手小說';
 // $result = MyKirito::getInstance()->updatePersonalStatus($player, $status);
 // echo json_encode($result, 448);
+
+# 行動
+$action = 'Girl';
+$result = MyKirito::getInstance()->doAction($player, $action);
+if (isset($result['response']['myKirito']['unlockedCharacters']))
+{
+    $last = count($result['response']['myKirito']['unlockedCharacters']) - 1;
+    $newestUnlockedCharacter = $result['response']['myKirito']['unlockedCharacters'][$last];
+    $characterName = $newestUnlockedCharacter['name'];
+    $message = "解鎖角色：{$characterName}";
+    echo CliHelper::colorText($message, '#ffd700', true);
+}
+else
+{
+    echo CliHelper::colorText('沒有解鎖角色！', '#efb7b7', true);
+}
+echo json_encode($result, 448);
 
 # 取得玩家列表
 // $result = MyKirito::getInstance()->getUserList($player, 68, 1);
