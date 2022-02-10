@@ -1,0 +1,96 @@
+{
+    "httpStatusCode": 200,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "result": "戰敗",
+        "messages": [
+            {
+                "m": "TSK的畢娜使出了泡泡吐息",
+                "s": "skill"
+            },
+            {
+                "m": "TSK攻擊，命中要害，Taras受到 931 點傷害",
+                "s": "strong"
+            },
+            {
+                "m": "Taras 倒下了，TSK 還有 3180 點血量"
+            }
+        ],
+        "myKirito": {
+            "exp": 78,
+            "lv": 3,
+            "lastChallenge": 1644473401460,
+            "challengeCount": 2,
+            "hp": 300,
+            "atk": 33,
+            "def": 46,
+            "stm": 27,
+            "agi": 41,
+            "spd": 54,
+            "tec": 34,
+            "int": 47,
+            "lck": 17,
+            "unlockedCharacters": [
+                {
+                    "character": "kirito",
+                    "name": "桐人",
+                    "avatar": "kirito"
+                },
+                {
+                    "character": "diavel",
+                    "name": "提亞貝魯",
+                    "avatar": "diavel"
+                },
+                {
+                    "character": "originalKirito",
+                    "name": "起源桐人",
+                    "avatar": "originalKirito"
+                },
+                {
+                    "character": "hitsugaya",
+                    "name": "日番谷冬獅郎",
+                    "avatar": "hitsugaya"
+                },
+                {
+                    "character": "klein",
+                    "name": "克萊因",
+                    "avatar": "klein"
+                },
+                {
+                    "character": "kibaou",
+                    "name": "牙王",
+                    "avatar": "kibaou"
+                },
+                {
+                    "character": "muguruma",
+                    "name": "六車拳西",
+                    "avatar": "muguruma"
+                },
+                {
+                    "character": "xmasKirito",
+                    "name": "聖誕桐人",
+                    "avatar": "xmasKirito"
+                }
+            ]
+        },
+        "gained": {
+            "hp": 25,
+            "atk": 3,
+            "def": 22,
+            "stm": 2,
+            "agi": 3,
+            "spd": 6,
+            "tec": 2,
+            "int": 21,
+            "lck": 1,
+            "prevLV": 2,
+            "nextLV": 3,
+            "exp": 30,
+            "prevTitle": "獨行玩家",
+            "nextTitle": "幹你娘"
+        }
+    }
+}

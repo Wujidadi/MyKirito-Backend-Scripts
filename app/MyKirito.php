@@ -10,6 +10,20 @@ use Lib\MyKiritoAPI;
 class MyKirito
 {
     /**
+     * 預設空回應
+     *
+     * @var array
+     */
+    const DEFAULT_RESPONSE = [
+        'httpStatusCode' => 0,
+        'error' => [
+            'code' => 0,
+            'message' => ''
+        ],
+        'response' => []
+    ];
+
+    /**
      * 行動列表
      *
      * @var string[]
@@ -30,17 +44,13 @@ class MyKirito
     ];
 
     /**
-     * 預設空回應
-     *
-     * @var array
+     * 金手指密鑰
      */
-    const DEFAULT_RESPONSE = [
-        'httpStatusCode' => 0,
-        'error' => [
-            'code' => 0,
-            'message' => ''
-        ],
-        'response' => []
+    const SECRET = [
+        'Klein'     => 'ebd2aQD/CK8=',    // 克萊因
+        'Kibaou'    => 'j2dp1BEaPak=',    // 牙王
+        'Hitsugaya' => '96Qge9WpEi0=',    // 日番谷冬獅郎
+        'Muguruma'  => 'gc/hgFegpb8='     // 六車拳西
     ];
 
     /**
@@ -437,5 +447,28 @@ class MyKirito
     public function getDetailReport(string $reportId): array
     {
         return $this->_conn->get("https://mykirito-storage.b-cdn.net/reports/{$reportId}.json");
+    }
+
+    /**
+     * 使用在主頁面輸入金手指的方法解鎖角色
+     *
+     * 背後其實是傳遞一個帶特定密鑰的 POST 請求給伺服器
+     *
+     * @param  string $player     玩家暱稱
+     * @param  string $character  角色名稱  
+     *                            截至 2022-02-10 為止，可用 4 個角色，輸入值分別為：  
+     *                            - `Klein`：克萊因
+     *                            - `Kibaou`：牙王
+     *                            - `Hitsugaya`：日番谷冬獅郎
+     *                            - `Muguruma`：六車拳西
+     * @return array
+     */
+    public function unlockCharacterBySecret(string $player, string $character): array
+    {
+        $token = PLAYER[$player]['Token'];
+        $payload = [
+            'secret' => self::SECRET[$character]
+        ];
+        return $this->_conn->post('my-kirito/unlock', $token, $payload);
     }
 }

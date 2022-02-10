@@ -1,0 +1,41 @@
+{
+    "httpStatusCode": 400,
+    "error": {
+        "code": 0,
+        "message": ""
+    },
+    "response": {
+        "unlockedCharacters": [
+            {
+                "character": "kirito",
+                "name": "桐人",
+                "avatar": "kirito"
+            },
+            {
+                "character": "diavel",
+                "name": "提亞貝魯",
+                "avatar": "diavel"
+            },
+            {
+                "character": "originalKirito",
+                "name": "起源桐人",
+                "avatar": "originalKirito"
+            },
+            {
+                "character": "hitsugaya",
+                "name": "日番谷冬獅郎",
+                "avatar": "hitsugaya"
+            },
+            {
+                "character": "klein",
+                "name": "克萊因",
+                "avatar": "klein"
+            },
+            {
+                "character": "klein",
+                "name": "克萊因",
+                "avatar": "klein"
+            }
+        ]
+    }
+}

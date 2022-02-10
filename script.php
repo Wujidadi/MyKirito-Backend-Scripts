@@ -98,3 +98,8 @@ $player = 'Taras';
 // $reportId = '61fcbd435d8eb3992a11c71f';
 // $result = MyKirito::getInstance()->getDetailReport($reportId);
 // echo json_encode($result, 448);
+
+# 金手指解鎖角色
+// $character = 'Klein';
+// $result = MyKirito::getInstance()->unlockCharacterBySecret($player, $character);
+// echo json_encode($result, 448);
