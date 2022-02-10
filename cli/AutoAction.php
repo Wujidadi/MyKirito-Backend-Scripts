@@ -130,7 +130,7 @@ while (true)
                 $retry++;
 
                 # 每次重試間隔
-                sleep(1);
+                sleep(2);
             }
             else
             {
@@ -206,7 +206,7 @@ while (true)
                 $retry++;
 
                 # 每次重試間隔
-                sleep(1);
+                sleep(2);
             }
             else
             {
