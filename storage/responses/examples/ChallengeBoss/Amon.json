@@ -1,0 +1,1227 @@
+{
+    "result": "勝利",
+    "messages": [
+        {
+            "m": "Amon攻擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，Amon受到 43 點傷害"
+        },
+        {
+            "m": "愛麗絲 2 連擊！被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲受到 60 點傷害"
+        },
+        {
+            "m": "愛麗絲攻擊，命中要害，TSK受到 131 點傷害",
+            "s": "strong"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 17 點傷害"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK的畢娜使出了泡泡吐息但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "TSK使出了短刃",
+            "s": "skill"
+        },
+        {
+            "m": "第 1 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 2 擊對愛麗絲造成 55 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 3 擊對愛麗絲造成 63 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 4 擊對愛麗絲造成 106 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 5 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 6 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 7 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 8 擊對愛麗絲造成 98 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，命中要害，愛麗絲受到 54 點傷害",
+            "s": "strong"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK的畢娜使出了泡泡吐息",
+            "s": "skill"
+        },
+        {
+            "m": "TSK使出了短刃",
+            "s": "skill"
+        },
+        {
+            "m": "第 1 擊對愛麗絲造成 51 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 2 擊對愛麗絲造成 68 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 3 擊對愛麗絲造成 61 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 4 擊對愛麗絲造成 50 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 5 擊對愛麗絲造成 61 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 6 擊對愛麗絲造成 91 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 7 擊對愛麗絲造成 105 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 8 擊對愛麗絲造成 117 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon的畢娜使出了泡泡吐息",
+            "s": "skill"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 45 點傷害"
+        },
+        {
+            "m": "Amon 2 連擊！命中要害，愛麗絲受到 63 點傷害",
+            "s": "strong"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲受到 29 點傷害"
+        },
+        {
+            "m": "TSK 2 連擊！愛麗絲受到 29 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 22 點傷害"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK使出了急咬，對愛麗絲造成 88 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon使出了短刃",
+            "s": "skill"
+        },
+        {
+            "m": "第 1 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 2 擊被愛麗絲擋住了",
+            "s": "skill"
+        },
+        {
+            "m": "第 3 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 4 擊對愛麗絲造成 60 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 5 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 6 擊被愛麗絲擋住了",
+            "s": "skill"
+        },
+        {
+            "m": "第 7 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 8 擊對愛麗絲造成 36 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK的畢娜使出了泡泡吐息但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "TSK使出了急咬，對愛麗絲造成 133 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon的畢娜使出了泡泡吐息但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 32 點傷害"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK使出了急咬，對愛麗絲造成 88 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon的畢娜使出了泡泡吐息但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon使出了急咬，但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲踩到香蕉皮摔倒受到 237 點傷害",
+            "s": "strong"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK使出了急咬，但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "TSK左腳踩到釘子受到 124 點傷害",
+            "s": "strong"
+        },
+        {
+            "m": "愛麗絲攻擊，TSK受到 60 點傷害"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 19 點傷害"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲受到 80 點傷害"
+        },
+        {
+            "m": "愛麗絲攻擊，TSK受到 51 點傷害"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "一隻蟲子飛進愛麗絲的右眼，Amon趁勢攻擊造成 50 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲受到 38 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲踩到坑洞重心不穩被 Amon趁勢攻擊受到 38 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 4 連擊！愛麗絲受到 66 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 5 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 6 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲開始有點累了",
+            "s": "strong"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "畢娜為TSK恢復了 366 點生命值",
+            "s": "skill"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲受到 96 點傷害"
+        },
+        {
+            "m": "愛麗絲攻擊， 被TSK擋下了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon的畢娜使出了泡泡吐息但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲踩到坑洞扭傷右腳受到 234 點傷害",
+            "s": "strong"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲受到 112 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 4 連擊！愛麗絲受到 93 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK的畢娜使出了泡泡吐息但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲受到 107 點傷害"
+        },
+        {
+            "m": "愛麗絲攻擊，但是遭到TSK的反擊，命中要害！愛麗絲受到 191 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon使出了急咬，但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK使出了急咬，但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon使出了急咬，但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲已經精疲力盡了",
+            "s": "critical"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK的畢娜使出了泡泡吐息但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "TSK 2 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon的畢娜使出了泡泡吐息",
+            "s": "skill"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 170 點傷害"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲受到 257 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲受到 358 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK攻擊，命中要害，愛麗絲受到 348 點傷害",
+            "s": "strong"
+        },
+        {
+            "m": "TSK 2 連擊！愛麗絲受到 294 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 203 點傷害"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲受到 279 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK的畢娜使出了泡泡吐息",
+            "s": "skill"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲受到 248 點傷害"
+        },
+        {
+            "m": "TSK 2 連擊！愛麗絲受到 221 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "TSK 3 連擊！愛麗絲受到 369 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "一隻蟲子飛進愛麗絲的右眼，Amon趁勢攻擊造成 40 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 173 點傷害"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲受到 277 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲受到 344 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 4 連擊！愛麗絲受到 434 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "一隻蟲子飛進愛麗絲的右眼，TSK趁勢攻擊造成 29 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲受到 172 點傷害"
+        },
+        {
+            "m": "TSK 2 連擊！愛麗絲受到 293 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon使出了短刃",
+            "s": "skill"
+        },
+        {
+            "m": "第 1 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 2 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 3 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 4 擊對愛麗絲造成 274 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 5 擊對愛麗絲造成 401 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 6 擊對愛麗絲造成 336 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 7 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "第 8 擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK的畢娜使出了泡泡吐息",
+            "s": "skill"
+        },
+        {
+            "m": "TSK使出了急咬，對愛麗絲造成 484 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 184 點傷害"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲受到 191 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲受到 291 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲受到 203 點傷害"
+        },
+        {
+            "m": "TSK 2 連擊！命中要害，愛麗絲受到 527 點傷害",
+            "s": "strong"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲受到 225 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 4 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 5 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 6 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK使出了急咬，但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 153 點傷害"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK使出了急咬，但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon使出了急咬，但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK的畢娜使出了泡泡吐息但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "TSK使出了急咬，對愛麗絲造成 476 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon的畢娜使出了泡泡吐息但是愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "一隻蟲子飛進愛麗絲的右眼，Amon趁勢攻擊造成 49 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲踩到小石頭重心不穩被 Amon趁勢攻擊受到 51 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲右眼飛進砂子，被 Amon趁機攻擊造成 40 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲受到 177 點傷害"
+        },
+        {
+            "m": "TSK 2 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 182 點傷害"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 189 點傷害"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "Amon 4 連擊！愛麗絲受到 439 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲攻擊，被Amon閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK攻擊，愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "TSK 2 連擊！愛麗絲受到 266 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "TSK 3 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "TSK 4 連擊！愛麗絲擋下了攻擊",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲攻擊，被TSK閃開了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "Amon的畢娜使出了泡泡吐息",
+            "s": "skill"
+        },
+        {
+            "m": "Amon攻擊，愛麗絲受到 149 點傷害"
+        },
+        {
+            "m": "Amon 2 連擊！愛麗絲受到 242 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "Amon 3 連擊！愛麗絲受到 347 點傷害",
+            "s": "special"
+        },
+        {
+            "m": "愛麗絲受到泡泡吐息的干擾打偏了",
+            "s": "special"
+        },
+        {
+            "m": "Switch!"
+        },
+        {
+            "m": "TSK使出了短刃",
+            "s": "skill"
+        },
+        {
+            "m": "第 1 擊對愛麗絲造成 191 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 2 擊對愛麗絲造成 251 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 3 擊對愛麗絲造成 237 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 4 擊對愛麗絲造成 324 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 5 擊對愛麗絲造成 320 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 6 擊對愛麗絲造成 426 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 7 擊對愛麗絲造成 484 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "第 8 擊對愛麗絲造成 574 點傷害",
+            "s": "skill"
+        },
+        {
+            "m": "愛麗絲 倒下了，Amon 還有 2912 點血量，TSK 還有 3080 點血量"
+        }
+    ],
+    "myKirito": {
+        "exp": 91376,
+        "lv": 70,
+        "lastBossChallenge": 1644464790542,
+        "dead": false,
+        "unlockedCharacters": [
+            {
+                "character": "kirito",
+                "name": "桐人",
+                "avatar": "kirito"
+            },
+            {
+                "character": "blackRabbit",
+                "name": "黑色雜燴兔",
+                "avatar": "blackRabbit"
+            },
+            {
+                "character": "agil",
+                "name": "艾基爾",
+                "avatar": "agil"
+            },
+            {
+                "character": "klein",
+                "name": "克萊因",
+                "avatar": "klein"
+            },
+            {
+                "character": "kibaou",
+                "name": "牙王",
+                "avatar": "kibaou"
+            },
+            {
+                "character": "hitsugaya",
+                "name": "日番谷冬獅郎",
+                "avatar": "hitsugaya"
+            },
+            {
+                "character": "muguruma",
+                "name": "六車拳西",
+                "avatar": "muguruma"
+            },
+            {
+                "character": "bradley",
+                "name": "金·布拉德雷",
+                "avatar": "bradley"
+            },
+            {
+                "character": "fish",
+                "name": "努西",
+                "avatar": "fish"
+            },
+            {
+                "character": "hatsumi",
+                "name": "初見泉",
+                "avatar": "hatsumi"
+            },
+            {
+                "character": "asuna",
+                "name": "亞絲娜",
+                "avatar": "asuna"
+            },
+            {
+                "character": "charizardX",
+                "name": "超級噴火龍X",
+                "avatar": "charizardX"
+            },
+            {
+                "character": "godfree",
+                "name": "哥德夫利",
+                "avatar": "godfree"
+            },
+            {
+                "character": "eugeo",
+                "name": "尤吉歐",
+                "avatar": "eugeo"
+            },
+            {
+                "character": "reiner",
+                "name": "萊納·布朗",
+                "avatar": "reiner"
+            },
+            {
+                "character": "silica",
+                "name": "西莉卡",
+                "avatar": "silica"
+            },
+            {
+                "character": "lisbeth",
+                "name": "莉茲貝特",
+                "avatar": "lisbeth"
+            },
+            {
+                "character": "originalKirito",
+                "name": "起源桐人",
+                "avatar": "originalKirito"
+            },
+            {
+                "character": "xmasKirito",
+                "name": "聖誕桐人",
+                "avatar": "xmasKirito"
+            },
+            {
+                "character": "diavel",
+                "name": "提亞貝魯",
+                "avatar": "diavel"
+            },
+            {
+                "character": "xmasSilica",
+                "name": "聖誕西莉卡",
+                "avatar": "xmasSilica"
+            },
+            {
+                "character": "kobatz",
+                "name": "柯巴茲",
+                "avatar": "kobatz"
+            },
+            {
+                "character": "theGleameyes",
+                "name": "閃耀魔眼",
+                "avatar": "theGleameyes"
+            },
+            {
+                "character": "sinon",
+                "name": "詩乃",
+                "avatar": "sinon"
+            },
+            {
+                "character": "rosalia",
+                "name": "羅莎莉雅",
+                "avatar": "rosalia"
+            },
+            {
+                "character": "oberon",
+                "name": "奧伯龍",
+                "avatar": "oberon"
+            },
+            {
+                "character": "yuuki",
+                "name": "有紀",
+                "avatar": "yuuki"
+            },
+            {
+                "character": "hinamori",
+                "name": "雛森桃",
+                "avatar": "hinamori"
+            },
+            {
+                "character": "aizen",
+                "name": "藍染惣右介",
+                "avatar": "aizen"
+            },
+            {
+                "character": "originalKlein",
+                "name": "起源克萊因",
+                "avatar": "originalKlein"
+            },
+            {
+                "character": "xmasSinon",
+                "name": "聖誕詩乃",
+                "avatar": "xmasSinon"
+            },
+            {
+                "character": "busuna",
+                "name": "聖誕巴士",
+                "avatar": "busuna"
+            },
+            {
+                "character": "xmasKlein",
+                "name": "聖誕克萊因",
+                "avatar": "xmasKlein"
+            },
+            {
+                "character": "xmasGleameyes",
+                "name": "聖誕魔眼",
+                "avatar": "xmasGleameyes"
+            },
+            {
+                "character": "xmasAgil",
+                "name": "兩隻麋鹿",
+                "avatar": "xmasAgil"
+            },
+            {
+                "character": "xmasLisbeth",
+                "name": "聖誕莉茲貝特",
+                "avatar": "xmasLisbeth"
+            },
+            {
+                "character": "kirito74",
+                "name": "難道只能使出那一招了嗎",
+                "avatar": "kirito74"
+            },
+            {
+                "character": "scaredRabbit",
+                "name": "驚恐雜燴兔",
+                "avatar": "scaredRabbit"
+            },
+            {
+                "character": "kuradeel",
+                "name": "克拉帝爾",
+                "avatar": "kuradeel"
+            },
+            {
+                "character": "sunsetAndTwoSwords",
+                "name": "夕陽下的雙刀",
+                "avatar": "sunsetAndTwoSwords"
+            },
+            {
+                "character": "sado",
+                "name": "茶渡泰虎",
+                "avatar": "sado"
+            },
+            {
+                "character": "eugene",
+                "name": "尤金",
+                "avatar": "eugene"
+            },
+            {
+                "character": "geodude",
+                "name": "星爆小拳石",
+                "avatar": "geodude"
+            },
+            {
+                "character": "rabbit",
+                "name": "雜燴兔",
+                "avatar": "rabbit"
+            },
+            {
+                "character": "hina",
+                "name": "天野陽菜",
+                "avatar": "hina"
+            },
+            {
+                "character": "alice",
+                "name": "愛麗絲",
+                "avatar": "alice"
+            }
+        ]
+    },
+    "gained": {
+        "hp": null,
+        "atk": null,
+        "def": null,
+        "stm": null,
+        "agi": null,
+        "spd": null,
+        "tec": null,
+        "int": null,
+        "lck": null,
+        "prevLV": 70,
+        "nextLV": 70,
+        "exp": 1100,
+        "prevTitle": "馴獸師"
+    }
+}
