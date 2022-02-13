@@ -22,6 +22,8 @@ vendor/
 
 # For this project
 API.http
+TelegramBot.http
 configs/IdTokens.php
+configs/TelegramBot.php
 storage/responses/*
 !storage/responses/examples

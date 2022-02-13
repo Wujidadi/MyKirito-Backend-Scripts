@@ -7,7 +7,12 @@ shell_exec('composer install');
 
 shell_exec('mkdir storage/logs');
 
-if (!is_file('configs' . DIRECTORY_SEPARATOR . 'IdTokens.php'))
+if (!is_file('configs/IdTokens.php'))
 {
     shell_exec('cp configs/IdTokens.example.php configs/IdTokens.php');
+}
+
+if (!is_file('configs/TelegramBot.php'))
+{
+    shell_exec('cp configs/TelegramBot.example.php configs/TelegramBot.php');
 }

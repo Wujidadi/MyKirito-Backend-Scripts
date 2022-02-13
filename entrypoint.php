@@ -17,3 +17,4 @@ define('LOG_DIR', STORAGE_DIR . DIRECTORY_SEPARATOR . 'logs');
 require_once VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';
 
 require_once CONFIG_DIR . DIRECTORY_SEPARATOR . 'IdTokens.php';
+require_once CONFIG_DIR . DIRECTORY_SEPARATOR . 'TelegramBot.php';

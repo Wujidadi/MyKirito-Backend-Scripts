@@ -7,6 +7,7 @@ use Lib\Helper;
 use Lib\CliHelper;
 use Lib\MyKiritoAPI;
 use App\MyKirito;
+use App\TelegramBot;
 
 $player = 'Taras';
 
@@ -120,4 +121,9 @@ $player = 'Taras';
 # 金手指解鎖角色
 // $character = 'Klein';
 // $result = MyKirito::getInstance()->unlockCharacterBySecret($player, $character);
+// echo json_encode($result, 448);
+
+# 發送 Telegram 通知
+// $message = 'System Alert Again and Again';
+// $result = TelegramBot::getInstance()->sendMessage($message);
 // echo json_encode($result, 448);
