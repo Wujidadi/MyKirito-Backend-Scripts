@@ -40,6 +40,11 @@ $directory = LOG_DIR . DIRECTORY_SEPARATOR . 'AutoChallenge';
 if (!is_dir($directory)) mkdir($directory);
 $detailLogFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
 
+# 定義 Telegram 自動通知日誌檔案並確保路徑存在
+$directory = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . 'AutoChallenge';
+if (!is_dir($directory)) mkdir($directory);
+$notificationLogFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
+
 # 從暱稱指定對手
 if (!isset($option['opp']) || $option['opp'] === '')
 {
@@ -119,21 +124,51 @@ try
         $result = MyKirito::getInstance()->getPersonalData($player);
         if ($result['httpStatusCode'] !== 200)
         {
+            $logTime = Helper::Time();
+
             $errorMessage = "MyKirito::getPersonalData HTTP 狀態碼：{$result['httpStatusCode']}";
             echo CliHelper::colorText($errorMessage, '#ff8080', true);
 
-            $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error');
-            TelegramBot::getInstance()->sendMessage($notificationMessage);
+            $logMessage = "[{$logTime}] {$errorMessage}";
+            $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
+
+            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+            file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+
+            if (USE_TELEGRAM_BOT)
+            {
+                $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error', $logTime);
+                TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+                $logMessage = "[{$logTime}] {$notificationMessage}";
+                file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+            }
 
             exit(1);
         }
         else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
         {
+            $logTime = Helper::Time();
+
             $errorMessage = "MyKirito::getPersonalData 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}";
             echo CliHelper::colorText($errorMessage, '#ff8080', true);
 
-            $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error');
-            TelegramBot::getInstance()->sendMessage($notificationMessage);
+            $logMessage = "[{$logTime}] {$errorMessage}";
+            $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
+
+            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+            file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+
+            if (USE_TELEGRAM_BOT)
+            {
+                $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error', $logTime);
+                TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+                $logMessage = "[{$logTime}] {$notificationMessage}";
+                file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+            }
 
             exit(1);
         }
@@ -173,9 +208,24 @@ try
                 # 不自動復活
                 else
                 {
+                    $logTime = Helper::Time();
+
                     $message = "不自動復活玩家 {$player}";
-                    $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal');
-                    TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                    $logMessage = "[{$logTime}] {$message}";
+        
+                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+
+                    if (USE_TELEGRAM_BOT)
+                    {
+                        $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                        TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                        $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+                        $logMessage = "[{$logTime}] {$notificationMessage}";
+                        file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    }
 
                     exit(0);
                 }
@@ -223,9 +273,24 @@ try
                 # 不自動復活
                 else
                 {
+                    $logTime = Helper::Time();
+
                     $message = "不自動復活對手玩家 {$opponent}";
-                    $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal');
-                    TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                    $logMessage = "[{$logTime}] {$message}";
+        
+                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+
+                    if (USE_TELEGRAM_BOT)
+                    {
+                        $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                        TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                        $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+                        $logMessage = "[{$logTime}] {$notificationMessage}";
+                        file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    }
 
                     exit(0);
                 }
@@ -273,9 +338,24 @@ try
                         # 不自動復活
                         else
                         {
+                            $logTime = Helper::Time();
+
                             $message = "挑戰失敗，玩家 {$player} 死亡，不自動復活";
-                            $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal');
-                            TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                            $logMessage = "[{$logTime}] {$message}";
+
+                            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+                            file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+
+                            if (USE_TELEGRAM_BOT)
+                            {
+                                $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                                TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                                $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+                                $logMessage = "[{$logTime}] {$notificationMessage}";
+                                file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                            }
 
                             exit(0);
                         }
@@ -294,9 +374,24 @@ try
                         # 不自動復活
                         else
                         {
+                            $logTime = Helper::Time();
+
                             $message = "挑戰勝利，對手玩家 {$opponent} 死亡，不自動復活";
-                            $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal');
-                            TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                            $logMessage = "[{$logTime}] {$message}";
+
+                            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+                            file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+
+                            if (USE_TELEGRAM_BOT)
+                            {
+                                $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                                TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                                $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+                                $logMessage = "[{$logTime}] {$notificationMessage}";
+                                file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                            }
 
                             exit(0);
                         }
@@ -347,21 +442,50 @@ try
 }
 catch (Throwable $ex)
 {
+    $logTime = Helper::Time();
+
     $exType = get_class($ex);
     $exCode = $ex->getCode();
     $exMessage = $ex->getMessage();
-
     $errorMessage = "{$exType} {$exCode} {$exMessage}";
-    $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'normal');
-    TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+    $logMessage = "[{$logTime}] {$errorMessage}";
+
+    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+    file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+
+    if (USE_TELEGRAM_BOT)
+    {
+        $errorMessage = "{$exType} {$exCode} {$exMessage}";
+        $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'normal', $logTime);
+        TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+        $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+        $logMessage = "[{$logTime}] {$notificationMessage}";
+        file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+    }
 
     exit(1);
 }
 
-# 跳出 while loop，這是不自然的，故仍須發送通知
+$logTime = Helper::Time();
+
 $abnormalMessage = '跳出 while loop';
-$notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $abnormalMessage, 'abnormal');
-TelegramBot::getInstance()->sendMessage($notificationMessage);
+$logMessage = "[{$logTime}] {$abnormalMessage}";
+
+file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+
+if (USE_TELEGRAM_BOT)
+{
+    # 不自然跳出 while loop，仍須發送通知
+    $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $abnormalMessage, 'abnormal', $logTime);
+    TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+    $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+    $logMessage = "[{$logTime}] {$notificationMessage}";
+    file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+}
 
 exit(2);
 

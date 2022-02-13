@@ -6,6 +6,7 @@ chdir(__DIR__);
 shell_exec('composer install');
 
 shell_exec('mkdir storage/logs');
+shell_exec('mkdir storage/logs/TelegramBot');
 
 if (!is_file('configs/IdTokens.php'))
 {

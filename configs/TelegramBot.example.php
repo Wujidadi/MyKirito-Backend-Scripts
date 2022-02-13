@@ -8,7 +8,16 @@
 define('USE_TELEGRAM_BOT', false);
 
 /**
+ * Telegram 自動通知日誌路徑
+ *
+ * @var string
+ */
+define('TELEGRAM_LOG_PATH', LOG_DIR . DIRECTORY_SEPARATOR . 'TelegramBot');
+
+/**
  * Telegram 機器人參數
+ *
+ * @var array
  */
 define('TELEGRAM_BOT', [
 
@@ -25,6 +34,8 @@ define('TELEGRAM_BOT', [
 
 /**
  * Telegram 通知群組參數
+ *
+ * @var array
  */
 define('TELEGRAM_GROUP', [
 
