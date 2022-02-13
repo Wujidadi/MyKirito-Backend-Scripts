@@ -85,4 +85,51 @@ class CliHelper
         $last = count($result['response']['myKirito']['unlockedCharacters']) - 1;
         return $result['response']['myKirito']['unlockedCharacters'][$last];
     }
+
+    /**
+     * 建構 Telegram 自動通知訊息
+     *
+     * @param [type] $command
+     * @param [type] $errorMessage
+     * @return string
+     */
+    /**
+     * 建構 Telegram 通知訊息
+     *
+     * @param  string  $title    訊息標題（首段）
+     * @param  string  $command  執行的命令
+     * @param  string  $message  要通知的訊息
+     * @param  string  $type     訊息類型，預設值為 `error`
+     * @return string
+     */
+    public static function buildNotificationMessage(string $title, string $command, string $message, string $type = 'error'): string
+    {
+        $type = strtolower($type);
+        switch ($type)
+        {
+            case 'general':
+            case 'normal':
+                $typeText = '訊息';
+                break;
+
+            case 'abnormal':
+                $typeText = '異常';
+                break;
+
+            case 'error':
+            default:
+                $typeText = '錯誤';
+                break;
+        }
+
+        $time = Helper::Time();
+
+        return <<<TEXT
+        {$title}
+
+        命令：`{$command}`
+        {$typeText}：`{$message}`
+        時間：`{$time}`
+        TEXT;
+    }
 }

@@ -8,6 +8,9 @@ use Lib\Helper;
 use Lib\CliHelper;
 use App\Constant;
 use App\MyKirito;
+use App\TelegramBot;
+
+$scriptName = basename(__FILE__);
 
 # 由命令行參數指定玩家暱稱、行動標的及輸出模式
 $option = getopt('', ['player:', 'action:', 'output']);
@@ -49,6 +52,7 @@ else
     $inputActions = explode(',', $option['action']);
     foreach ($inputActions as $item)
     {
+        $item = trim($item);
         if (Helper::isInteger($item) && (int) $item >= 0 && (int) $item < count(Constant::NormalAction) && !in_array((int) $item, $action))
         {
             $action[] = (int) $item;
@@ -64,166 +68,207 @@ else
 # 輸出模式（預設為同步寫入檔案並顯示於終端機）
 $syncOutput = isset($option['output']);
 
-# 循環執行
-while (true)
+# 命令全文（用於輸出日誌及自動通知）
+$argPlayer = " --player=\"{$player}\"";
+$argAction = ' --action=' . implode(',', $action);
+$argOutput = $syncOutput ? ' --output' : '';
+$fullCommand = "{$scriptName}{$argPlayer}{$argAction}{$argOutput}";
+
+# 自動通知訊息的標題（首段）
+$notificationTitle = '自動行動腳本停止執行';
+
+try
 {
-    # 取得玩家基本資訊
-    $result = MyKirito::getInstance()->getPersonalData($player);
-    if ($result['httpStatusCode'] !== 200)
+    # 循環執行
+    while (true)
     {
-        echo CliHelper::colorText("MyKirito::getPersonalData HTTP 狀態碼：{$result['httpStatusCode']}", '#ff8080', true);
-        exit(1);
-    }
-    else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
-    {
-        echo CliHelper::colorText("MyKirito::getPersonalData 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}", '#ff8080', true);
-        exit(1);
-    }
-    $response = $result['response'];
-
-    # 從玩家基本資訊中取出最後行動時間、最後領取樓層獎勵時間及當前所在樓層
-    $lastAction = $response['lastAction'];
-    $lastFloorBonus = $response['lastFloorBonus'] ?? null;
-    $floor = $response['floor'];
-
-    # 取得現在時間
-    $now = Helper::Timestamp() * 1000;
-
-    # 在指定的行動標的範圍內隨機執行
-    if (($now - $lastAction) > (Constant::ActionCD + Constant::CooldownBuffer))
-    {
-        $seed = mt_rand(0, count($action) - 1);
-        $actionKey = $action[$seed];
-        $actionAlias = Constant::NormalAction[$actionKey];
-
-        # 重試次數
-        $retry = 0;
-
-        # 在最大重試次數內，發送行動請求
-        while ($retry < Constant::MaxRetry)
+        # 取得玩家基本資訊
+        $result = MyKirito::getInstance()->getPersonalData($player);
+        if ($result['httpStatusCode'] !== 200)
         {
-            $result = MyKirito::getInstance()->doAction($player, $actionAlias);
+            $errorMessage = "MyKirito::getPersonalData HTTP 狀態碼：{$result['httpStatusCode']}";
+            echo CliHelper::colorText($errorMessage, '#ff8080', true);
 
-            if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
+            $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error');
+            TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+            exit(1);
+        }
+        else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
+        {
+            $errorMessage = "MyKirito::getPersonalData 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}";
+            echo CliHelper::colorText($errorMessage, '#ff8080', true);
+
+            $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error');
+            TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+            exit(1);
+        }
+        $response = $result['response'];
+
+        # 從玩家基本資訊中取出最後行動時間、最後領取樓層獎勵時間及當前所在樓層
+        $lastAction = $response['lastAction'];
+        $lastFloorBonus = $response['lastFloorBonus'] ?? null;
+        $floor = $response['floor'];
+
+        # 取得現在時間
+        $now = Helper::Timestamp() * 1000;
+
+        # 在指定的行動標的範圍內隨機執行
+        if (($now - $lastAction) > (Constant::ActionCD + Constant::CooldownBuffer))
+        {
+            $seed = mt_rand(0, count($action) - 1);
+            $actionKey = $action[$seed];
+            $actionAlias = Constant::NormalAction[$actionKey];
+
+            # 重試次數
+            $retry = 0;
+
+            # 在最大重試次數內，發送行動請求
+            while ($retry < Constant::MaxRetry)
             {
-                $function = "MyKirito::doAction('{$player}', '{$actionAlias}')";
-                CliHelper::logError($result, $function, $logFile, $detailLogFile, $syncOutput);
+                $result = MyKirito::getInstance()->doAction($player, $actionAlias);
 
-                $retry++;
+                if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
+                {
+                    $function = "MyKirito::doAction('{$player}', '{$actionAlias}')";
+                    CliHelper::logError($result, $function, $logFile, $detailLogFile, $syncOutput);
 
-                # 每次重試間隔
-                sleep(Constant::RetryInterval);
+                    $retry++;
+
+                    # 每次重試間隔
+                    sleep(Constant::RetryInterval);
+                }
+                else
+                {
+                    $logTime = Helper::Time();
+                    $actionName = Constant::ActionName[$actionAlias];
+
+                    $logMessage = "[{$logTime}] {$actionName}";
+                    $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
+
+                    # 記錄解鎖角色
+                    if (isset($result['response']['myKirito']['unlockedCharacters']))
+                    {
+                        $characterName = CliHelper::getNewestUnlockedCharacter($result)['name'];
+                        $logMessage = "{$logMessage}，解鎖角色：{$characterName}";
+                    }
+
+                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+
+                    if ($syncOutput)
+                    {
+                        echo CliHelper::colorText($logMessage, '#aaffff', true);
+                    }
+
+                    break;
+                }
             }
-            else
+
+            # 達到重試次數上限仍然失敗
+            if ($retry >= Constant::MaxRetry)
             {
                 $logTime = Helper::Time();
-                $actionName = Constant::ActionName[$actionAlias];
 
-                $logMessage = "[{$logTime}] {$actionName}";
-                $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
-
-                # 記錄解鎖角色
-                if (isset($result['response']['myKirito']['unlockedCharacters']))
-                {
-                    $characterName = CliHelper::getNewestUnlockedCharacter($result)['name'];
-                    $logMessage = "{$logMessage}，解鎖角色：{$characterName}";
-                }
+                $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 重試 {$retry} 次失敗";
 
                 file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+                file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
 
                 if ($syncOutput)
                 {
-                    echo CliHelper::colorText($logMessage, '#aaffff', true);
+                    echo CliHelper::colorText($logMessage, '#ff8080', true);
                 }
-
-                break;
             }
         }
 
-        # 達到重試次數上限仍然失敗
-        if ($retry >= Constant::MaxRetry)
+        # 嘗試行動與領取樓層獎勵之間的時間間隔
+        sleep(Constant::ActionBonusInterval);
+
+        # 更新現在時間
+        $now = Helper::Timestamp() * 1000;
+
+        # 當前位於 1 層以上，且已超過領取獎勵冷卻時間時，發送領取樓層獎勵請求
+        if ($floor > 0 && !is_null($lastFloorBonus) && ($now - $lastFloorBonus) > (Constant::FloorBonusCD + Constant::CooldownBuffer))
         {
-            $logTime = Helper::Time();
+            $actionAlias = 'Bonus';
 
-            $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 重試 {$retry} 次失敗";
+            # 重設重試次數
+            $retry = 0;
 
-            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-            file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
-
-            if ($syncOutput)
+            # 在最大重試次數內，發送行動請求
+            while ($retry < Constant::MaxRetry)
             {
-                echo CliHelper::colorText($logMessage, '#ff8080', true);
+                $result = MyKirito::getInstance()->doAction($player, $actionAlias);
+
+                if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
+                {
+                    $function = "MyKirito::doAction('{$player}', '{$actionAlias}')";
+                    CliHelper::logError($result, $function, $logFile, $detailLogFile, $syncOutput);
+
+                    $retry++;
+
+                    # 每次重試間隔
+                    sleep(Constant::RetryInterval);
+                }
+                else
+                {
+                    $logTime = Helper::Time();
+                    $actionName = Constant::ActionName[$actionAlias];
+
+                    $logMessage = "[{$logTime}] {$actionName}";
+                    $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
+
+                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+
+                    if ($syncOutput)
+                    {
+                        echo CliHelper::colorText($logMessage, '#aaffff', true);
+                    }
+
+                    break;
+                }
             }
-        }
-    }
 
-    # 嘗試行動與領取樓層獎勵之間的時間間隔
-    sleep(Constant::ActionBonusInterval);
-
-    # 更新現在時間
-    $now = Helper::Timestamp() * 1000;
-
-    # 當前位於 1 層以上，且已超過領取獎勵冷卻時間時，發送領取樓層獎勵請求
-    if ($floor > 0 && !is_null($lastFloorBonus) && ($now - $lastFloorBonus) > (Constant::FloorBonusCD + Constant::CooldownBuffer))
-    {
-        $actionAlias = 'Bonus';
-
-        # 重設重試次數
-        $retry = 0;
-
-        # 在最大重試次數內，發送行動請求
-        while ($retry < Constant::MaxRetry)
-        {
-            $result = MyKirito::getInstance()->doAction($player, $actionAlias);
-
-            if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
-            {
-                $function = "MyKirito::doAction('{$player}', '{$actionAlias}')";
-                CliHelper::logError($result, $function, $logFile, $detailLogFile, $syncOutput);
-
-                $retry++;
-
-                # 每次重試間隔
-                sleep(Constant::RetryInterval);
-            }
-            else
+            # 達到重試次數上限仍然失敗
+            if ($retry >= Constant::MaxRetry)
             {
                 $logTime = Helper::Time();
-                $actionName = Constant::ActionName[$actionAlias];
 
-                $logMessage = "[{$logTime}] {$actionName}";
-                $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
+                $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 重試 {$retry} 次失敗";
 
                 file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+                file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
 
                 if ($syncOutput)
                 {
-                    echo CliHelper::colorText($logMessage, '#aaffff', true);
+                    echo CliHelper::colorText($logMessage, '#ff8080', true);
                 }
-
-                break;
             }
         }
 
-        # 達到重試次數上限仍然失敗
-        if ($retry >= Constant::MaxRetry)
-        {
-            $logTime = Helper::Time();
-
-            $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 重試 {$retry} 次失敗";
-
-            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-            file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
-
-            if ($syncOutput)
-            {
-                echo CliHelper::colorText($logMessage, '#ff8080', true);
-            }
-        }
+        # 每次執行間隔
+        sleep(Constant::ActionRoundInterval);
     }
-
-    # 每次執行間隔
-    sleep(Constant::ActionRoundInterval);
 }
+catch (Throwable $ex)
+{
+    $exType = get_class($ex);
+    $exCode = $ex->getCode();
+    $exMessage = $ex->getMessage();
+
+    $errorMessage = "{$exType} {$exCode} {$exMessage}";
+    $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'normal');
+    TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+    exit(1);
+}
+
+# 跳出 while loop，這是不自然的，故仍須發送通知
+$abnormalMessage = '跳出 while loop';
+$notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $abnormalMessage, 'abnormal');
+TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+exit(2);

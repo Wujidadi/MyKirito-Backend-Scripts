@@ -55,7 +55,8 @@ class TelegramBot
         $token = TELEGRAM_BOT['Token'];
         $payload = [
             'chat_id' => TELEGRAM_GROUP['ID'],
-            'text' => $messageText
+            'text' => $messageText,
+            'parse_mode' => 'MarkdownV2'
         ];
         return $this->_conn->post("bot{$token}/sendMessage", null, $payload);
     }
