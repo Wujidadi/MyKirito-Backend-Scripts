@@ -224,8 +224,10 @@ try
         # 更新現在時間
         $now = Helper::Timestamp() * 1000;
 
-        # 當前位於 1 層以上，且已超過領取獎勵冷卻時間時，發送領取樓層獎勵請求
-        if ($floor > 0 && !is_null($lastFloorBonus) && ($now - $lastFloorBonus) > (Constant::FloorBonusCD + Constant::CooldownBuffer))
+        # 當前位於 1 層以上，未曾領取過樓層獎勵，或已超過領取獎勵冷卻時間時，發送領取樓層獎勵請求
+        if ($floor > 0 &&
+            (is_null($lastFloorBonus) ||
+             (!is_null($lastFloorBonus) && ($now - $lastFloorBonus) > (Constant::FloorBonusCD + Constant::CooldownBuffer))))
         {
             $actionAlias = 'Bonus';
 
