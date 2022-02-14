@@ -16,7 +16,7 @@ $option = getopt('', ['player:', 'output']);
 if (!isset($option['player']) || $option['player'] === '')
 {
     echo CliHelper::colorText('必須指定玩家暱稱（player）！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $player = $option['player'];
 
@@ -24,7 +24,7 @@ $player = $option['player'];
 if (!in_array($player, array_keys(PLAYER)))
 {
     echo CliHelper::colorText('玩家暱稱尚未納入紀錄！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 
 # 輸出模式（預設為寫入檔案）
@@ -35,12 +35,12 @@ $result = MyKirito::getInstance()->getPersonalData($player);
 if ($result['httpStatusCode'] !== 200)
 {
     echo CliHelper::colorText("MyKirito::getPersonalData HTTP 狀態碼：{$result['httpStatusCode']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
 {
     echo CliHelper::colorText("MyKirito::getPersonalData 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $response = $result['response'];
 
@@ -98,12 +98,12 @@ $result = MyKirito::getInstance()->getDetailByPlayerName($player, $player);
 if ($result['httpStatusCode'] !== 200)
 {
     echo CliHelper::colorText("MyKirito::getDetailByPlayerName HTTP 狀態碼：{$result['httpStatusCode']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
 {
     echo CliHelper::colorText("MyKirito::getDetailByPlayerName 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $response = $result['response'];
 if (isset($response['cleared']))
@@ -120,12 +120,12 @@ $result = MyKirito::getInstance()->getAchievements($player);
 if ($result['httpStatusCode'] !== 200)
 {
     echo CliHelper::colorText("MyKirito::getAchievements HTTP 狀態碼：{$result['httpStatusCode']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
 {
     echo CliHelper::colorText("MyKirito::getAchievements 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $response = $result['response'];
 $list = $response['list'];
@@ -143,12 +143,12 @@ $result = MyKirito::getInstance()->getUnlockedCharacters($player);
 if ($result['httpStatusCode'] !== 200)
 {
     echo CliHelper::colorText("MyKirito::getUnlockedCharacters HTTP 狀態碼：{$result['httpStatusCode']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
 {
     echo CliHelper::colorText("MyKirito::getUnlockedCharacters 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $response = $result['response'];
 $list = $response['unlockedCharacters'];

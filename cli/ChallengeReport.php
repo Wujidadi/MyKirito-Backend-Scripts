@@ -14,7 +14,7 @@ $option = getopt('', ['rid:', 'output']);
 if (!isset($option['rid']) || $option['rid'] === '')
 {
     echo CliHelper::colorText('必須指定戰報 ID（rid）！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $reportId = $option['rid'];
 
@@ -26,12 +26,12 @@ $result = MyKirito::getInstance()->getDetailReport($reportId);
 if ($result['httpStatusCode'] !== 200)
 {
     echo CliHelper::colorText("MyKirito::getDetailReport HTTP 狀態碼：{$result['httpStatusCode']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
 {
     echo CliHelper::colorText("MyKirito::getDetailReport 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}", '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $response = $result['response'];
 

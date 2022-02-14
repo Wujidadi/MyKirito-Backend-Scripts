@@ -6,10 +6,14 @@ require_once '../entrypoint.php';
 
 use Lib\Helper;
 use Lib\CliHelper;
+use Lib\FileLock;
 use App\Constant;
 use App\MyKirito;
 use App\TelegramBot;
 
+#========== 起點 ==========#
+
+# 腳本名稱
 $scriptName = basename(__FILE__);
 
 # 由命令行參數指定玩家暱稱、行動標的及輸出模式
@@ -19,7 +23,7 @@ $option = getopt('', ['player:', 'action:', 'output']);
 if (!isset($option['player']) || $option['player'] === '')
 {
     echo CliHelper::colorText('必須指定玩家暱稱（player）！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $player = $option['player'];
 
@@ -27,23 +31,20 @@ $player = $option['player'];
 if (!in_array($player, array_keys(PLAYER)))
 {
     echo CliHelper::colorText('玩家暱稱尚未納入紀錄！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 
-# 定義簡要 LOG 檔案並確保路徑存在
-$directory = STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'AutoAction';
-if (!is_dir($directory)) mkdir($directory);
-$logFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
+# 檔案鎖名稱
+$fileLockName = basename(__FILE__, '.php') . '_' . $player;
 
-# 定義詳細 LOG 檔案並確保路徑存在
-$directory = LOG_DIR . DIRECTORY_SEPARATOR . 'AutoAction';
-if (!is_dir($directory)) mkdir($directory);
-$detailLogFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
+# 簡要日誌檔案
+$logFile = STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'AutoAction' . DIRECTORY_SEPARATOR . $player . '.log';
 
-# 定義 Telegram 自動通知日誌檔案並確保路徑存在
-$directory = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . 'AutoAction';
-if (!is_dir($directory)) mkdir($directory);
-$notificationLogFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
+# 詳細日誌檔案
+$detailLogFile = LOG_DIR . DIRECTORY_SEPARATOR . 'AutoAction' . DIRECTORY_SEPARATOR . $player . '.log';
+
+# Telegram 自動通知日誌檔案
+$notificationLogFile = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . 'AutoAction' . DIRECTORY_SEPARATOR . $player . '.log';
 
 # 行動標的：輸入數字 0 - 6，以逗號分隔
 $action = [];
@@ -81,6 +82,11 @@ $fullCommand = "{$scriptName}{$argPlayer}{$argAction}{$argOutput}";
 
 # 自動通知訊息的標題（首段）
 $notificationTitle = '自動行動腳本停止執行';
+
+# 加檔案鎖防止程序重複執行
+FileLock::getInstance()->lock($fileLockName, 'AutoAction');
+
+#========== 循環執行起點 ==========#
 
 try
 {
@@ -147,7 +153,9 @@ try
                     $logMessage = "[{$logTime}] {$notificationMessage}";
                     file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
                 }
-                exit(1);
+
+                $exitStatus = CLI_ERROR;
+                goto Endpoint;
             }
         }
 
@@ -324,7 +332,8 @@ catch (Throwable $ex)
         file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
     }
 
-    exit(1);
+    $exitStatus = CLI_ERROR;
+    goto Endpoint;
 }
 
 $logTime = Helper::Time();
@@ -346,4 +355,13 @@ if (USE_TELEGRAM_BOT)
     file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
 }
 
-exit(2);
+$exitStatus = CLI_ABNORMAL;
+goto Endpoint;
+
+#========== 終點 ==========#
+
+Endpoint:
+
+FileLock::getInstance()->unlock();
+
+exit(CLI_ABNORMAL);

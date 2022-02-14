@@ -6,10 +6,14 @@ require_once '../entrypoint.php';
 
 use Lib\Helper;
 use Lib\CliHelper;
+use Lib\FileLock;
 use App\Constant;
 use App\MyKirito;
 use App\TelegramBot;
 
+#========== 起點 ==========#
+
+# 腳本名稱
 $scriptName = basename(__FILE__);
 
 # 由命令行參數指定玩家暱稱、對手暱稱、挑戰類型、喊話內容、是否自動復活及輸出模式
@@ -19,7 +23,7 @@ $option = getopt('', ['player:', 'opp:', 'type:', 'shout:', 'rez', 'output']);
 if (!isset($option['player']) || $option['player'] === '')
 {
     echo CliHelper::colorText('必須指定玩家暱稱（player）！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $player = $option['player'];
 
@@ -27,29 +31,26 @@ $player = $option['player'];
 if (!in_array($player, array_keys(PLAYER)))
 {
     echo CliHelper::colorText('玩家暱稱尚未納入紀錄！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 
-# 定義簡要 LOG 檔案並確保路徑存在
-$directory = STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'AutoChallenge';
-if (!is_dir($directory)) mkdir($directory);
-$logFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
+# 檔案鎖名稱
+$fileLockName = basename(__FILE__, '.php') . '_' . $player;
 
-# 定義詳細 LOG 檔案並確保路徑存在
-$directory = LOG_DIR . DIRECTORY_SEPARATOR . 'AutoChallenge';
-if (!is_dir($directory)) mkdir($directory);
-$detailLogFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
+# 簡要日誌檔案
+$logFile = STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'AutoChallenge' . DIRECTORY_SEPARATOR . $player . '.log';
 
-# 定義 Telegram 自動通知日誌檔案並確保路徑存在
-$directory = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . 'AutoChallenge';
-if (!is_dir($directory)) mkdir($directory);
-$notificationLogFile = $directory . DIRECTORY_SEPARATOR . $player . '.log';
+# 詳細日誌檔案
+$detailLogFile = LOG_DIR . DIRECTORY_SEPARATOR . 'AutoChallenge' . DIRECTORY_SEPARATOR . $player . '.log';
+
+# Telegram 自動通知日誌檔案
+$notificationLogFile = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . 'AutoChallenge' . DIRECTORY_SEPARATOR . $player . '.log';
 
 # 從暱稱指定對手
 if (!isset($option['opp']) || $option['opp'] === '')
 {
     echo CliHelper::colorText('必須指定對手暱稱（opp）！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $opponents = explode(',', $option['opp']);
 foreach ($opponents as $opp)
@@ -78,19 +79,19 @@ $opponents = array_values($opponents);
 if (count($opponents) <= 0)
 {
     echo CliHelper::colorText('指定的對手玩家要不都不存在，要不就是死了，不然就是你亂定！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 
 # 挑戰類型
 if (!isset($option['type']) || $option['type'] === '')
 {
     echo CliHelper::colorText('必須指定挑戰類型（type：須為數字 0～3 其中之一）！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 else if (!Helper::isInteger($option['type']) || (int) $option['type'] < 0 || (int) $option['type'] > 3)
 {
     echo CliHelper::colorText('挑戰類型（type：須為數字 0～3 其中之一）未正確指定！', '#ff8080', true);
-    exit(1);
+    exit(CLI_ERROR);
 }
 $challengeType = (int) $option['type'];
 
@@ -114,6 +115,11 @@ $fullCommand = "{$scriptName}{$argPlayer}{$argOpp}{$argType}{$argShout}{$argRez}
 
 # 自動通知訊息的標題（首段）
 $notificationTitle = '自動挑戰腳本停止執行';
+
+# 加檔案鎖防止程序重複執行
+FileLock::getInstance()->lock($fileLockName, 'AutoChallenge');
+
+#========== 循環執行起點 ==========#
 
 try
 {
@@ -180,7 +186,9 @@ try
                     $logMessage = "[{$logTime}] {$notificationMessage}";
                     file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
                 }
-                exit(1);
+
+                $exitStatus = CLI_ERROR;
+                goto Endpoint;
             }
         }
 
@@ -237,7 +245,8 @@ try
                         file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
                     }
 
-                    exit(0);
+                    $exitStatus = CLI_OK;
+                    goto Endpoint;
                 }
             }
 
@@ -309,7 +318,9 @@ try
                             $logMessage = "[{$logTime}] {$notificationMessage}";
                             file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
                         }
-                        exit(0);
+
+                        $exitStatus = CLI_OK;
+                        goto Endpoint;
                     }
                 }
             }
@@ -375,7 +386,8 @@ try
                                 file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
                             }
 
-                            exit(0);
+                            $exitStatus = CLI_OK;
+                            goto Endpoint;
                         }
                     }
 
@@ -418,7 +430,9 @@ try
                                     $logMessage = "[{$logTime}] {$notificationMessage}";
                                     file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
                                 }
-                                exit(0);
+
+                                $exitStatus = CLI_OK;
+                                goto Endpoint;
                             }
                         }
                     }
@@ -491,7 +505,8 @@ catch (Throwable $ex)
         file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
     }
 
-    exit(1);
+    $exitStatus = CLI_ERROR;
+    goto Endpoint;
 }
 
 $logTime = Helper::Time();
@@ -513,7 +528,16 @@ if (USE_TELEGRAM_BOT)
     file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
 }
 
-exit(2);
+$exitStatus = CLI_ABNORMAL;
+goto Endpoint;
+
+#========== 終點 ==========#
+
+Endpoint:
+
+FileLock::getInstance()->unlock();
+
+exit($exitStatus);
 
 
 #========== 輔助函數 ==========#

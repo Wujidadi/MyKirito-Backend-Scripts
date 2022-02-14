@@ -30,3 +30,4 @@ storage/configs/*
 !storage/configs/examples
 storage/responses/*
 !storage/responses/examples
+storage/filelocks

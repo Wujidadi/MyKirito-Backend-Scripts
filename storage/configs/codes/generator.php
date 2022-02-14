@@ -10,6 +10,11 @@ use Lib\CliHelper;
 function buildPlayerConfig(): void
 {
     $configFile = STORAGE_DIR . DIRECTORY_SEPARATOR . 'configs' . DIRECTORY_SEPARATOR . 'Players.json';
+    $configExampleFile = STORAGE_DIR . DIRECTORY_SEPARATOR . 'configs' . DIRECTORY_SEPARATOR . 'examples' . DIRECTORY_SEPARATOR . 'Players.json';
+    if (!is_file($configFile))
+    {
+        shell_exec("cp {$configExampleFile} {$configFile}");
+    }
 
     $configJson = json_decode(file_get_contents($configFile), true);
 
@@ -40,6 +45,11 @@ function buildPlayerConfig(): void
 function buildTelegramBotConfig(): void
 {
     $configFile = STORAGE_DIR . DIRECTORY_SEPARATOR . 'configs' . DIRECTORY_SEPARATOR . 'TelegramBot.json';
+    $configExampleFile = STORAGE_DIR . DIRECTORY_SEPARATOR . 'configs' . DIRECTORY_SEPARATOR . 'examples' . DIRECTORY_SEPARATOR . 'TelegramBot.json';
+    if (!is_file($configFile))
+    {
+        shell_exec("cp {$configExampleFile} {$configFile}");
+    }
 
     $configJson = json_decode(file_get_contents($configFile), true);
     
