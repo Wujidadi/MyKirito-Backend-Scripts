@@ -3,10 +3,11 @@
 
 chdir(__DIR__);
 
-require_once 'declarations.php';
-
 # Composer 環境
 shell_exec('composer install');
+
+# 引入宣告檔
+require_once 'declarations.php';
 
 # 在 storage 目錄下建立必需的資料夾
 $directories = require_once 'directories.php';
