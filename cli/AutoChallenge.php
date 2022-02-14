@@ -120,59 +120,69 @@ try
     # 循環執行
     while (true)
     {
-        # 取得玩家基本資訊
-        $result = MyKirito::getInstance()->getPersonalData($player);
-        if ($result['httpStatusCode'] !== 200)
+        # 重試次數
+        $retry = 0;
+
+        # 在最大重試次數內，發送請求以取得玩家基本資訊
+        while ($retry < Constant::MaxRetry)
         {
-            $logTime = Helper::Time();
+            $result = MyKirito::getInstance()->getPersonalData($player);
 
-            $errorMessage = "MyKirito::getPersonalData HTTP 狀態碼：{$result['httpStatusCode']}";
-            echo CliHelper::colorText($errorMessage, '#ff8080', true);
-
-            $logMessage = "[{$logTime}] {$errorMessage}";
-            $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
-
-            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-            file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
-
-            if (USE_TELEGRAM_BOT)
+            if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
             {
-                $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error', $logTime);
-                TelegramBot::getInstance()->sendMessage($notificationMessage);
+                if ($result['httpStatusCode'] !== 200)
+                {
+                    $logTime = Helper::Time();
 
-                $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
-                $logMessage = "[{$logTime}] {$notificationMessage}";
-                file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    $errorMessage = "MyKirito::getPersonalData HTTP 狀態碼：{$result['httpStatusCode']}";
+                    echo CliHelper::colorText($errorMessage, '#ff8080', true);
+
+                    $logMessage = "[{$logTime}] {$errorMessage}";
+                    $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
+
+                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+                }
+                else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
+                {
+                    $logTime = Helper::Time();
+
+                    $errorMessage = "MyKirito::getPersonalData 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}";
+                    echo CliHelper::colorText($errorMessage, '#ff8080', true);
+
+                    $logMessage = "[{$logTime}] {$errorMessage}";
+                    $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
+
+                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+                }
+
+                $retry++;
+
+                # 每次重試間隔
+                sleep(Constant::RetryInterval);
+            }
+            else
+            {
+                $response = $result['response'];
+                break;
             }
 
-            exit(1);
-        }
-        else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
-        {
-            $logTime = Helper::Time();
-
-            $errorMessage = "MyKirito::getPersonalData 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}";
-            echo CliHelper::colorText($errorMessage, '#ff8080', true);
-
-            $logMessage = "[{$logTime}] {$errorMessage}";
-            $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
-
-            file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-            file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
-
-            if (USE_TELEGRAM_BOT)
+            # 達到重試次數上限仍然失敗
+            if ($retry >= Constant::MaxRetry)
             {
-                $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error', $logTime);
-                TelegramBot::getInstance()->sendMessage($notificationMessage);
+                if (USE_TELEGRAM_BOT)
+                {
+                    $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error', $logTime);
+                    TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-                $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
-                $logMessage = "[{$logTime}] {$notificationMessage}";
-                file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+                    $logMessage = "[{$logTime}] {$notificationMessage}";
+                    file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                }
+                exit(1);
             }
-
-            exit(1);
         }
-        $response = $result['response'];
 
         # 從玩家基本資訊中取出玩家角色及最後挑戰時間
         $myCharacter = explode('.', $response['avatar'])[0];
@@ -235,12 +245,12 @@ try
             if (count($opponents) > 1)
             {
                 $oppKey = mt_rand(0, count($opponents) - 1);
-                $opponent = $opponents[$oppKey];
             }
             else
             {
-                $opponent = $opponents[0];
+                $oppKey = 0;
             }
+            $opponent = $opponents[$oppKey];
 
             # 確認對手存活
             $result = MyKirito::getInstance()->getPlayerByName($player, $opponent);
@@ -282,17 +292,25 @@ try
                     file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
                     file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
 
-                    if (USE_TELEGRAM_BOT)
+                    # 將對手玩家暱稱從對手清單中移除
+                    unset($opponents[$oppKey]);
+                    $opponents = array_values($opponents);
+
+                    # 對手清單被清空時跳出
+                    if (count($opponents) <= 0)
                     {
-                        $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
-                        TelegramBot::getInstance()->sendMessage($notificationMessage);
+                        if (USE_TELEGRAM_BOT)
+                        {
+                            $message = '所有對手玩家均已死亡，且不自動復活';
+                            $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                            TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-                        $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
-                        $logMessage = "[{$logTime}] {$notificationMessage}";
-                        file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                            $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+                            $logMessage = "[{$logTime}] {$notificationMessage}";
+                            file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                        }
+                        exit(0);
                     }
-
-                    exit(0);
                 }
             }
 
@@ -383,17 +401,25 @@ try
                             file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
                             file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
 
-                            if (USE_TELEGRAM_BOT)
+                            # 將對手玩家暱稱從對手清單中移除
+                            unset($opponents[$oppKey]);
+                            $opponents = array_values($opponents);
+        
+                            # 對手清單被清空時跳出
+                            if (count($opponents) <= 0)
                             {
-                                $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
-                                TelegramBot::getInstance()->sendMessage($notificationMessage);
-
-                                $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
-                                $logMessage = "[{$logTime}] {$notificationMessage}";
-                                file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                                if (USE_TELEGRAM_BOT)
+                                {
+                                    $message = '所有對手玩家均已死亡，且不自動復活';
+                                    $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                                    TelegramBot::getInstance()->sendMessage($notificationMessage);
+        
+                                    $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
+                                    $logMessage = "[{$logTime}] {$notificationMessage}";
+                                    file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                                }
+                                exit(0);
                             }
-
-                            exit(0);
                         }
                     }
 
