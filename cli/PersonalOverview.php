@@ -20,7 +20,7 @@ if (!isset($option['player']) || $option['player'] === '')
 }
 $player = $option['player'];
 
-# 玩家暱稱必須在 configs/IdTokens.php 中有建檔
+# 玩家暱稱必須在 configs/Players.php 中有建檔
 if (!in_array($player, array_keys(PLAYER)))
 {
     echo CliHelper::colorText('玩家暱稱尚未納入紀錄！', '#ff8080', true);

@@ -1,0 +1,12 @@
+{
+    "Use": false,
+    "Bot": {
+        "ID": 0,
+        "Name": "ExampleBot",
+        "Token": "0000000000:Krg27E5a3KnTdImtr4xSBE36eYRVPjWbSaE"
+    },
+    "Group": {
+        "ID": -0,
+        "Title" : "Example Group"
+    }
+}

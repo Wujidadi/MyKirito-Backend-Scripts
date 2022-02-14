@@ -23,7 +23,10 @@ vendor/
 # For this project
 API.http
 TelegramBot.http
-configs/IdTokens.php
+configs/Players.php
 configs/TelegramBot.php
+storage/configs/*
+!storage/configs/codes
+!storage/configs/examples
 storage/responses/*
 !storage/responses/examples

@@ -35,6 +35,63 @@ class CliHelper
     }
 
     /**
+     * 將原生 `var_export` 函數的執行結果轉換為 PHP 5.4 以後的格式
+     *
+     * @param  mixed   $var     原始變數
+     * @param  string  $indent  行首縮排字串
+     * @return string
+     */
+    public static function varExport(mixed $var, string $indent = ''): string
+    {
+        switch (gettype($var))
+        {
+            case 'string':
+                return '\'' . addcslashes($var, "\\\$\"\r\n\t\v\f") . '\'';
+
+            case 'array':
+                $indexed = array_keys($var) === range(0, count($var) - 1);
+                $r = [];
+                foreach ($var as $key => $value)
+                {
+                    $r[] = "{$indent}    "
+                         . ($indexed ? '' : self::varExport($key) . ' => ')
+                         . self::varExport($value, "{$indent}    ");
+                }
+                return "[\n" . implode(",\n", $r) . "\n{$indent}]";
+
+            case 'object':
+                $str = var_export($var, true);
+                $str = str_replace('(object) array(', '(object) [', $str);
+                $str = preg_replace("/ => \n +/", ' => ', $str);
+                $str = preg_replace("/ => array \(\n/", " => [\n", $str);
+                $str = preg_replace('/\),\n/', "],\n", $str);
+                $str = preg_replace('/\)$/', "]", $str);
+                $str = preg_replace('/,\n( *)\]/', "\n$1]", $str);
+                $str = preg_replace('/( *)\d+ => /', "$1", $str);
+                $arr = explode(PHP_EOL, $str);
+                for ($i = 0; $i < count($arr); $i++)
+                {
+                    $tmpStr = $arr[$i];
+                    if (preg_match_all('/^ */', $arr[$i], $matches))
+                    {
+                        $tmpStr = preg_replace('/^ +/', '', $arr[$i]);
+                        $spaceLen = (strlen($matches[0][0]) % 2) ? (strlen($matches[0][0]) - 1) * 2 : strlen($matches[0][0]) * 2;
+                        $tmpStr = str_repeat(' ', $spaceLen) . $tmpStr;
+                        $arr[$i] = $tmpStr;
+                    }
+                }
+                $str = implode("\n", $arr);
+                return $str;
+
+            case 'boolean':
+                return $var ? 'TRUE' : 'FALSE';
+
+            default:
+                return var_export($var, true);
+        }
+    }
+
+    /**
      * 記錄錯誤日誌（區分簡要、詳細日誌）
      *
      * @param  array    $result         請求回應結果
