@@ -2,6 +2,9 @@
 
 namespace App;
 
+use Lib\Helpers\Helper;
+use Lib\Helpers\CliHelper;
+use Lib\Log\Logger;
 use Lib\MyKiritoAPI;
 use Lib\FakeAPI;
 
@@ -62,6 +65,15 @@ class MyKirito
     protected $_conn;
 
     /**
+     * 當前玩家暱稱
+     *
+     * 因為幾乎所有 API 都需要帶玩家 Token，所以把玩家暱稱置於單例模式建構項
+     *
+     * @var string
+     */
+    protected $_player;
+
+    /**
      * 物件單一實例
      *
      * @var self|null
@@ -71,46 +83,49 @@ class MyKirito
     /**
      * 取得物件實例
      *
+     * @param  string  $player  當前玩家暱稱
      * @return self
      */
-    public static function getInstance()
+    public static function getInstance(string $player)
     {
-        if (self::$_uniqueInstance === null) self::$_uniqueInstance = new self;
+        if (self::$_uniqueInstance === null) self::$_uniqueInstance = new self($player);
         return self::$_uniqueInstance;
     }
 
     /**
      * 建構子
      *
+     * @param  string  $player  當前玩家暱稱
      * @return void
      */
-    protected function __construct()
+    protected function __construct(string $player)
     {
         $this->_conn = MyKiritoAPI::getInstance();
+        $this->_player = $player;
     }
 
     /**
      * 取得玩家個人資料
      *
-     * @param  string  $player  當前玩家暱稱
      * @return array
      */
-    public function getPersonalData(string $player): array
+    public function getPersonalData(): array
     {
-        $token = PLAYER[$player]['Token'];
+        $token = PLAYER[$this->_player]['Token'];
         return $this->_conn->get('my-kirito', $token);
     }
 
     /**
      * 更新玩家個人狀態
      *
-     * @param  string  $player  當前玩家暱稱
+     * 附註：官方更新個人狀態的冷卻時間其實沒有作用，冷卻時間未過照樣能發 API 更新
+     *
      * @param  string  $status  要更改的玩家狀態
      * @return array
      */
-    public function updatePersonalStatus(string $player, string $status): array
+    public function updatePersonalStatus(string $status): array
     {
-        $token = PLAYER[$player]['Token'];
+        $token = PLAYER[$this->_player]['Token'];
         $payload = [
             'status' => $status
         ];
@@ -120,7 +135,6 @@ class MyKirito
     /**
      * 行動
      *
-     * @param  string  $player  當前玩家暱稱
      * @param  string  $action  行動代碼  
      *                          可用值（參見 `self::ACTION` 行動列表常數）：  
      *                          - `Bonus`: 領取樓層獎勵  
@@ -137,13 +151,13 @@ class MyKirito
      *                          - `8h`:    修行8小時
      * @return array
      */
-    public function doAction(string $player, string $action): array
+    public function doAction(string $action): array
     {
         # 偽請求
-        // return FakeAPI::getInstance()->request();
+        // return FakeAPI::getInstance($this->_player)->request();
 
-        $uid = PLAYER[$player]['ID'];
-        $token = PLAYER[$player]['Token'];
+        $uid = PLAYER[$this->_player]['ID'];
+        $token = PLAYER[$this->_player]['Token'];
         $payload = [
             'action' => self::ACTION[$action]
         ];
@@ -153,14 +167,13 @@ class MyKirito
     /**
      * 取得玩家列表（指定等級和頁數）
      *
-     * @param  string   $player       當前玩家暱稱
      * @param  integer  $playerLevel  要查詢的玩家等級
      * @param  integer  $listPage     列表頁數
      * @return array
      */
-    public function getUserList(string $player, int $playerLevel, int $listPage): array
+    public function getUserList(int $playerLevel, int $listPage): array
     {
-        $token = PLAYER[$player]['Token'];
+        $token = PLAYER[$this->_player]['Token'];
         return $this->_conn->get("user-list?lv={$playerLevel}&page={$listPage}", $token);
     }
 
@@ -168,13 +181,12 @@ class MyKirito
      * 搜尋指定暱稱的玩家（完全比對）  
      * 可查到簡略的基本資料，可從其中的 `uid` 進一步呼叫 `self::getPlayerById` 查詢較詳細的資料
      *
-     * @param  string   $player    當前玩家暱稱
      * @param  string   $userName  要搜尋的玩家暱稱
      * @return array
      */
-    public function getPlayerByName(string $player, string $userName): array
+    public function getPlayerByName(string $userName): array
     {
-        $token = PLAYER[$player]['Token'];
+        $token = PLAYER[$this->_player]['Token'];
         $userName = urlencode($userName);
         return $this->_conn->get("search?nickname={$userName}", $token);
     }
@@ -182,13 +194,12 @@ class MyKirito
     /**
      * 由 ID 查詢較詳細的玩家資料
      *
-     * @param  string  $player  當前玩家暱稱
      * @param  string  $userId  要搜尋的玩家 ID
      * @return array
      */
-    public function getPlayerById(string $player, string $userId): array
+    public function getPlayerById(string $userId): array
     {
-        $token = PLAYER[$player]['Token'];
+        $token = PLAYER[$this->_player]['Token'];
         return $this->_conn->get("profile/{$userId}", $token);
     }
 
@@ -197,13 +208,12 @@ class MyKirito
      *
      * 為 `self::getPlayerByName` 和 `self::getPlayerById` 的綜合
      *
-     * @param  string $player    當前玩家暱稱
      * @param  string $userName  要搜尋的玩家暱稱
      * @return array
      */
-    public function getDetailByPlayerName(string $player, string $userName): array
+    public function getDetailByPlayerName(string $userName): array
     {
-        $token = PLAYER[$player]['Token'];
+        $token = PLAYER[$this->_player]['Token'];
         $userName = urlencode($userName);
         $userData = $this->_conn->get("search?nickname={$userName}", $token);
         if (count($userData['response']['userList']) > 0)
@@ -219,7 +229,6 @@ class MyKirito
     /**
      * 指定對手暱稱及挑戰類型進行對戰
      *
-     * @param  string   $player         當前玩家暱稱
      * @param  string   $userName       對手玩家暱稱
      * @param  integer  $challengeType  挑戰類型  
      *                                  可用值： 
@@ -230,11 +239,11 @@ class MyKirito
      * @param  string   $shout          喊話內容，可忽略
      * @return array
      */
-    public function chellenge(string $player, string $userName, int $challengeType, string $shout = ''): array
+    public function challenge(string $userName, int $challengeType, string $shout = ''): array
     {
-        $token = PLAYER[$player]['Token'];
+        $token = PLAYER[$this->_player]['Token'];
 
-        $opponent = $this->getDetailByPlayerName($player, $userName);
+        $opponent = $this->getDetailByPlayerName($userName);
         if (isset($opponent['response']['profile']))
         {
             $opponentUID = $opponent['response']['profile']['_id'];
@@ -253,15 +262,15 @@ class MyKirito
             {
                 # 從對戰時間取得戰報 ID，並加入回應資料
                 $challengeTime = $result['response']['myKirito']['lastChallenge'];
-                $report = $this->getThisAttackReport($player, $opponentUID, $challengeTime);
+                $report = $this->getThisAttackReport($opponentUID, $challengeTime);
                 $result['reportId'] = $report['_id'];
 
                 # 查詢當前玩家是否死亡，並加入回應資料
-                $personalData = $this->getPersonalData($player);
+                $personalData = $this->getPersonalData();
                 $result['dead']['me'] = $personalData['response']['dead'];
 
                 # 查詢對手玩家是否死亡，並加入回應資料
-                $opponentData = $this->getDetailByPlayerName($player, $userName);
+                $opponentData = $this->getDetailByPlayerName($userName);
                 $result['dead']['opponent'] = $opponentData['response']['profile']['dead'];
 
                 return $result;
@@ -279,30 +288,28 @@ class MyKirito
     /**
      * 取得玩家所在樓層 BOSS 的資料
      *
-     * @param  string  $player  當前玩家暱稱
      * @return array
      */
-    public function getBoss(string $player): array
+    public function getBoss(): array
     {
-        return $this->_conn->get('boss', PLAYER[$player]['Token']);
+        return $this->_conn->get('boss', PLAYER[$this->_player]['Token']);
     }
 
     /**
      * 挑戰玩家所在樓層 BOSS
      *
-     * @param  string  $player  當前玩家暱稱
      * @return array
      */
-    public function challengeBoss(string $player): array
+    public function challengeBoss(): array
     {
         # 對戰
-        $result = $this->_conn->post('boss/challenge', PLAYER[$player]['Token']);
+        $result = $this->_conn->post('boss/challenge', PLAYER[$this->_player]['Token']);
 
         if (isset($result['response']['myKirito']) && isset($result['response']['myKirito']['lastBossChallenge']))
         {
             # 從對戰時間取得戰報 ID，並加入回應資料
             $challengeTime = $result['response']['myKirito']['lastBossChallenge'];
-            $report = $this->getThisBossReport($player, $challengeTime);
+            $report = $this->getThisBossReport($challengeTime);
             $result['reportId'] = $report['_id'];
 
             return $result;
@@ -316,34 +323,31 @@ class MyKirito
     /**
      * 取得玩家成就資料
      *
-     * @param  string  $player  玩家暱稱
      * @return array
      */
-    public function getAchievements(string $player): array
+    public function getAchievements(): array
     {
-        return $this->_conn->get('achievements', PLAYER[$player]['Token']);
+        return $this->_conn->get('achievements', PLAYER[$this->_player]['Token']);
     }
 
     /**
      * 取得成就榜資料
      *
-     * @param  string  $player  玩家暱稱
      * @return array
      */
-    public function getAchievementRank(string $player): array
+    public function getAchievementRank(): array
     {
-        return $this->_conn->get('achievement-ranking', PLAYER[$player]['Token']);
+        return $this->_conn->get('achievement-ranking', PLAYER[$this->_player]['Token']);
     }
 
     /**
      * 取得名人堂資料
      *
-     * @param  string  $player  玩家暱稱
      * @return array
      */
-    public function getHallOfFame(string $player): array
+    public function getHallOfFame(): array
     {
-        return $this->_conn->get('hall-of-fame', PLAYER[$player]['Token']);
+        return $this->_conn->get('hall-of-fame', PLAYER[$this->_player]['Token']);
     }
 
     /**
@@ -352,15 +356,14 @@ class MyKirito
      * @param  string  $player  玩家暱稱
      * @return array
      */
-    public function getUnlockedCharacters(string $player): array
+    public function getUnlockedCharacters(): array
     {
-        return $this->_conn->get('my-kirito/unlocked-characters', PLAYER[$player]['Token']);
+        return $this->_conn->get('my-kirito/unlocked-characters', PLAYER[$this->_player]['Token']);
     }
 
     /**
      * 令當前玩家轉生
      *
-     * @param  string  $player   玩家暱稱
      * @param  array   $payload  轉生設定  
      *                           因為轉生帶的參數比較多，故由使用者在呼叫本方法前先設定好再代入  
      *                           可用的選項有：  
@@ -374,45 +377,42 @@ class MyKirito
      *                           - `useResetBoss`: 是否重置樓層
      * @return array
      */
-    public function reincarnation(string $player, array $payload): array
+    public function reincarnation(array $payload): array
     {
-        $token = PLAYER[$player]['Token'];
+        $token = PLAYER[$this->_player]['Token'];
         return $this->_conn->post('my-kirito/reincarnation', $token, $payload);
     }
 
     /**
      * 檢視當前玩家的防守戰報
      *
-     * @param  string  $player  玩家暱稱
      * @return array
      */
-    public function getDefenseReports(string $player): array
+    public function getDefenseReports(): array
     {
-        return $this->_conn->get('reports?filter=def', PLAYER[$player]['Token']);
+        return $this->_conn->get('reports?filter=def', PLAYER[$this->_player]['Token']);
     }
 
     /**
      * 檢視當前玩家的攻擊戰報
      *
-     * @param  string  $player  玩家暱稱
      * @return array
      */
-    public function getAttackReports(string $player): array
+    public function getAttackReports(): array
     {
-        return $this->_conn->get('reports?filter=atk', PLAYER[$player]['Token']);
+        return $this->_conn->get('reports?filter=atk', PLAYER[$this->_player]['Token']);
     }
 
     /**
      * 依當前玩家暱稱、對手玩家 ID 及對戰時間查詢攻擊戰報
      *
-     * @param  string   $player      玩家暱稱
      * @param  string   $opponentId  對手玩家 ID
      * @param  integer  $timestamp   對戰時間（毫秒級時間戳）
      * @return array
      */
-    public function getThisAttackReport(string $player, string $opponentId, int $timestamp): array
+    public function getThisAttackReport(string $opponentId, int $timestamp): array
     {
-        $result = $this->getAttackReports($player);
+        $result = $this->getAttackReports();
         $reports = $result['response']['reports'];
         foreach ($reports as $report)
         {
@@ -425,26 +425,24 @@ class MyKirito
     }
 
     /**
-     * 檢視當前玩家的攻擊戰報
+     * 檢視當前玩家的 BOSS 戰報
      *
-     * @param  string  $player  玩家暱稱
      * @return array
      */
-    public function getBossReports(string $player): array
+    public function getBossReports(): array
     {
-        return $this->_conn->get('reports?filter=boss', PLAYER[$player]['Token']);
+        return $this->_conn->get('reports?filter=boss', PLAYER[$this->_player]['Token']);
     }
 
     /**
      * 依當前玩家暱稱及對戰時間查詢 BOSS 戰報
      *
-     * @param  string   $player      玩家暱稱
      * @param  integer  $timestamp   對戰時間（毫秒級時間戳）
      * @return array
      */
-    public function getThisBossReport(string $player, int $timestamp): array
+    public function getThisBossReport(int $timestamp): array
     {
-        $result = $this->getBossReports($player);
+        $result = $this->getBossReports();
         $reports = $result['response']['reports'];
         foreach ($reports as $report)
         {
@@ -459,12 +457,14 @@ class MyKirito
     /**
      * 由戰報 ID 查閱詳細戰報
      *
+     * 靜態方法，故直接呼叫 `MyKiritoAPI` 實例
+     *
      * @param  string  $reportId  戰報 ID
      * @return array
      */
-    public function getDetailReport(string $reportId): array
+    public static function getDetailReport(string $reportId): array
     {
-        return $this->_conn->get("https://mykirito-storage.b-cdn.net/reports/{$reportId}.json");
+        return MyKiritoAPI::getInstance()->get("https://mykirito-storage.b-cdn.net/reports/{$reportId}.json");
     }
 
     /**
@@ -472,7 +472,6 @@ class MyKirito
      *
      * 背後其實是傳遞一個帶特定密鑰的 POST 請求給伺服器
      *
-     * @param  string $player     玩家暱稱
      * @param  string $character  角色名稱  
      *                            截至 2022-02-10 為止，可用 4 個角色，輸入值分別為：  
      *                            - `Klein`：克萊因
@@ -481,12 +480,141 @@ class MyKirito
      *                            - `Muguruma`：六車拳西
      * @return array
      */
-    public function unlockCharacterBySecret(string $player, string $character): array
+    public function unlockCharacterBySecret(string $character): array
     {
-        $token = PLAYER[$player]['Token'];
+        $token = PLAYER[$this->_player]['Token'];
         $payload = [
             'secret' => self::SECRET[$character]
         ];
         return $this->_conn->post('my-kirito/unlock', $token, $payload);
+    }
+
+    /**
+     * 從請求回應結果中取出最新解鎖的角色
+     *
+     * @param  array  $result   請求回應結果
+     * @return string[]|null[]  最新解鎖的角色資訊，包括 `character`、`name` 及 `avatar` 3 個部分
+     */
+    public static function getNewestUnlockedCharacter(array $result): array
+    {
+        if (isset($result['response']) && is_array($result['response']))
+        {
+            $response = $result['response'];
+            if (isset($response['myKirito']) && is_array($response['myKirito']))
+            {
+                $myKirito = $response['myKirito'];
+                if (isset($myKirito['unlockedCharacters']) && is_array($myKirito['unlockedCharacters']))
+                {
+                    $unlockedCharacters = $myKirito['unlockedCharacters'];
+                    $last = count($unlockedCharacters) - 1;
+                    return $unlockedCharacters[$last];
+                }
+            }
+        }
+        return [
+            'character' => null,
+            'name'      => null,
+            'avatar'    => null
+        ];
+    }
+
+    /**
+     * 自動復活
+     *
+     * @param  string   $player         玩家暱稱
+     * @param  string   $character      玩家的角色名稱
+     * @param  array[]  $logFiles       日誌檔案路徑
+     * @param  boolean  $syncOutput     是否同步輸出於終端機
+     * @param  boolean  $isOpp          是否對手玩家，預設為 `false`
+     * @return boolean
+     */
+    public function autoRez(string $player, string $character, array $logFiles, bool $syncOutput, bool $isOpp = false): bool
+    {
+        $oppNote = $isOpp ? '對手' : '';
+
+        $logTime = Helper::Time();
+        $logMessage = "自動復活{$oppNote}玩家 {$player}……";
+        Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+    
+        if ($syncOutput)
+        {
+            echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
+        }
+    
+        # 復活：原角色原地轉生，不動用任何轉生點、洗白點數或重置樓層
+        $payload = [
+            'character' => $character,
+            'rattrs' => [
+                'hp' => 0,
+                'atk' => 0,
+                'def' => 0,
+                'stm' => 0,
+                'agi' => 0,
+                'spd' => 0,
+                'tec' => 0,
+                'int' => 0,
+                'lck' => 0
+            ],
+            'useReset' => false,
+            'useResetBoss' => false
+        ];
+
+        # 注意：為了簡化並節省 log 空間，此處列出的 reincarnation 方法參數並非實際應代入的 payload，而是角色名稱
+        $context = "MyKirito::reincarnation('{$character}')";
+
+        # 重試次數
+        $retry = 0;
+
+        # 在最大重試次數內，發送轉生請求
+        while ($retry < Constant::MaxRetry)
+        {
+            $result = $this->reincarnation($payload);
+
+            if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
+            {
+                CliHelper::logError($result, $logFiles, $context, $syncOutput);
+    
+                $retry++;
+    
+                # 每次重試間隔
+                sleep(Constant::RetryInterval);
+            }
+            else
+            {
+                $logTime = Helper::Time();
+                $jsonResult = json_encode($result, 320);
+                $logMessage = [
+                    'brief' => "{$oppNote}玩家 {$player} 已復活",
+                    'detail' => $jsonResult
+                ];
+                Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
+    
+                if ($syncOutput)
+                {
+                    # 命令行輸出
+                    echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_WARNING, true);
+                }
+    
+                break;
+            }
+        }
+    
+        # 達到重試次數上限仍然失敗
+        if ($retry >= Constant::MaxRetry)
+        {
+            $logTime = Helper::Time();
+            $logMessage = "{$context} 重試 {$retry} 次失敗";
+            Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+    
+            if ($syncOutput)
+            {
+                echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
+            }
+
+            return false;
+        }
+
+        # 復活成功
+        return true;
     }
 }

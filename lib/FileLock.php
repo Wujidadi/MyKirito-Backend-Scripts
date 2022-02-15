@@ -3,7 +3,7 @@
 namespace Lib;
 
 /**
- * 檔案鎖
+ * 檔案鎖類別
  */
 class FileLock
 {

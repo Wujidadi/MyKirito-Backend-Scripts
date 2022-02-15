@@ -23,5 +23,11 @@ define('CLI_ERROR', 1);
 define('CLI_ABNORMAL', 2);
 define('CLI_EXECUTING', 3);
 
+# 命令行輸出字體顏色
+define('CLI_TEXT_INFO', '#AAFFFF');
+define('CLI_TEXT_CAUTION', '#FFC080');
+define('CLI_TEXT_WARNING', '#EDDD83');
+define('CLI_TEXT_ERROR', '#FF8080');
+
 # Autoload
 require_once VENDOR_DIR . DIRECTORY_SEPARATOR . 'autoload.php';

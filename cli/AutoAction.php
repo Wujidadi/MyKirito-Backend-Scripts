@@ -4,8 +4,10 @@ chdir(__DIR__);
 
 require_once '../entrypoint.php';
 
-use Lib\Helper;
-use Lib\CliHelper;
+use Lib\Helpers\Helper;
+use Lib\Helpers\CliHelper;
+use Lib\Helpers\NotificationHelper;
+use Lib\Log\Logger;
 use Lib\FileLock;
 use App\Constant;
 use App\MyKirito;
@@ -13,16 +15,19 @@ use App\TelegramBot;
 
 #========== 起點 ==========#
 
-# 腳本名稱
+# 腳本名稱（含副檔名）
 $scriptName = basename(__FILE__);
 
-# 由命令行參數指定玩家暱稱、行動標的及輸出模式
-$option = getopt('', ['player:', 'action:', 'output']);
+# 腳本名稱（不含副檔名）
+$cliName = basename(__FILE__, '.php');
+
+# 由命令行參數指定玩家暱稱、行動標的、是否自動復活及輸出模式
+$option = getopt('', ['player:', 'action:', 'rez', 'output']);
 
 # 玩家暱稱
 if (!isset($option['player']) || $option['player'] === '')
 {
-    echo CliHelper::colorText('必須指定玩家暱稱（player）！', '#ff8080', true);
+    echo CliHelper::colorText('必須指定玩家暱稱（player）！', CLI_TEXT_ERROR, true);
     exit(CLI_ERROR);
 }
 $player = $option['player'];
@@ -30,27 +35,30 @@ $player = $option['player'];
 # 玩家暱稱必須在 configs/Players.php 中有建檔
 if (!in_array($player, array_keys(PLAYER)))
 {
-    echo CliHelper::colorText('玩家暱稱尚未納入紀錄！', '#ff8080', true);
+    echo CliHelper::colorText('玩家暱稱尚未納入紀錄！', CLI_TEXT_ERROR, true);
     exit(CLI_ERROR);
 }
 
 # 檔案鎖名稱
-$fileLockName = basename(__FILE__, '.php') . '_' . $player;
+$fileLockName = "{$cliName}_{$player}";
 
-# 簡要日誌檔案
-$logFile = STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'AutoAction' . DIRECTORY_SEPARATOR . $player . '.log';
+# 宣告 MyKirito 物件實例
+$myKirito = MyKirito::getInstance($player);
 
-# 詳細日誌檔案
-$detailLogFile = LOG_DIR . DIRECTORY_SEPARATOR . 'AutoAction' . DIRECTORY_SEPARATOR . $player . '.log';
+# 自動腳本詳略日誌檔案
+$logFiles = [
+    'brief' => STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . $cliName . DIRECTORY_SEPARATOR . $player . '.log',
+    'detail' => LOG_DIR . DIRECTORY_SEPARATOR . $cliName . DIRECTORY_SEPARATOR . $player . '.log'
+];
 
 # Telegram 自動通知日誌檔案
-$notificationLogFile = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . 'AutoAction' . DIRECTORY_SEPARATOR . $player . '.log';
+$notificationLogFile = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . $cliName . DIRECTORY_SEPARATOR . $player . '.log';
 
 # 行動標的：輸入數字 0 - 6，以逗號分隔
 $action = [];
 if (!isset($option['action']) || $option['action'] === '')
 {
-    echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6 並以逗號分隔），將從 7 種一般行動中隨機執行！', '#ffc080', true);
+    echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6 並以逗號分隔），將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
     $action = range(0, 6);
 }
 else
@@ -66,10 +74,13 @@ else
     }
     if (count($action) <= 0)
     {
-        echo CliHelper::colorText('行動標的（action：須為數字 0～6 並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', '#ffc080', true);
+        echo CliHelper::colorText('行動標的（action：須為數字 0～6 並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
         $action = range(0, 6);
     }
 }
+
+# 自動復活（預設為不自動復活）
+$resurrect = isset($option['rez']);
 
 # 輸出模式（預設為同步寫入檔案並顯示於終端機）
 $syncOutput = isset($option['output']);
@@ -77,14 +88,15 @@ $syncOutput = isset($option['output']);
 # 命令全文（用於輸出日誌及自動通知）
 $argPlayer = " --player=\"{$player}\"";
 $argAction = ' --action=' . implode(',', $action);
+$argRez    = $resurrect ? ' --rez' : '';
 $argOutput = $syncOutput ? ' --output' : '';
-$fullCommand = "{$scriptName}{$argPlayer}{$argAction}{$argOutput}";
+$fullCommand = "{$scriptName}{$argPlayer}{$argAction}{$argRez}{$argOutput}";
 
 # 自動通知訊息的標題（首段）
 $notificationTitle = '自動行動腳本停止執行';
 
 # 加檔案鎖防止程序重複執行
-FileLock::getInstance()->lock($fileLockName, 'AutoAction');
+FileLock::getInstance()->lock($fileLockName, $cliName);
 
 #========== 循環執行起點 ==========#
 
@@ -99,36 +111,12 @@ try
         # 在最大重試次數內，發送請求以取得玩家基本資訊
         while ($retry < Constant::MaxRetry)
         {
-            $result = MyKirito::getInstance()->getPersonalData($player);
+            $result = $myKirito->getPersonalData();
 
             if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
             {
-                if ($result['httpStatusCode'] !== 200)
-                {
-                    $logTime = Helper::Time();
-
-                    $errorMessage = "MyKirito::getPersonalData HTTP 狀態碼：{$result['httpStatusCode']}";
-                    echo CliHelper::colorText($errorMessage, '#ff8080', true);
-
-                    $logMessage = "[{$logTime}] {$errorMessage}";
-                    $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
-
-                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                    file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
-                }
-                else if ($result['error']['code'] !== 0 || $result['error']['message'] !== '')
-                {
-                    $logTime = Helper::Time();
-
-                    $errorMessage = "MyKirito::getPersonalData 錯誤代碼：{$result['error']['code']}，錯誤訊息：{$result['error']['message']}";
-                    echo CliHelper::colorText($errorMessage, '#ff8080', true);
-
-                    $logMessage = "[{$logTime}] {$errorMessage}";
-                    $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
-
-                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                    file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
-                }
+                $context = 'MyKirito::getPersonalData';
+                CliHelper::logError($result, $logFiles, $context, $syncOutput);
 
                 $retry++;
 
@@ -144,14 +132,22 @@ try
             # 達到重試次數上限仍然失敗
             if ($retry >= Constant::MaxRetry)
             {
+                $logTime = Helper::Time();
+                $logMessage = "{$context} 重試 {$retry} 次失敗";
+                Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+
+                if ($syncOutput)
+                {
+                    echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
+                }
+
                 if (USE_TELEGRAM_BOT)
                 {
-                    $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error', $logTime);
+                    $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error', $logTime);
                     TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-                    $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
-                    $logMessage = "[{$logTime}] {$notificationMessage}";
-                    file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                    $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                    Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
                 }
 
                 $exitStatus = CLI_ERROR;
@@ -159,17 +155,78 @@ try
             }
         }
 
-        # 從玩家基本資訊中取出最後行動時間、最後領取樓層獎勵時間及當前所在樓層
+        # 從玩家基本資訊中取出玩家角色、最後行動時間、最後領取樓層獎勵時間、當前所在樓層與死亡狀態
+        $myCharacter = explode('.', $response['avatar'])[0];
         $lastAction = $response['lastAction'];
         $lastFloorBonus = $response['lastFloorBonus'] ?? null;
         $floor = $response['floor'];
+        $playerIsDead = $response['dead'];
 
         # 取得現在時間
         $now = Helper::Timestamp() * 1000;
 
-        # 在指定的行動標的範圍內隨機執行
+        # 已過行動冷卻時間
         if (($now - $lastAction) > (Constant::ActionCD + Constant::CooldownBuffer))
         {
+            # 確認玩家本身是否存活
+            if ($playerIsDead)
+            {
+                $logTime = Helper::Time();
+                $logMessage = "玩家 {$player} 已死亡";
+                Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+
+                if ($syncOutput)
+                {
+                    echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
+                }
+
+                # 自動復活
+                if ($resurrect)
+                {
+                    $rezResult = $myKirito->autoRez($player, $myCharacter, $logFiles, $syncOutput);
+                    if (!$rezResult)
+                    {
+                        if (USE_TELEGRAM_BOT)
+                        {
+                            $message = "玩家 {$player} 已死亡，自動復活失敗";
+                            $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'error', $logTime);
+                            TelegramBot::getInstance()->sendMessage($notificationMessage);
+    
+                            $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                            Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                        }
+
+                        $exitStatus = CLI_ERROR;
+                        goto Endpoint;
+                    }
+                }
+                # 不自動復活
+                else
+                {
+                    $logTime = Helper::Time();
+                    $logMessage = "不自動復活玩家 {$player}";
+                    Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+
+                    if ($syncOutput)
+                    {
+                        echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
+                    }
+
+                    if (USE_TELEGRAM_BOT)
+                    {
+                        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'normal', $logTime);
+                        TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                        $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                        Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                    }
+
+                    $exitStatus = CLI_OK;
+                    goto Endpoint;
+                }
+            }
+
+            # 在指定的行動標的範圍內隨機選定行動項目
             $seed = mt_rand(0, count($action) - 1);
             $actionKey = $action[$seed];
             $actionAlias = Constant::NormalAction[$actionKey];
@@ -177,15 +234,18 @@ try
             # 重試次數
             $retry = 0;
 
+            # 執行上下文
+            $context = "MyKirito::doAction('{$actionAlias}')";
+
             # 在最大重試次數內，發送行動請求
             while ($retry < Constant::MaxRetry)
             {
-                $result = MyKirito::getInstance()->doAction($player, $actionAlias);
+                # 行動！
+                $result = $myKirito->doAction($actionAlias);
 
                 if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
                 {
-                    $function = "MyKirito::doAction('{$player}', '{$actionAlias}')";
-                    CliHelper::logError($result, $function, $logFile, $detailLogFile, $syncOutput);
+                    CliHelper::logError($result, $logFiles, $context, $syncOutput);
 
                     $retry++;
 
@@ -195,24 +255,27 @@ try
                 else
                 {
                     $logTime = Helper::Time();
+                    $jsonResult = json_encode($result, 320);
+
                     $actionName = Constant::ActionName[$actionAlias];
 
-                    $logMessage = "[{$logTime}] {$actionName}";
-                    $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
+                    $logMessage = [
+                        'brief' => $actionName,
+                        'detail' => $jsonResult
+                    ];
 
                     # 記錄解鎖角色
                     if (isset($result['response']['myKirito']['unlockedCharacters']))
                     {
-                        $characterName = CliHelper::getNewestUnlockedCharacter($result)['name'];
-                        $logMessage = "{$logMessage}，解鎖角色：{$characterName}";
+                        $characterName = MyKirito::getNewestUnlockedCharacter($result)['name'];
+                        $logMessage['brief'] = "{$logMessage['brief']}，解鎖角色：{$characterName}";
                     }
 
-                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                    file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+                    Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
 
                     if ($syncOutput)
                     {
-                        echo CliHelper::colorText($logMessage, '#aaffff', true);
+                        echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_INFO, true);
                     }
 
                     break;
@@ -223,15 +286,12 @@ try
             if ($retry >= Constant::MaxRetry)
             {
                 $logTime = Helper::Time();
-
-                $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 重試 {$retry} 次失敗";
-
-                file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                $logMessage = "{$context} 重試 {$retry} 次失敗";
+                Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
                 if ($syncOutput)
                 {
-                    echo CliHelper::colorText($logMessage, '#ff8080', true);
+                    echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                 }
             }
         }
@@ -252,15 +312,18 @@ try
             # 重設重試次數
             $retry = 0;
 
+            # 執行上下文
+            $context = "MyKirito::doAction('{$actionAlias}')";
+
             # 在最大重試次數內，發送行動請求
             while ($retry < Constant::MaxRetry)
             {
-                $result = MyKirito::getInstance()->doAction($player, $actionAlias);
+                # 領！
+                $result = $myKirito->doAction($actionAlias);
 
                 if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
                 {
-                    $function = "MyKirito::doAction('{$player}', '{$actionAlias}')";
-                    CliHelper::logError($result, $function, $logFile, $detailLogFile, $syncOutput);
+                    CliHelper::logError($result, $logFiles, $context, $syncOutput);
 
                     $retry++;
 
@@ -270,17 +333,20 @@ try
                 else
                 {
                     $logTime = Helper::Time();
+                    $jsonResult = json_encode($result, 320);
+
                     $actionName = Constant::ActionName[$actionAlias];
 
-                    $logMessage = "[{$logTime}] {$actionName}";
-                    $detailLogMessage = "[{$logTime}] " . json_encode($result, 320);
+                    $logMessage = [
+                        'brief' => $actionName,
+                        'detail' => $jsonResult
+                    ];
 
-                    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                    file_put_contents($detailLogFile, $detailLogMessage . PHP_EOL, FILE_APPEND);
+                    Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
 
                     if ($syncOutput)
                     {
-                        echo CliHelper::colorText($logMessage, '#aaffff', true);
+                        echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_INFO, true);
                     }
 
                     break;
@@ -292,14 +358,14 @@ try
             {
                 $logTime = Helper::Time();
 
-                $logMessage = "[{$logTime}] MyKirito::doAction('{$player}', '{$actionAlias}') 重試 {$retry} 次失敗";
+                $logMessage = "[{$logTime}] MyKirito::doAction('{$actionAlias}') 重試 {$retry} 次失敗";
 
                 file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
                 file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
 
                 if ($syncOutput)
                 {
-                    echo CliHelper::colorText($logMessage, '#ff8080', true);
+                    echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                 }
             }
         }
@@ -315,21 +381,17 @@ catch (Throwable $ex)
     $exType = get_class($ex);
     $exCode = $ex->getCode();
     $exMessage = $ex->getMessage();
-    $errorMessage = "{$exType} {$exCode} {$exMessage}";
+    $logMessage = "{$exType} {$exCode} {$exMessage}";
 
-    $logMessage = "[{$logTime}] {$errorMessage}";
-
-    file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-    file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+    Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
     if (USE_TELEGRAM_BOT)
     {
-        $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'normal', $logTime);
+        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'error', $logTime);
         TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-        $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
-        $logMessage = "[{$logTime}] {$notificationMessage}";
-        file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+        $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+        Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
     }
 
     $exitStatus = CLI_ERROR;
@@ -337,22 +399,17 @@ catch (Throwable $ex)
 }
 
 $logTime = Helper::Time();
-
-$abnormalMessage = '跳出 while loop';
-$logMessage = "[{$logTime}] {$abnormalMessage}";
-
-file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+$logMessage = '跳出 while loop';
+Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
 if (USE_TELEGRAM_BOT)
 {
     # 不自然跳出 while loop，仍須發送通知
-    $notificationMessage = CliHelper::buildNotificationMessage($notificationTitle, $fullCommand, $abnormalMessage, 'abnormal', $logTime);
+    $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'abnormal', $logTime);
     TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-    $notificationMessage = CliHelper::buildNotificationLogMessage($notificationMessage);
-    $logMessage = "[{$logTime}] {$notificationMessage}";
-    file_put_contents($notificationLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+    $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+    Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
 }
 
 $exitStatus = CLI_ABNORMAL;
@@ -364,4 +421,6 @@ Endpoint:
 
 FileLock::getInstance()->unlock();
 
-exit(CLI_ABNORMAL);
+unset($myKirito);
+
+exit($exitStatus);

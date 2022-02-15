@@ -16,7 +16,7 @@ foreach ($directories as $directory)
     if (!is_dir($directory) && !is_file($directory)) mkdir($directory);
 }
 
-# 產生設定檔
+# 引入設定檔產生器
 require_once STORAGE_DIR . DIRECTORY_SEPARATOR . 'configs' . DIRECTORY_SEPARATOR . 'codes' . DIRECTORY_SEPARATOR . 'generator.php';
 
 # 產生玩家資料 PHP 設定檔
