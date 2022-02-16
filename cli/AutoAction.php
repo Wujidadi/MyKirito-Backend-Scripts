@@ -67,7 +67,7 @@ else
     foreach ($inputActions as $item)
     {
         $item = trim($item);
-        if (Helper::isInteger($item) && (int) $item >= 0 && (int) $item < count(Constant::NormalAction) && !in_array((int) $item, $action))
+        if (Helper::IsInteger($item) && (int) $item >= 0 && (int) $item < count(Constant::NormalAction) && !in_array((int) $item, $action))
         {
             $action[] = (int) $item;
         }

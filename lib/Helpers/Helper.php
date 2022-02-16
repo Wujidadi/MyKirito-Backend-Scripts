@@ -76,7 +76,7 @@ class Helper
      * @param  integer|double|string  $number  要判斷的數字或字串
      * @return boolean
      */
-    public static function isInteger(mixed $number): bool
+    public static function IsInteger(mixed $number): bool
     {
         return is_numeric($number) && bcsub((float) $number, (int) $number, 16) === '0.0000000000000000';
     }
@@ -88,7 +88,7 @@ class Helper
      * @param  string  $indent  行首縮排字串
      * @return string
      */
-    public static function varExport(mixed $var, string $indent = ''): string
+    public static function VarExport(mixed $var, string $indent = ''): string
     {
         switch (gettype($var))
         {
@@ -101,8 +101,8 @@ class Helper
                 foreach ($var as $key => $value)
                 {
                     $r[] = "{$indent}    "
-                         . ($indexed ? '' : self::varExport($key) . ' => ')
-                         . self::varExport($value, "{$indent}    ");
+                         . ($indexed ? '' : self::VarExport($key) . ' => ')
+                         . self::VarExport($value, "{$indent}    ");
                 }
                 return "[\n" . implode(",\n", $r) . "\n{$indent}]";
 

@@ -18,7 +18,7 @@ function buildPlayerConfig(): void
 
     $configJson = json_decode(file_get_contents($configFile), true);
 
-    $config = Helper::varExport($configJson) ?? [];
+    $config = Helper::VarExport($configJson) ?? [];
 
     $code = <<<PHP
     <?php

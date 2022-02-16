@@ -63,7 +63,7 @@ class Logger
         }
         else
         {
-            if (Helper::isInteger($logTime))
+            if (Helper::IsInteger($logTime))
             {
                 $logTime = Helper::Time($logTime);
             }

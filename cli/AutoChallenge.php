@@ -106,7 +106,7 @@ if (!isset($option['type']) || $option['type'] === '')
     unset($myKirito);
     exit(CLI_ERROR);
 }
-else if (!Helper::isInteger($option['type']) || (int) $option['type'] < 0 || (int) $option['type'] > 3)
+else if (!Helper::IsInteger($option['type']) || (int) $option['type'] < 0 || (int) $option['type'] > 3)
 {
     echo CliHelper::colorText('挑戰類型（type：須為數字 0～3 其中之一）未正確指定！', CLI_TEXT_ERROR, true);
     unset($myKirito);
