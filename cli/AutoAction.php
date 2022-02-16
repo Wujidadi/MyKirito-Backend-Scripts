@@ -143,7 +143,7 @@ try
 
                 if (USE_TELEGRAM_BOT)
                 {
-                    $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $errorMessage, 'error', $logTime);
+                    $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'error', $logTime);
                     TelegramBot::getInstance()->sendMessage($notificationMessage);
 
                     $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
