@@ -173,7 +173,7 @@ try
         # 寫入 JSON 檔案
         $directory = STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'PersonalOverview';
         if (!is_dir($directory)) mkdir($directory);
-        $file = $directory . DIRECTORY_SEPARATOR . $player . '.json';
+        $file = $directory . DIRECTORY_SEPARATOR . $player . '_' . date('YmdHis') . '.json';
         file_put_contents($file, json_encode($data, 448));
     }
     else

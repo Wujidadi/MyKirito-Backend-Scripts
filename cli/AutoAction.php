@@ -357,11 +357,8 @@ try
             if ($retry >= Constant::MaxRetry)
             {
                 $logTime = Helper::Time();
-
-                $logMessage = "[{$logTime}] MyKirito::doAction('{$actionAlias}') 重試 {$retry} 次失敗";
-
-                file_put_contents($logFile, $logMessage . PHP_EOL, FILE_APPEND);
-                file_put_contents($detailLogFile, $logMessage . PHP_EOL, FILE_APPEND);
+                $logMessage = "{$context} 重試 {$retry} 次失敗";
+                Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
                 if ($syncOutput)
                 {

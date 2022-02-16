@@ -10,7 +10,6 @@ use Lib\Log\LogException;
  */
 class Logger
 {
-
     /**
      * 物件單一實例
      *
@@ -84,14 +83,14 @@ class Logger
             # 日誌檔案為單一字串，只存一份日誌
             if (!is_array($logFile) && is_string($logFile))
             {
-                file_put_contents($logFile, $logData . PHP_EOL, FILE_APPEND);
+                file_put_contents($this->_dateLogFile($logFile), $logData . PHP_EOL, FILE_APPEND);
             }
             # 日誌檔案為陣列，儲存多份日誌
             else
             {
                 foreach ($logFile as $file)
                 {
-                    file_put_contents($file, $logData . PHP_EOL, FILE_APPEND);
+                    file_put_contents($this->_dateLogFile($file), $logData . PHP_EOL, FILE_APPEND);
                 }
             }
         }
@@ -106,10 +105,10 @@ class Logger
                 if ($diffDetailLog)
                 {
                     $logData = "[{$logTime}] {$logMessage['brief']}";
-                    file_put_contents($logFile['brief'], $logData . PHP_EOL, FILE_APPEND);
+                    file_put_contents($this->_dateLogFile($logFile['brief']), $logData . PHP_EOL, FILE_APPEND);
 
                     $logData = "[{$logTime}] {$logMessage['detail']}";
-                    file_put_contents($logFile['detail'], $logData . PHP_EOL, FILE_APPEND);
+                    file_put_contents($this->_dateLogFile($logFile['detail']), $logData . PHP_EOL, FILE_APPEND);
                 }
                 else
                 {
@@ -121,5 +120,11 @@ class Logger
                 throw new LogException('Key "brief" and "detail" must both exist in log message/file parameters in ARRAY type', 2);
             }
         }
+    }
+
+    protected function _dateLogFile(string $logFileName): string
+    {
+        $date = date('Ymd');
+        return preg_replace('/\.log$/', "_{$date}.log", $logFileName);
     }
 }
