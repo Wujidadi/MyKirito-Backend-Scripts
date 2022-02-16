@@ -229,7 +229,7 @@ try
                             $message = "玩家 {$player} 已死亡，自動復活失敗";
                             $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'error', $logTime);
                             TelegramBot::getInstance()->sendMessage($notificationMessage);
-    
+
                             $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
                             Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
                         }
@@ -298,7 +298,7 @@ try
                     $logTime = Helper::Time();
                     $logMessage = "不自動復活對手玩家 {$opponent}";
                     Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
-    
+
                     if ($syncOutput)
                     {
                         echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
@@ -312,7 +312,7 @@ try
                     if (count($opponents) <= 0)
                     {
                         $message = '所有對手玩家均已死亡，且不自動復活';
-    
+
                         if ($syncOutput)
                         {
                             echo CliHelper::colorText($message, CLI_TEXT_WARNING, true);
@@ -381,7 +381,7 @@ try
                     {
                         $logMessage['brief'] = "{$logMessage['brief']}，你死了";
                         Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
-    
+
                         if ($syncOutput)
                         {
                             echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_WARNING, true);
@@ -391,7 +391,7 @@ try
                         if ($resurrect)
                         {
                             $rezResult = $myKirito->autoRez($player, $myCharacter, $logFiles, $syncOutput);
-        
+
                             if (!$rezResult)
                             {
                                 if (USE_TELEGRAM_BOT)
@@ -399,11 +399,11 @@ try
                                     $message = "挑戰失敗，玩家 {$player} 死亡，自動復活失敗";
                                     $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'error', $logTime);
                                     TelegramBot::getInstance()->sendMessage($notificationMessage);
-            
+
                                     $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
                                     Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
                                 }
-        
+
                                 $exitStatus = CLI_ERROR;
                                 goto Endpoint;
                             }
@@ -414,7 +414,7 @@ try
                             $logTime = Helper::Time();
                             $logMessage = "挑戰失敗，玩家 {$player} 死亡，不自動復活";
                             Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
-    
+
                             if ($syncOutput)
                             {
                                 echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
@@ -438,7 +438,7 @@ try
                     {
                         $logMessage['brief'] = "{$logMessage['brief']}，{$opponent} 死了";
                         Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
-    
+
                         if ($syncOutput)
                         {
                             echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_WARNING, true);
@@ -455,7 +455,7 @@ try
                             $logTime = Helper::Time();
                             $logMessage = "挑戰失敗，玩家 {$player} 死亡，不自動復活";
                             Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
-    
+
                             if ($syncOutput)
                             {
                                 echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
@@ -464,22 +464,22 @@ try
                             # 將對手玩家暱稱從對手清單中移除
                             unset($opponents[$oppKey]);
                             $opponents = array_values($opponents);
-        
+
                             # 對手清單被清空時跳出
                             if (count($opponents) <= 0)
                             {
                                 $message = '所有對手玩家均已死亡，且不自動復活';
-    
+
                                 if ($syncOutput)
                                 {
                                     echo CliHelper::colorText($message, CLI_TEXT_WARNING, true);
                                 }
-        
+
                                 if (USE_TELEGRAM_BOT)
                                 {
                                     $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
                                     TelegramBot::getInstance()->sendMessage($notificationMessage);
-        
+
                                     $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
                                     Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
                                 }

@@ -19,7 +19,7 @@ function buildPlayerConfig(): void
     }
 
     $configJson = json_decode(file_get_contents($configFile), true);
-    
+
     if ($configJson)
     {
         $config = Helper::VarExport($configJson) ?? [];
@@ -63,7 +63,7 @@ function buildTelegramBotConfig(): void
     }
 
     $configJson = json_decode(file_get_contents($configFile), true);
-    
+
     if ($configJson)
     {
         $useTelegramBot = $configJson['Use'] ? 'true' : 'false';
@@ -81,58 +81,58 @@ function buildTelegramBotConfig(): void
 
         $code = <<<PHP
         <?php
-    
+
         /**
          * 是否啟用 Telegram 自動通知機器人
          *
          * @var boolean
          */
         define('USE_TELEGRAM_BOT', {$useTelegramBot});
-    
+
         /**
          * Telegram 自動通知日誌路徑
          *
          * @var string
          */
         define('TELEGRAM_LOG_PATH', LOG_DIR . DIRECTORY_SEPARATOR . 'TelegramBot');
-    
+
         /**
          * Telegram 機器人參數
          *
          * @var array
          */
         define('TELEGRAM_BOT', [
-    
+
             # 機器人 ID
             'ID' => {$botId},
-    
+
             # 機器人名稱
             'Name' => '{$botName}',
-    
+
             # 機器人 API Token
             'Token' => '{$botToken}'
-    
+
         ]);
-    
+
         /**
          * Telegram 通知群組參數
          *
          * @var array
          */
         define('TELEGRAM_GROUP', [
-    
+
             # 群組 ID
             'ID' => {$groupId},
-    
+
             # 群組名稱
             'Title' => '{$groupTitle}'
-    
+
         ]);
-    
+
         PHP;
-    
+
         $configPhpFile = CONFIG_DIR . DIRECTORY_SEPARATOR . "{$configName}.php";
-    
+
         file_put_contents($configPhpFile, $code);
     }
     else

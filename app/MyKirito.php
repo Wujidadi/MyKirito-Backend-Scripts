@@ -535,12 +535,12 @@ class MyKirito
         $logTime = Helper::Time();
         $logMessage = "自動復活{$oppNote}玩家 {$player}……";
         Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
-    
+
         if ($syncOutput)
         {
             echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
         }
-    
+
         # 復活：原角色原地轉生，不動用任何轉生點、洗白點數或重置樓層
         $payload = [
             'character' => $character,
@@ -573,9 +573,9 @@ class MyKirito
             if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
             {
                 CliHelper::logError($result, $logFiles, $context, $syncOutput);
-    
+
                 $retry++;
-    
+
                 # 每次重試間隔
                 sleep(Constant::RetryInterval);
             }
@@ -588,24 +588,24 @@ class MyKirito
                     'detail' => $jsonResult
                 ];
                 Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
-    
+
                 if ($syncOutput)
                 {
                     # 命令行輸出
                     echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_WARNING, true);
                 }
-    
+
                 break;
             }
         }
-    
+
         # 達到重試次數上限仍然失敗
         if ($retry >= Constant::MaxRetry)
         {
             $logTime = Helper::Time();
             $logMessage = "{$context} 重試 {$retry} 次失敗";
             Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
-    
+
             if ($syncOutput)
             {
                 echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);

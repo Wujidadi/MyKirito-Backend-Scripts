@@ -191,7 +191,7 @@ try
                             $message = "玩家 {$player} 已死亡，自動復活失敗";
                             $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'error', $logTime);
                             TelegramBot::getInstance()->sendMessage($notificationMessage);
-    
+
                             $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
                             Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
                         }

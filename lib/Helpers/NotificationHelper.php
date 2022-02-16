@@ -44,6 +44,9 @@ class NotificationHelper
             $time = Helper::Time();
         }
 
+        $command = addslashes($command);
+        $message = addslashes($message);
+
         return <<<TEXT
         {$title}
 
