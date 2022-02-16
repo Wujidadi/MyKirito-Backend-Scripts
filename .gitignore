@@ -18,7 +18,6 @@ vendor/
 
 # VS Code related
 .vscode/
-.editorconfig
 
 # For this project
 API.http
@@ -28,6 +27,7 @@ configs/TelegramBot.php
 storage/configs/*
 !storage/configs/codes
 !storage/configs/examples
+storage/logs
 storage/responses/*
 !storage/responses/examples
 storage/filelocks

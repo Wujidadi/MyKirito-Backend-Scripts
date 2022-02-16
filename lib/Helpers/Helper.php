@@ -93,20 +93,25 @@ class Helper
         switch (gettype($var))
         {
             case 'string':
-                return '\'' . addcslashes($var, "\\\$\"\r\n\t\v\f") . '\'';
+            {
+                return '\'' . addcslashes($var, "\\\$\"\r\n\t\v\f'") . '\'';
+            }
 
             case 'array':
+            {
                 $indexed = array_keys($var) === range(0, count($var) - 1);
                 $r = [];
                 foreach ($var as $key => $value)
                 {
-                    $r[] = "{$indent}    "
-                         . ($indexed ? '' : self::VarExport($key) . ' => ')
-                         . self::VarExport($value, "{$indent}    ");
+                    $r[] = (is_object($value) ? $indent : "{$indent}    ") .
+                           ($indexed ? '' : self::VarExport($key) . ' => ') .
+                           self::VarExport($value, "{$indent}    ");
                 }
                 return "[\n" . implode(",\n", $r) . "\n{$indent}]";
+            }
 
             case 'object':
+            {
                 $str = preg_replace(
                     [
                         '/\(object\) array\(/',
@@ -129,26 +134,51 @@ class Helper
                     var_export($var, true)
                 );
                 $arr = explode(PHP_EOL, $str);
+                $spaceLen = [];
                 for ($i = 0; $i < count($arr); $i++)
                 {
-                    $tmpStr = $arr[$i];
-                    if (preg_match_all('/^ */', $arr[$i], $matches))
+                    $tmpStr = preg_replace('/^ +/', '', $arr[$i]);
+                    if ($i === 0)
                     {
-                        $tmpStr = preg_replace('/^ +/', '', $arr[$i]);
-                        $indentLen = strlen($matches[0][0]);
-                        $spaceLen = $indentLen % 2 ? ($indentLen - 1) * 2 : $indentLen * 2;
-                        $tmpStr = str_repeat(' ', $spaceLen) . $tmpStr;
-                        $arr[$i] = $tmpStr;
+                        $spaceLen[$i] = 0;
                     }
+                    else
+                    {
+                        if (preg_match('/\[$/', $arr[$i - 1]))
+                        {
+                            $spaceLen[$i] = $spaceLen[$i - 1] + 4;
+                        }
+                        else if (preg_match('/^ *\],*$/', $arr[$i]))
+                        {
+                            if (preg_match('/\[$/', $arr[$i - 1]))
+                            {
+                                $spaceLen[$i] = $spaceLen[$i - 1];
+                            }
+                            else
+                            {
+                                $spaceLen[$i] = $spaceLen[$i - 1] - 4;
+                            }
+                        }
+                        else
+                        {
+                            $spaceLen[$i] = $spaceLen[$i - 1];
+                        }
+                    }
+                    $tmpStr = str_repeat(' ', $spaceLen[$i]) . $tmpStr;
+                    $arr[$i] = "{$indent}{$tmpStr}";
                 }
-                $str = implode("\n", $arr);
-                return $str;
+                return implode("\n", $arr);
+            }
 
             case 'boolean':
+            {
                 return $var ? 'TRUE' : 'FALSE';
+            }
 
             default:
+            {
                 return var_export($var, true);
+            }
         }
     }
 }
