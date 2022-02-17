@@ -93,7 +93,7 @@ try
         '最後一次打Boss的時間'       => @Helper::TimeDisplay($response['lastBossChallenge'] / 1000),
         '通關時間'                   => '',
         '碎片'                       => '',
-        '總成就點數' => $response['achievementPoints'],
+        '總成就點數' => $response['achievementPoints'] ?? [],
         '成就數'     => 0,
         '成就列表'   => [],
         '解鎖角色數' => 0,
