@@ -111,8 +111,8 @@ class Constant
      * @var string[]
      */
     const Color = [
-        'black'  => '黑名玩家',
-        'orange' => '橘名玩家',
-        'red'    => '紅名玩家'
+        'black'  => '黑名玩家（良民）',
+        'orange' => '橘名玩家（傷害前科）',
+        'red'    => '紅名玩家（殺人犯）'
     ];
 }
