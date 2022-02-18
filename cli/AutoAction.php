@@ -58,7 +58,7 @@ $notificationLogFile = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . $cliName . DIRE
 $action = [];
 if (!isset($option['action']) || $option['action'] === '')
 {
-    echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6 並以逗號分隔），將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
+    echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6 或 1h、2h、4h、8h 四種修行時數，並以逗號分隔），將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
     $action = range(0, 6);
 }
 else
@@ -67,9 +67,16 @@ else
     foreach ($inputActions as $item)
     {
         $item = trim($item);
-        if (Helper::IsInteger($item) && (int) $item >= 0 && (int) $item < count(Constant::NormalAction) && !in_array((int) $item, $action))
+        if (!in_array($item, $action))
         {
-            $action[] = (int) $item;
+            if (Helper::IsInteger($item) && (int) $item >= 0 && (int) $item < count(Constant::NormalAction) && !in_array((int) $item, $action))
+            {
+                $action[] = (int) $item;
+            }
+            else if (in_array($item, Constant::PracticeAction))
+            {
+                $action[] = array_search($item, Constant::AutoableAction);
+            }
         }
     }
     if (count($action) <= 0)
@@ -229,7 +236,7 @@ try
             # 在指定的行動標的範圍內隨機選定行動項目
             $seed = mt_rand(0, count($action) - 1);
             $actionKey = $action[$seed];
-            $actionAlias = Constant::NormalAction[$actionKey];
+            $actionAlias = Constant::AutoableAction[$actionKey];
 
             # 重試次數
             $retry = 0;

@@ -20,8 +20,7 @@ vendor/
 .vscode/
 
 # For this project
-API.http
-TelegramBot.http
+cli/Test.php
 configs/Players.php
 configs/TelegramBot.php
 storage/configs/*
@@ -31,3 +30,5 @@ storage/logs
 storage/responses/*
 !storage/responses/examples
 storage/filelocks
+storage/test/http/API.http
+storage/test/http/TelegramBot.http

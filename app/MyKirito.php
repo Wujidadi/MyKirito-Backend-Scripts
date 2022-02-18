@@ -49,6 +49,10 @@ class MyKirito
 
     /**
      * 金手指密鑰
+     *
+     * 每隔一段時間會變，所以沒什麼實用價值
+     *
+     * @var string[]
      */
     const SECRET = [
         'Klein'     => 'ebd2aQD/CK8=',    // 克萊因

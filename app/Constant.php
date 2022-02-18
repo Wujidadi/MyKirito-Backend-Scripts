@@ -86,6 +86,36 @@ class Constant
     ];
 
     /**
+     * 修行列表，與 `MyKirito::ACTION` 中對應項的 key 一致
+     *
+     * @var string[]
+     */
+    const PracticeAction = [
+        '1h',
+        '2h',
+        '4h',
+        '8h'
+    ];
+
+    /**
+     * 可自動化行動列表（不含領取樓層獎勵）  
+     * 為 `self::NormalAction` 及 `self::PracticeAction` 的總和，且與 `MyKirito::ACTION` 中對應項的 key 一致
+     */
+    const AutoableAction = [
+        'Hunt',
+        'Train',
+        'Eat',
+        'Girl',
+        'Good',
+        'Sit',
+        'Fish',
+        '1h',
+        '2h',
+        '4h',
+        '8h'
+    ];
+
+    /**
      * 行動名稱列表
      *
      * @var string[]
