@@ -221,7 +221,8 @@ try
 
                     if (USE_TELEGRAM_BOT)
                     {
-                        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'normal', $logTime);
+                        $message = "玩家 {$player} 已死亡，不自動復活";
+                        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
                         TelegramBot::getInstance()->sendMessage($notificationMessage);
 
                         $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
@@ -270,6 +271,19 @@ try
                         'brief' => $actionName,
                         'detail' => $jsonResult
                     ];
+
+                    # 記錄經驗值
+                    if (isset($result['response']['gained']['exp']) && isset($result['response']['gained']['exp']) > 0)
+                    {
+                        $logMessage['brief'] = "{$logMessage['brief']}，獲得 {$result['response']['gained']['exp']} 點經驗值";
+                    }
+
+                    # 記錄升級
+                    if (isset($result['response']['gained']['prevLV']) && isset($result['response']['gained']['nextLV']) &&
+                        $result['response']['gained']['prevLV'] !== $result['response']['gained']['nextLV'])
+                    {
+                        $logMessage['brief'] = "{$logMessage['brief']}，升到 {$result['response']['gained']['nextLV']} 級";
+                    }
 
                     # 記錄解鎖角色
                     if (isset($result['response']['myKirito']['unlockedCharacters']))
@@ -348,6 +362,19 @@ try
                         'brief' => $actionName,
                         'detail' => $jsonResult
                     ];
+
+                    # 記錄經驗值
+                    if (isset($result['response']['gained']['exp']) && isset($result['response']['gained']['exp']) > 0)
+                    {
+                        $logMessage['brief'] = "{$logMessage['brief']}，獲得 {$result['response']['gained']['exp']} 點經驗值";
+                    }
+
+                    # 記錄升級
+                    if (isset($result['response']['gained']['prevLV']) && isset($result['response']['gained']['nextLV']) &&
+                        $result['response']['gained']['prevLV'] !== $result['response']['gained']['nextLV'])
+                    {
+                        $logMessage['brief'] = "{$logMessage['brief']}，升到 {$result['response']['gained']['nextLV']} 級";
+                    }
 
                     Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
 
