@@ -98,6 +98,7 @@ if (count($opponents) <= 0)
     unset($myKirito);
     exit(CLI_ERROR);
 }
+$opponent = implode(',', $opponents);
 
 # 挑戰類型
 if (!isset($option['type']) || $option['type'] === '')
@@ -124,8 +125,8 @@ $resurrect = isset($option['rez']);
 $syncOutput = isset($option['output']);
 
 # 命令全文（用於輸出日誌及自動通知）
-$argPlayer = " --player=\"{$player}\"";
-$argOpp    = ' --opp="' . implode(',', $opponents) . '"';
+$argPlayer = " --player={$player}";
+$argOpp    = " --opp={$opponent}";
 $argType   = " --type={$option['type']}";
 $argShout  = $shout == '' ? '' : " --shout=\"{$shout}\"";
 $argRez    = $resurrect ? ' --rez' : '';

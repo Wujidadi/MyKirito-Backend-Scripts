@@ -56,6 +56,7 @@ $notificationLogFile = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . $cliName . DIRE
 
 # 行動標的：輸入數字 0 - 6，以逗號分隔
 $action = [];
+$inputActionIsValid = false;
 if (!isset($option['action']) || $option['action'] === '')
 {
     echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6 或 1h、2h、4h、8h 四種修行時數，並以逗號分隔），將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
@@ -79,11 +80,31 @@ else
             }
         }
     }
-    if (count($action) <= 0)
+    if (count($action) > 0)
     {
-        echo CliHelper::colorText('行動標的（action：須為數字 0～6 並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
+        $inputActionIsValid = true;
+    }
+    else
+    {
+        echo CliHelper::colorText('行動標的（action：須為數字 0～6 或 1h、2h、4h、8h 四種修行時數，並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
         $action = range(0, 6);
     }
+}
+# 重構行動標的輸入參數，用於輸出日誌及自動通知
+if ($inputActionIsValid)
+{
+    $inputActions = [];
+    $_action = $action;
+    sort($_action);
+    foreach ($_action as $_act)
+    {
+        $inputActions[] = $_act <= 6 ? (string) $_act : Constant::AutoableAction[$_act];
+    }
+    $inputAction = implode(',', $inputActions);
+}
+else
+{
+    $inputAction = implode(',', $action);
 }
 
 # 自動復活（預設為不自動復活）
@@ -93,8 +114,8 @@ $resurrect = isset($option['rez']);
 $syncOutput = isset($option['output']);
 
 # 命令全文（用於輸出日誌及自動通知）
-$argPlayer = " --player=\"{$player}\"";
-$argAction = ' --action=' . implode(',', $action);
+$argPlayer = " --player={$player}";
+$argAction = " --action={$inputAction}";
 $argRez    = $resurrect ? ' --rez' : '';
 $argOutput = $syncOutput ? ' --output' : '';
 $fullCommand = "{$scriptName}{$argPlayer}{$argAction}{$argRez}{$argOutput}";
