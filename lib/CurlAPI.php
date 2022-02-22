@@ -82,6 +82,8 @@ abstract class CurlAPI
         curl_setopt($this->_cUrl, CURLOPT_HEADER, false);
         curl_setopt($this->_cUrl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->_cUrl, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($this->_cUrl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($this->_cUrl, CURLOPT_SSL_VERIFYPEER, false);
     }
 
     /**
