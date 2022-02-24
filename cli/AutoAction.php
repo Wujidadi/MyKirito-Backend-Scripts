@@ -21,8 +21,8 @@ $scriptName = basename(__FILE__);
 # 腳本名稱（不含副檔名）
 $cliName = basename(__FILE__, '.php');
 
-# 由命令行參數指定玩家暱稱、行動標的、是否自動復活及輸出模式
-$option = getopt('', ['player:', 'action:', 'rez', 'output']);
+# 由命令行參數指定玩家暱稱、行動標的、是否領取樓層獎勵、是否自動復活及輸出模式
+$option = getopt('', ['player:', 'action:', 'no-bonus', 'rez', 'output']);
 
 # 玩家暱稱
 if (!isset($option['player']) || $option['player'] === '')
@@ -107,6 +107,9 @@ else
     $inputAction = implode(',', $action);
 }
 
+# 領取樓層獎勵（預設為隨每次自動行動一起領取）
+$noBonus = isset($option['no-bonus']);
+
 # 自動復活（預設為不自動復活）
 $resurrect = isset($option['rez']);
 
@@ -114,11 +117,12 @@ $resurrect = isset($option['rez']);
 $syncOutput = isset($option['output']);
 
 # 命令全文（用於輸出日誌及自動通知）
-$argPlayer = " --player={$player}";
-$argAction = " --action={$inputAction}";
-$argRez    = $resurrect ? ' --rez' : '';
-$argOutput = $syncOutput ? ' --output' : '';
-$fullCommand = "{$scriptName}{$argPlayer}{$argAction}{$argRez}{$argOutput}";
+$argPlayer  = " --player={$player}";
+$argAction  = " --action={$inputAction}";
+$argNoBonus = $noBonus ? ' --no-bonus' : '';
+$argRez     = $resurrect ? ' --rez' : '';
+$argOutput  = $syncOutput ? ' --output' : '';
+$fullCommand = "{$scriptName}{$argPlayer}{$argAction}{$argNoBonus}{$argRez}{$argOutput}";
 
 # 自動通知訊息的標題（首段）
 $notificationTitle = '自動行動腳本停止執行';
@@ -338,86 +342,90 @@ try
             }
         }
 
-        # 嘗試行動與領取樓層獎勵之間的時間間隔
-        sleep(Constant::ActionBonusInterval);
-
-        # 更新現在時間
-        $now = Helper::Timestamp() * 1000;
-
-        # 當前位於 1 層以上，未曾領取過樓層獎勵，或已超過領取獎勵冷卻時間時，發送領取樓層獎勵請求
-        if ($floor > 0 &&
-            (is_null($lastFloorBonus) ||
-             (!is_null($lastFloorBonus) && ($now - $lastFloorBonus) > (Constant::FloorBonusCD + Constant::CooldownBuffer))))
+        # 未帶「不領取樓層獎勵」參數時自動領取樓層獎勵
+        if (!$noBonus)
         {
-            $actionAlias = 'Bonus';
+            # 嘗試行動與領取樓層獎勵之間的時間間隔
+            sleep(Constant::ActionBonusInterval);
 
-            # 重設重試次數
-            $retry = 0;
+            # 更新現在時間
+            $now = Helper::Timestamp() * 1000;
 
-            # 執行上下文
-            $context = "MyKirito::doAction('{$actionAlias}')";
-
-            # 在最大重試次數內，發送行動請求
-            while ($retry < Constant::MaxRetry)
+            # 當前位於 1 層以上，未曾領取過樓層獎勵，或已超過領取獎勵冷卻時間時，發送領取樓層獎勵請求
+            if ($floor > 0 &&
+                (is_null($lastFloorBonus) ||
+                (!is_null($lastFloorBonus) && ($now - $lastFloorBonus) > (Constant::FloorBonusCD + Constant::CooldownBuffer))))
             {
-                # 領！
-                $result = $myKirito->doAction($actionAlias);
+                $actionAlias = 'Bonus';
 
-                if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
+                # 重設重試次數
+                $retry = 0;
+
+                # 執行上下文
+                $context = "MyKirito::doAction('{$actionAlias}')";
+
+                # 在最大重試次數內，發送行動請求
+                while ($retry < Constant::MaxRetry)
                 {
-                    CliHelper::logError($result, $logFiles, $context, $syncOutput);
+                    # 領！
+                    $result = $myKirito->doAction($actionAlias);
 
-                    $retry++;
+                    if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
+                    {
+                        CliHelper::logError($result, $logFiles, $context, $syncOutput);
 
-                    # 每次重試間隔
-                    sleep(Constant::RetryInterval);
+                        $retry++;
+
+                        # 每次重試間隔
+                        sleep(Constant::RetryInterval);
+                    }
+                    else
+                    {
+                        $logTime = Helper::Time();
+                        $jsonResult = json_encode($result, 320);
+
+                        $actionName = Constant::ActionName[$actionAlias];
+
+                        $logMessage = [
+                            'brief' => $actionName,
+                            'detail' => $jsonResult
+                        ];
+
+                        # 記錄經驗值
+                        if (isset($result['response']['gained']['exp']) && isset($result['response']['gained']['exp']) > 0)
+                        {
+                            $logMessage['brief'] = "{$logMessage['brief']}，獲得 {$result['response']['gained']['exp']} 點經驗值";
+                        }
+
+                        # 記錄升級
+                        if (isset($result['response']['gained']['prevLV']) && isset($result['response']['gained']['nextLV']) &&
+                            $result['response']['gained']['prevLV'] !== $result['response']['gained']['nextLV'])
+                        {
+                            $logMessage['brief'] = "{$logMessage['brief']}，升到 {$result['response']['gained']['nextLV']} 級";
+                        }
+
+                        Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
+
+                        if ($syncOutput)
+                        {
+                            echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_INFO, true);
+                        }
+
+                        break;
+                    }
                 }
-                else
+
+                # 達到重試次數上限仍然失敗
+                if ($retry >= Constant::MaxRetry)
                 {
                     $logTime = Helper::Time();
-                    $jsonResult = json_encode($result, 320);
-
-                    $actionName = Constant::ActionName[$actionAlias];
-
-                    $logMessage = [
-                        'brief' => $actionName,
-                        'detail' => $jsonResult
-                    ];
-
-                    # 記錄經驗值
-                    if (isset($result['response']['gained']['exp']) && isset($result['response']['gained']['exp']) > 0)
-                    {
-                        $logMessage['brief'] = "{$logMessage['brief']}，獲得 {$result['response']['gained']['exp']} 點經驗值";
-                    }
-
-                    # 記錄升級
-                    if (isset($result['response']['gained']['prevLV']) && isset($result['response']['gained']['nextLV']) &&
-                        $result['response']['gained']['prevLV'] !== $result['response']['gained']['nextLV'])
-                    {
-                        $logMessage['brief'] = "{$logMessage['brief']}，升到 {$result['response']['gained']['nextLV']} 級";
-                    }
-
-                    Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
+                    $logMessage = "{$context} 重試 {$retry} 次失敗";
+                    Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
                     if ($syncOutput)
                     {
-                        echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_INFO, true);
+                        echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                     }
-
-                    break;
-                }
-            }
-
-            # 達到重試次數上限仍然失敗
-            if ($retry >= Constant::MaxRetry)
-            {
-                $logTime = Helper::Time();
-                $logMessage = "{$context} 重試 {$retry} 次失敗";
-                Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
-
-                if ($syncOutput)
-                {
-                    echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                 }
             }
         }
