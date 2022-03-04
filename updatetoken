@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+chdir(__DIR__);
+
+# 引入宣告檔
+require_once 'declarations.php';
+
+# 引入設定檔產生器
+require_once STORAGE_DIR . DIRECTORY_SEPARATOR . 'configs' . DIRECTORY_SEPARATOR . 'codes' . DIRECTORY_SEPARATOR . 'generator.php';
+
+# 產生玩家資料 PHP 設定檔
+buildPlayerConfig();
