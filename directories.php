@@ -9,6 +9,7 @@ return [
     LOG_DIR,
     LOG_DIR . DIRECTORY_SEPARATOR . 'AutoAction',
     LOG_DIR . DIRECTORY_SEPARATOR . 'AutoChallenge',
+    LOG_DIR . DIRECTORY_SEPARATOR . 'Reincarnate',
     LOG_DIR . DIRECTORY_SEPARATOR . 'TelegramBot',
     LOG_DIR . DIRECTORY_SEPARATOR . 'TelegramBot' . DIRECTORY_SEPARATOR . 'AutoAction',
     LOG_DIR . DIRECTORY_SEPARATOR . 'TelegramBot' . DIRECTORY_SEPARATOR . 'AutoChallenge',
@@ -19,10 +20,12 @@ return [
     STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'ChallengeReport',
     STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'AutoAction',
     STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'AutoChallenge',
+    STORAGE_DIR . DIRECTORY_SEPARATOR . 'responses' . DIRECTORY_SEPARATOR . 'Reincarnate',
 
     # 檔案鎖資料夾
     STORAGE_DIR . DIRECTORY_SEPARATOR . 'filelocks',
     STORAGE_DIR . DIRECTORY_SEPARATOR . 'filelocks' . DIRECTORY_SEPARATOR . 'AutoAction',
-    STORAGE_DIR . DIRECTORY_SEPARATOR . 'filelocks' . DIRECTORY_SEPARATOR . 'AutoChallenge'
+    STORAGE_DIR . DIRECTORY_SEPARATOR . 'filelocks' . DIRECTORY_SEPARATOR . 'AutoChallenge',
+    STORAGE_DIR . DIRECTORY_SEPARATOR . 'filelocks' . DIRECTORY_SEPARATOR . 'Reincarnate'
 
 ];

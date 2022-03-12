@@ -121,7 +121,7 @@ $shout = $option['shout'] ?? '';
 # 自動復活（預設為不自動復活）
 $resurrect = isset($option['rez']);
 
-# 輸出模式（預設為同步寫入檔案並顯示於終端機）
+# 輸出模式（預設為僅寫入檔案，不顯示於終端機）
 $syncOutput = isset($option['output']);
 
 # 命令全文（用於輸出日誌及自動通知）
@@ -548,6 +548,11 @@ catch (Throwable $ex)
 
     Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
+    if ($syncOutput)
+    {
+        echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
+    }
+
     if (USE_TELEGRAM_BOT)
     {
         $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'error', $logTime);
@@ -564,6 +569,11 @@ catch (Throwable $ex)
 $logTime = Helper::Time();
 $logMessage = '跳出 while loop';
 Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+
+if ($syncOutput)
+{
+    echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
+}
 
 if (USE_TELEGRAM_BOT)
 {

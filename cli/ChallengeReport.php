@@ -18,7 +18,7 @@ if (!isset($option['rid']) || $option['rid'] === '')
 }
 $reportId = $option['rid'];
 
-# 輸出模式（預設為直接顯示於終端，而不寫入檔案）
+# 輸出模式（預設為僅寫入檔案，不顯示於終端機）
 $writeToFile = !isset($option['output']);
 
 # 查閱戰報

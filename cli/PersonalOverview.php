@@ -30,7 +30,7 @@ if (!in_array($player, array_keys(PLAYER)))
 # 宣告 MyKirito 物件實例
 $myKirito = MyKirito::getInstance($player);
 
-# 輸出模式（預設為寫入檔案）
+# 輸出模式（預設為僅寫入檔案，不顯示於終端機）
 $writeToFile = !isset($option['output']);
 
 try
