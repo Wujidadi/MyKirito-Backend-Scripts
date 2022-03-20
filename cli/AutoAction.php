@@ -54,53 +54,147 @@ $logFiles = [
 # Telegram 自動通知日誌檔案
 $notificationLogFile = TELEGRAM_LOG_PATH . DIRECTORY_SEPARATOR . $cliName . DIRECTORY_SEPARATOR . $player . '.log';
 
-# 行動標的：輸入數字 0 - 6，以逗號分隔
+# 行動標的：輸入數字 0 - 6，以逗號分隔；或以 JSON 格式指定較複雜的等級與比例，須依等級階段由低至高排序
 $action = [];
 $inputActionIsValid = false;
 if (!isset($option['action']) || $option['action'] === '')
 {
-    echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6 或 1h、2h、4h、8h 四種修行時數，並以逗號分隔），將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
+    echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6 或 1h、2h、4h、8h 四種修行時數，並以逗號分隔；或以 JSON 格式指定較複雜的等級與比例），將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
     $action = range(0, 6);
 }
 else
 {
-    $inputActions = explode(',', $option['action']);
-    foreach ($inputActions as $item)
+    # 非 JSON
+    if (!is_array(json_decode($option['action'], true)))
     {
-        $item = trim($item);
-        if (!in_array($item, $action))
+        $inputActionIsArray = false;
+
+        $inputActions = explode(',', $option['action']);
+        foreach ($inputActions as $item)
         {
-            if (Helper::IsInteger($item) && (int) $item >= 0 && (int) $item < count(Constant::NormalAction) && !in_array((int) $item, $action))
+            $item = trim($item);
+            if (!in_array($item, $action))
             {
-                $action[] = (int) $item;
-            }
-            else if (in_array($item, Constant::PracticeAction))
-            {
-                $action[] = array_search($item, Constant::AutoableAction);
+                if (Helper::IsInteger($item) && (int) $item >= 0 && (int) $item < count(Constant::NormalAction) && !in_array((int) $item, $action))
+                {
+                    $action[] = (int) $item;
+                }
+                else if (in_array($item, Constant::PracticeAction) && !in_array($item, $action))
+                {
+                    $action[] = array_search($item, Constant::AutoableAction);
+                }
             }
         }
+
+        if (count($action) > 0)
+        {
+            $inputActionIsValid = true;
+        }
+        else
+        {
+            echo CliHelper::colorText('行動標的（action：須為數字 0～6 或 1h、2h、4h、8h 四種修行時數，並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
+            $action = range(0, 6);
+        }
     }
-    if (count($action) > 0)
-    {
-        $inputActionIsValid = true;
-    }
+    # JSON（等級比例行動）
     else
     {
-        echo CliHelper::colorText('行動標的（action：須為數字 0～6 或 1h、2h、4h、8h 四種修行時數，並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
-        $action = range(0, 6);
+        $inputActionIsArray = true;
+
+        $inputActionArray = json_decode($option['action'], true);
+        $tmpInputActions = [];
+        foreach ($inputActionArray as $i => $actionStage)
+        {
+            if (is_array($actionStage))
+            {
+                if (isset($actionStage['MaxLevel']) && is_int($actionStage['MaxLevel']) &&
+                    isset($actionStage['Actions']) && is_array($actionStage['Actions']))
+                {
+                    foreach ($actionStage['Actions'] as $j => $singleAction)
+                    {
+                        $actionIsInt = null;
+
+                        if (isset($singleAction['Action']))
+                        {
+                            $item = trim($singleAction['Action']);
+
+                            if (Helper::IsInteger($item) && (int) $item >= 0 && (int) $item < count(Constant::NormalAction))
+                            {
+                                $actionIsInt = true;
+                            }
+                            else if (in_array($item, Constant::PracticeAction))
+                            {
+                                $actionIsInt = false;
+                            }
+
+                            if (isset($actionIsInt))
+                            {
+                                # 限定行動比例必須為整數
+                                if (isset($singleAction['Ratio']) && Helper::IsInteger($singleAction['Ratio']) && $singleAction['Ratio'] > 0)
+                                {
+                                    $ratio = (int) $singleAction['Ratio'];
+
+                                    if (!isset($tmpInputActions[$i]))
+                                    {
+                                        $tmpInputActions[$i] = [
+                                            'MaxLevel' => $actionStage['MaxLevel'],
+                                            'Actions' => [],
+                                            'FullRatio' => 0
+                                        ];
+                                    }
+
+                                    $tmpInputActions[$i]['Actions'][$j] = [
+                                        'Action' => $actionIsInt ? (int) $item : $item,
+                                        'Ratio' => $ratio
+                                    ];
+
+                                    $tmpInputActions[$i]['FullRatio'] += $ratio;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (count($tmpInputActions) > 0)
+        {
+            $inputActionIsValid = true;
+            $action = $tmpInputActions;
+            unset($tmpInputActions);
+        }
+        else
+        {
+            echo CliHelper::colorText('行動標的 JSON 未正確指定，將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
+            $inputActionIsArray = false;
+            $action = range(0, 6);
+        }
     }
 }
 # 重構行動標的輸入參數，用於輸出日誌及自動通知
 if ($inputActionIsValid)
 {
-    $inputActions = [];
-    $_action = $action;
-    sort($_action);
-    foreach ($_action as $_act)
+    if (!$inputActionArray)
     {
-        $inputActions[] = $_act <= 6 ? (string) $_act : Constant::AutoableAction[$_act];
+        $inputActions = [];
+        $_action = $action;
+        sort($_action);
+        foreach ($_action as $_act)
+        {
+            $inputActions[] = $_act <= 6 ? (string) $_act : Constant::AutoableAction[$_act];
+        }
+        $inputAction = implode(',', $inputActions);
     }
-    $inputAction = implode(',', $inputActions);
+    else
+    {
+        $inputActions = [];
+        foreach ($action as $_act)
+        {
+            unset($_act['FullRatio']);
+            $inputActions[] = $_act;
+        }
+        $inputAction = json_encode($inputActions);
+    }
 }
 else
 {
@@ -187,8 +281,9 @@ try
             }
         }
 
-        # 從玩家基本資訊中取出玩家角色、最後行動時間、最後領取樓層獎勵時間、當前所在樓層與死亡狀態
+        # 從玩家基本資訊中取出玩家角色、等級、最後行動時間、最後領取樓層獎勵時間、當前所在樓層與死亡狀態
         $myCharacter = explode('.', $response['avatar'])[0];
+        $myLevel = $response['lv'];
         $lastAction = $response['lastAction'];
         $lastFloorBonus = $response['lastFloorBonus'] ?? null;
         $floor = $response['floor'];
@@ -259,10 +354,52 @@ try
                 }
             }
 
-            # 在指定的行動標的範圍內隨機選定行動項目
-            $seed = mt_rand(0, count($action) - 1);
-            $actionKey = $action[$seed];
+            # 決定行動標的
+            # 輸入的行動標的為數字或字串（未以 JSON 指定）
+            if (!$inputActionIsArray)
+            {
+                # 在指定的行動標的範圍內隨機選定行動項目
+                $seed = mt_rand(0, count($action) - 1);
+                $actionKey = $action[$seed];
+            }
+            # 輸入的行動標的為陣列（以 JSON 指定）
+            else
+            {
+                foreach ($action as $actionsByLevel)
+                {
+                    # 停在碰到的第一個 MaxLevel 大於等於當前等級的階段設定
+                    # 當前等級超過設定的 MaxLevel 最大值（未設定直到 70 級的行動比例）時，將 MaxLevel 為最大值（即 for loop 最後跑到）的階段比例設定
+                    if ($actionsByLevel['MaxLevel'] >= $myLevel)
+                    {
+                        break;    
+                    }
+                }
+
+                $stageActionConf = [
+                    'MaxLevel' => $actionsByLevel['MaxLevel'],
+                    'Action' => []
+                ];
+
+                $actionRatioCursor = 0;
+                foreach ($actionsByLevel['Actions'] as $stageAction)
+                {
+                    for ($cur = 0; $cur < $stageAction['Ratio']; $cur++)
+                    {
+                        $stageActionConf['Action'][$actionRatioCursor] = $stageAction['Action'];
+                        $actionRatioCursor++;
+                    }
+                }
+
+                if (!isset($stageActionCounter) || $stageActionCounter >= $actionsByLevel['FullRatio'])
+                {
+                    $stageActionCounter = 0;
+                }
+
+                $actionKey = $stageActionConf['Action'][$stageActionCounter];
+            }
             $actionAlias = Constant::AutoableAction[$actionKey];
+
+            echo "{$stageActionCounter}: {$actionKey}, {$actionAlias}\n";
 
             # 重試次數
             $retry = 0;
@@ -322,6 +459,12 @@ try
                     if ($syncOutput)
                     {
                         echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_INFO, true);
+                    }
+
+                    if ($inputActionIsArray)
+                    {
+                        # 令階段比例行動計數器加 1
+                        $stageActionCounter++;
                     }
 
                     break;
