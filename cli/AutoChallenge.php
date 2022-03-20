@@ -292,7 +292,7 @@ try
                 if ($resurrect && in_array($opponent, array_keys(PLAYER)))
                 {
                     # 自動復活
-                    $rezResult = $myKirito->autoRez($opponent, $oppCharacter, $logFiles, $detailLogFile, $syncOutput, true);
+                    $rezResult = $myKirito->autoRez($opponent, $oppCharacter, $logFiles, $syncOutput, true);
                 }
                 # 不自動復活
                 else
@@ -462,7 +462,7 @@ try
                         # 自動復活
                         if ($resurrect && in_array($opponent, array_keys(PLAYER)))
                         {
-                            $myKirito->autoRez($opponent, $oppCharacter, $logFiles, $detailLogFile, $syncOutput, true);
+                            $myKirito->autoRez($opponent, $oppCharacter, $logFiles, $syncOutput, true);
                         }
                         # 不自動復活
                         else
