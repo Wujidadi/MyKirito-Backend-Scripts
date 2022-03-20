@@ -78,7 +78,7 @@ class Helper
      */
     public static function IsInteger(mixed $number): bool
     {
-        return is_numeric($number) && bcsub((float) $number, (int) $number, 16) === '0.0000000000000000';
+        return is_numeric($number) && preg_match('/^[\+\-]*\d+$/', $number);
     }
 
     /**
