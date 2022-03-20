@@ -379,11 +379,13 @@ class MyKirito
      *                                       亂設（超出可設範圍）會回 `400 Bad Request` 及 `error: 點數分配錯誤`  
      *                           - `useReset`: 是否使用洗白點數  
      *                           - `useResetBoss`: 是否重置樓層
+     * @param  string  $player   玩家暱稱；忽略時自動代入當前玩家暱稱
      * @return array
      */
-    public function reincarnation(array $payload): array
+    public function reincarnation(array $payload, string $player = null): array
     {
-        $token = PLAYER[$this->_player]['Token'];
+        $player = $player ?? $this->_player;
+        $token = PLAYER[$player]['Token'];
         return $this->_conn->post('my-kirito/reincarnation', $token, $payload);
     }
 
@@ -534,7 +536,14 @@ class MyKirito
      */
     public function autoRez(string $player, string $character, array $logFiles, bool $syncOutput, bool $isOpp = false): bool
     {
-        $oppNote = $isOpp ? '對手' : '';
+        $pRez = null;
+        $oppNote = '';
+
+        if ($isOpp)
+        {
+            $pRez = $player;
+            $oppNote = '對手';
+        }
 
         $logTime = Helper::Time();
         $logMessage = "自動復活{$oppNote}玩家 {$player}……";
@@ -563,8 +572,15 @@ class MyKirito
             'useResetBoss' => false
         ];
 
-        # 注意：為了簡化並節省 log 空間，此處列出的 reincarnation 方法參數並非實際應代入的 payload，而是角色名稱
-        $context = "MyKirito::reincarnation('{$character}')";
+        # 注意：為了簡化並節省 log 空間，此處所列 reincarnation 方法的參數並非實際應代入的 payload，而是角色名稱
+        if ($isOpp)
+        {
+            $context = "MyKirito::reincarnation('{$character}', '{$pRez}')";
+        }
+        else
+        {
+            $context = "MyKirito::reincarnation('{$character}')";
+        }
 
         # 重試次數
         $retry = 0;
@@ -572,7 +588,7 @@ class MyKirito
         # 在最大重試次數內，發送轉生請求
         while ($retry < Constant::MaxRetry)
         {
-            $result = $this->reincarnation($payload);
+            $result = $this->reincarnation($payload, $pRez);
 
             if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
             {
