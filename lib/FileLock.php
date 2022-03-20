@@ -67,6 +67,11 @@ class FileLock
         $path = $this->_basePath . ($path !== '' ? DIRECTORY_SEPARATOR . $path : '');
         $this->_fileLock = $path . DIRECTORY_SEPARATOR . "{$fileName}.lck";
 
+        if (is_file($this->_fileLock))
+        {
+            exit(CLI_EXECUTING);
+        }
+
         $this->_fp = fopen($this->_fileLock, 'w+');
 
         if (flock($this->_fp, LOCK_EX | LOCK_NB) === false)
