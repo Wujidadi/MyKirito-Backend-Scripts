@@ -174,7 +174,7 @@ else
 # 重構行動標的輸入參數，用於輸出日誌及自動通知
 if ($inputActionIsValid)
 {
-    if (!$inputActionArray)
+    if (!isset($inputActionArray))
     {
         $inputActions = [];
         $_action = $action;
