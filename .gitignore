@@ -32,3 +32,4 @@ storage/responses/*
 storage/filelocks
 storage/test/http/API.http
 storage/test/http/TelegramBot.http
+storage/AllUsers*.tsv
