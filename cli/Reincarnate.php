@@ -62,7 +62,7 @@ if (!trim($character))
     echo CliHelper::colorText('轉生角色（set.character）設定不正確！', CLI_TEXT_ERROR, true);
     exit(CLI_ERROR);
 }
-$characterName = Constant::Character[$character];
+$characterName = PLAYER_CHARACTER[$character];
 
 # 輸出模式（預設為僅寫入檔案，不顯示於終端機）
 $syncOutput = isset($option['output']);

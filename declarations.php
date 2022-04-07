@@ -8,6 +8,7 @@ chdir(__DIR__);
 define('BASE_DIR', __DIR__);
 
 # 頂層子目錄
+define('BOOTSTRAP_DIR', BASE_DIR . DIRECTORY_SEPARATOR . 'bootstrap');
 define('CONFIG_DIR', BASE_DIR . DIRECTORY_SEPARATOR . 'configs');
 define('VENDOR_DIR', BASE_DIR . DIRECTORY_SEPARATOR . 'vendor');
 define('LIB_DIR', BASE_DIR . DIRECTORY_SEPARATOR . 'lib');
