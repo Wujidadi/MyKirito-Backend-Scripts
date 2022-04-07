@@ -399,8 +399,6 @@ try
             }
             $actionAlias = Constant::AutoableAction[$actionKey];
 
-            echo "{$stageActionCounter}: {$actionKey}, {$actionAlias}\n";
-
             # 重試次數
             $retry = 0;
 
@@ -584,7 +582,10 @@ catch (Throwable $ex)
     $exType = get_class($ex);
     $exCode = $ex->getCode();
     $exMessage = $ex->getMessage();
-    $logMessage = "{$exType} {$exCode} {$exMessage}";
+    $exLine = $ex->getLine();
+    $exTrace = $ex->getTraceAsString();
+    $shorterMessageForNotification = "Line {$exLine}: {$exType} {$exCode} {$exMessage}";
+    $logMessage = "{$shorterMessageForNotification}\n{$exTrace}";
 
     Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
@@ -595,7 +596,7 @@ catch (Throwable $ex)
 
     if (USE_TELEGRAM_BOT)
     {
-        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'error', $logTime);
+        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $shorterMessageForNotification, 'error', $logTime);
         TelegramBot::getInstance()->sendMessage($notificationMessage);
 
         $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);

@@ -139,7 +139,9 @@ catch (Throwable $ex)
     $exType = get_class($ex);
     $exCode = $ex->getCode();
     $exMessage = $ex->getMessage();
-    $logMessage = "{$exType} {$exCode} {$exMessage}";
+    $exLine = $ex->getLine();
+    $exTrace = $ex->getTraceAsString();
+    $logMessage = "Line {$exLine}: {$exType} {$exCode} {$exMessage}\n{$exTrace}";
 
     Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
