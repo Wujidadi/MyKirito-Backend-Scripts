@@ -582,9 +582,10 @@ catch (Throwable $ex)
     $exType = get_class($ex);
     $exCode = $ex->getCode();
     $exMessage = $ex->getMessage();
+    $exFile = $ex->getFile();
     $exLine = $ex->getLine();
     $exTrace = $ex->getTraceAsString();
-    $shorterMessageForNotification = "Line {$exLine}: {$exType} {$exCode} {$exMessage}";
+    $shorterMessageForNotification = "{$exFile}({$exLine}): {$exType} {$exCode} {$exMessage}";
     $logMessage = "{$shorterMessageForNotification}\n{$exTrace}";
 
     Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
