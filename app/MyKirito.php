@@ -220,7 +220,10 @@ class MyKirito
         $token = PLAYER[$this->_player]['Token'];
         $userName = urlencode($userName);
         $userData = $this->_conn->get("search?nickname={$userName}", $token);
-        if (count($userData['response']['userList']) > 0)
+        if (is_array($userData) &&
+            is_array($userData['response']) &&
+            is_array($userData['response']['userList']) &&
+            count($userData['response']['userList']) > 0)
         {
             # 查得玩家 ID
             $userId = $userData['response']['userList'][0]['uid'];
