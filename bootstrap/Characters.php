@@ -25,6 +25,7 @@ define('PLAYER_CHARACTER', [
     'connie'             => '鎖鏈的康妮',
     'diavel'             => '提亞貝魯',
     'eagle'              => '陸行戰鬥鷹',
+    'eagleHorse'         => '飆速馬',
     'eugene'             => '尤金',
     'eugeo'              => '尤吉歐',
     'fadedRecon'         => '淡忘的回憶',
@@ -94,7 +95,6 @@ define('PLAYER_CHARACTER', [
     // 'dagger'             => '帶毒的匕首',
     // 'dagger2'            => '帶毒的匕首',     # 帶毒的匕首（強大風精靈所持有的短刀）
     // 'deadRecon'          => '亡者雷根',
-    // 'eagleHorse'         => '飆速馬',
     // 'godRecon'           => '神',
     // 'goldenRecon'        => '黃金雷根',
     // 'gorillaKing'        => '猩爆首領',
