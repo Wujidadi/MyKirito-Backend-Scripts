@@ -266,8 +266,21 @@ try
                 }
             }
 
-            # 隨機抽選一位幸運對手
-            $oppKey = count($opponents) > 1 ? mt_rand(0, count($opponents) - 1) : 0;
+            # 選擇挑戰對手，第二輪以後依序毆打
+            if (!isset($oppKey))
+            {
+                # 首輪：隨機抽選一位幸運對手
+                $oppKey = count($opponents) > 1 ? mt_rand(0, count($opponents) - 1) : 0;
+            }
+            else
+            {
+                # 第二輪以後：按照指定的對手玩家列表依序毆打
+                $oppKey++;
+                if ($oppKey >= count($opponents))
+                {
+                    $oppKey = 0;
+                }
+            }
             $opponent = $opponents[$oppKey];
 
             # 確認對手存活
