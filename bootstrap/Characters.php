@@ -71,6 +71,7 @@ define('PLAYER_CHARACTER', [
     'silicon'            => '西莉根',
     'sinon'              => '詩乃',
     // 'starburst'          => '桐人',           # 桐人（雙刀劍士）
+    'starburstFace'      => '星爆臉',
     'stone'              => '石頭',
     'sunsetAndTwoSwords' => '夕陽下的雙刀',
     'theGleameyes'       => '閃耀魔眼',
@@ -103,7 +104,6 @@ define('PLAYER_CHARACTER', [
     // 'leafa2'             => '莉法',
     // 'reconBack'          => '一個強大的背影',
     // 'skyLisbeth'         => '莉茲貝特',       # 莉茲貝特（其實我…喜歡桐人啊！）
-    // 'starburstFace'      => '星爆臉',
     // 'tenThousand'        => '一萬',
     // 'theYuuki'           => '有紀',           # 真正的有紀，不是牙紀
     // 'uwKirito2'          => 'Underworld桐人',
