@@ -266,11 +266,14 @@ try
                 }
             }
 
-            # 選擇挑戰對手，第二輪以後依序毆打
+            # 選擇挑戰對手
             if (!isset($oppKey))
             {
                 # 首輪：隨機抽選一位幸運對手
-                $oppKey = count($opponents) > 1 ? mt_rand(0, count($opponents) - 1) : 0;
+                // $oppKey = count($opponents) > 1 ? mt_rand(0, count($opponents) - 1) : 0;
+
+                # 從指定對手列表中的第一位開始毆打（不隨機抽選了）
+                $oppKey = 0;
             }
             else
             {
@@ -287,7 +290,8 @@ try
             $result = $myKirito->getPlayerByName($opponent);
 
             # 定位對手玩家角色
-            $oppCharacter = explode('.', $result['response']['userList'][0]['avatar'])[0];
+            $oppAvatar = explode('.', $result['response']['userList'][0]['avatar'])[0];
+            $oppCharacter = AVATAR_CHARACTER[$oppAvatar];
 
             # 對手為死亡狀態
             if ($result['response']['userList'][0]['color'] === 'grey')
@@ -345,6 +349,8 @@ try
                         $exitStatus = CLI_OK;
                         goto Endpoint;
                     }
+
+                    continue;
                 }
             }
 

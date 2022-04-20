@@ -267,25 +267,28 @@ class MyKirito
 
             if (isset($result['response']['myKirito']))
             {
-                # 從對戰時間取得戰報 ID，並加入回應資料
+                # 從對戰時間取得戰報 ID
                 $challengeTime = $result['response']['myKirito']['lastChallenge'];
                 $report = $this->getThisAttackReport($opponentUID, $challengeTime);
-                $result['reportId'] = $report['_id'];
 
-                # 查詢當前玩家是否死亡，並加入回應資料
+                # 查詢當前玩家是否死亡
                 $personalData = $this->getPersonalData();
-                $result['dead']['me'] = $personalData['response']['dead'];
 
-                # 查詢對手玩家是否死亡，並加入回應資料
+                # 查詢對手玩家是否死亡
                 $opponentData = $this->getDetailByPlayerName($userName);
-                $result['dead']['opponent'] = $opponentData['response']['profile']['dead'];
 
-                return $result;
+                # 建構回應資料
+                if (is_array($report) && isset($report['_id']) &&
+                    is_array($personalData) && isset($personalData['response']) && is_array($personalData['response']) &&
+                    is_array($opponentData) && isset($opponentData['response']) && is_array($opponentData['response']) && isset($opponentData['response']['profile']))
+                {
+                    $result['reportId'] = $report['_id'];
+                    $result['dead']['me'] = $personalData['response']['dead'];
+                    $result['dead']['opponent'] = $opponentData['response']['profile']['dead'];
+                }
             }
-            else
-            {
-                return $result;
-            }
+
+            return $result;
         }
 
         # 對手不存在時或回應錯誤時，返回預設的空值陣列
