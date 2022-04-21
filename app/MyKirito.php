@@ -425,12 +425,15 @@ class MyKirito
     public function getThisAttackReport(string $opponentId, int $timestamp): array
     {
         $result = $this->getAttackReports();
-        $reports = $result['response']['reports'];
-        foreach ($reports as $report)
+        if (isset($result['response']) && is_array($result['response']) && isset($result['response']['reports']))
         {
-            if ($report['b']['uid'] === $opponentId && $report['timestamp'] === $timestamp)
+            $reports = $result['response']['reports'];
+            foreach ($reports as $report)
             {
-                return $report;
+                if ($report['b']['uid'] === $opponentId && $report['timestamp'] === $timestamp)
+                {
+                    return $report;
+                }
             }
         }
         return [];
