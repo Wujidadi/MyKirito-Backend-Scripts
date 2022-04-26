@@ -17,7 +17,7 @@ define('PLAYER_CHARACTER', [
     'aloSilica'          => 'ALO西莉卡',
     'aloSinon'           => 'ALO詩乃',
     'asuna'              => '亞絲娜',
-    // 'awakenedKobatz'     => '柯巴茲',        # 柯巴茲（覺醒之人）
+    'awakenedKobatz'     => '柯巴茲',        # 柯巴茲（覺醒之人）
     'blackRabbit'        => '黑色雜燴兔',
     // 'blacktea'           => '藍染的紅茶',
     'blueRecon'          => '色違雷根',
@@ -116,7 +116,7 @@ define('AVATAR_CHARACTER', [
     'aloSinon'           => 'aloSinon',
     'armour'             => 'reiner',            # 萊納·布朗（鎧之巨人）
     'asuna'              => 'asuna',
-    // 'awakenedKobatz'     => 'awakenedKobatz',    # 柯巴茲（覺醒之人）
+    'awakenedKobatz'     => 'awakenedKobatz',    # 柯巴茲（覺醒之人）
     'blackRabbit'        => 'blackRabbit',
     // 'blacktea'           => 'blacktea',
     'blueRecon'          => 'blueRecon',
