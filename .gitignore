@@ -23,13 +23,4 @@ vendor/
 cli/Test.php
 configs/Players.php
 configs/TelegramBot.php
-storage/configs/*
-!storage/configs/codes
-!storage/configs/examples
-storage/logs
-storage/responses/*
-!storage/responses/examples
-storage/filelocks
-storage/test/http/API.http
-storage/test/http/TelegramBot.http
 storage/AllUsers*.tsv
