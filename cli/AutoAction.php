@@ -267,17 +267,25 @@ try
                     echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                 }
 
-                if (USE_TELEGRAM_BOT)
+                if (STRICT_GO_TO_END_WHEN_FAIL)
                 {
-                    $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'error', $logTime);
-                    TelegramBot::getInstance()->sendMessage($notificationMessage);
+                    if (USE_TELEGRAM_BOT)
+                    {
+                        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'error', $logTime);
+                        TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-                    $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
-                    Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                        $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                        Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                    }
+
+                    $exitStatus = CLI_ERROR;
+                    goto Endpoint;
                 }
-
-                $exitStatus = CLI_ERROR;
-                goto Endpoint;
+                else
+                {
+                    sleep(Constant::GotoNextRoundInterval);
+                    continue 2;
+                }
             }
         }
 

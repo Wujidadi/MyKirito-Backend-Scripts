@@ -182,17 +182,25 @@ try
                     echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                 }
 
-                if (USE_TELEGRAM_BOT)
+                if (STRICT_GO_TO_END_WHEN_FAIL)
                 {
-                    $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'error', $logTime);
-                    TelegramBot::getInstance()->sendMessage($notificationMessage);
+                    if (USE_TELEGRAM_BOT)
+                    {
+                        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $logMessage, 'error', $logTime);
+                        TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-                    $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
-                    Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                        $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                        Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                    }
+
+                    $exitStatus = CLI_ERROR;
+                    goto Endpoint;
                 }
-
-                $exitStatus = CLI_ERROR;
-                goto Endpoint;
+                else
+                {
+                    sleep(Constant::GotoNextRoundInterval);
+                    continue 2;
+                }
             }
         }
 
@@ -274,14 +282,18 @@ try
 
                 # 從指定對手列表中的第一位開始毆打（不隨機抽選了）
                 $oppKey = 0;
+
+                # 「這個對手我打過了！」旗標
+                $iveFoughtThisOpp = false;
             }
-            else
+            else if ($iveFoughtThisOpp)
             {
                 # 第二輪以後：按照指定的對手玩家列表依序毆打
                 $oppKey++;
                 if ($oppKey >= count($opponents))
                 {
                     $oppKey = 0;
+                    $iveFoughtThisOpp = false;
                 }
             }
             $opponent = $opponents[$oppKey];
@@ -323,6 +335,11 @@ try
                 {
                     echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                 }
+
+                # 直接前往下一輪（保持當前對手）
+                $iveFoughtThisOpp = false;
+                sleep(Constant::GotoNextRoundInterval);
+                continue;
             }
 
             # 定位對手玩家角色
@@ -406,10 +423,20 @@ try
                 {
                     CliHelper::logError($result, $logFiles, $context, $syncOutput);
 
-                    $retry++;
-
-                    # 每次重試間隔
-                    sleep(Constant::RetryInterval);
+                    # 400 冷卻中直接前往下一輪
+                    if ($result['httpStatusCode'] === 400 &&
+                        isset($result['response']['error']) && $result['response']['error'] === '還在冷卻中')
+                    {
+                        $iveFoughtThisOpp = true;
+                        sleep(Constant::GotoNextRoundInterval);
+                        continue 2;
+                    }
+                    # 其他狀況繼續重試直到最大次數
+                    else
+                    {
+                        $retry++;
+                        sleep(Constant::RetryInterval);
+                    }
                 }
                 else
                 {
@@ -420,6 +447,8 @@ try
                     $challengeResult = $response['result'];
                     $playerIsKilled = $result['dead']['me'];
                     $opponentIsKilled = $result['dead']['opponent'];
+
+                    $iveFoughtThisOpp = true;
 
                     $logMessage = [
                         'brief' => "{$player} vs {$opponent} {$challengeResult}",
@@ -585,6 +614,11 @@ try
                 {
                     echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                 }
+
+                # 直接前往下一輪（保持當前對手）
+                $iveFoughtThisOpp = false;
+                sleep(Constant::GotoNextRoundInterval);
+                continue;
             }
         }
 

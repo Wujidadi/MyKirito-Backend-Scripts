@@ -22,6 +22,11 @@ class Constant
     const RetryInterval = 1;
 
     /**
+     * `STRICT_GO_TO_END_WHEN_FAIL` 為 `false` 時，腳本遇非本地程式錯誤，直接跳到下一輪的間隔（秒）
+     */
+    const GotoNextRoundInterval = 10;
+
+    /**
      * 冷卻時間緩衝（毫秒），避免本地與伺服器時間誤差
      *
      * @var integer
