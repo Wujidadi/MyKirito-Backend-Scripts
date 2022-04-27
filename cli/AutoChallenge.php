@@ -286,8 +286,44 @@ try
             }
             $opponent = $opponents[$oppKey];
 
-            # 確認對手存活
-            $result = $myKirito->getPlayerByName($opponent);
+            # 重置重試次數
+            $retry = 0;
+
+            # 執行上下文
+            $context = "MyKirito::getPlayerByName('{$opponent}')";
+
+            # 在最大重試次數內，發送請求以取得對手資料
+            while ($retry < Constant::MaxRetry)
+            {
+                $result = $myKirito->getPlayerByName($opponent);
+
+                if (isset($result['response']) && is_array($result['response']))
+                {
+                    break;
+                }
+                else
+                {
+                    CliHelper::logError($result, $logFiles, $context, $syncOutput);
+
+                    $retry++;
+
+                    # 每次重試間隔
+                    sleep(Constant::RetryInterval);
+                }
+            }
+
+            # 達到重試次數上限仍然失敗
+            if ($retry >= Constant::MaxRetry)
+            {
+                $logTime = Helper::Time();
+                $logMessage = "{$context} 重試 {$retry} 次失敗";
+                Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+
+                if ($syncOutput)
+                {
+                    echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
+                }
+            }
 
             # 定位對手玩家角色
             $oppAvatar = explode('.', $result['response']['userList'][0]['avatar'])[0];
@@ -354,7 +390,7 @@ try
                 }
             }
 
-            # 重試次數
+            # 重置重試次數
             $retry = 0;
 
             # 執行上下文
