@@ -28,7 +28,7 @@ define('PLAYER_CHARACTER', [
     // 'coolKirito'         => '酷桐人',
     // 'dagger'             => '帶毒的匕首',
     // 'dagger2'            => '帶毒的匕首',    # 帶毒的匕首（強大風精靈所持有的短刀）
-    // 'deadRecon'          => '亡者雷根',
+    'deadRecon'          => '亡者雷根',
     'diavel'             => '提亞貝魯',
     'eagle'              => '陸行戰鬥鷹',
     'eagleHorse'         => '飆速馬',
@@ -129,7 +129,7 @@ define('AVATAR_CHARACTER', [
     // 'coolKirito'         => 'coolKirito',
     // 'dagger'             => 'dagger',
     // 'dagger2'            => 'dagger2',           # 帶毒的匕首（強大風精靈所持有的短刀）
-    // 'deadRecon'          => 'deadRecon',
+    'deadRecon'          => 'deadRecon',
     'diavel'             => 'diavel',
     'eagle'              => 'eagle',
     'eagleHorse'         => 'eagleHorse',
