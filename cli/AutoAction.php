@@ -375,11 +375,11 @@ try
             {
                 foreach ($action as $actionsByLevel)
                 {
-                    # 停在碰到的第一個 MaxLevel 大於等於當前等級的階段設定
+                    # 停在碰到的第一個 MaxLevel 大於當前等級的階段設定
                     # 當前等級超過設定的 MaxLevel 最大值（未設定直到 70 級的行動比例）時，將 MaxLevel 為最大值（即 for loop 最後跑到）的階段比例設定
-                    if ($actionsByLevel['MaxLevel'] >= $myLevel)
+                    if ($actionsByLevel['MaxLevel'] > $myLevel)
                     {
-                        break;    
+                        break;
                     }
                 }
 
