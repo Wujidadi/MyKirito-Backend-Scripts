@@ -19,15 +19,14 @@ define('PLAYER_CHARACTER', [
     'asuna'              => '亞絲娜',
     'awakenedKobatz'     => '柯巴茲',        # 柯巴茲（覺醒之人）
     'blackRabbit'        => '黑色雜燴兔',
-    // 'blacktea'           => '藍染的紅茶',
+    'blacktea'           => '藍染的紅茶',
     'blueRecon'          => '色違雷根',
     'bradley'            => '金·布拉德雷',
     'busuna'             => '聖誕巴士',
     'charizardX'         => '超級噴火龍X',
     'connie'             => '鎖鏈的康妮',
-    // 'coolKirito'         => '酷桐人',
-    // 'dagger'             => '帶毒的匕首',
-    // 'dagger2'            => '帶毒的匕首',    # 帶毒的匕首（強大風精靈所持有的短刀）
+    'coolKirito'         => '酷桐人',
+    'dagger'             => '帶毒的匕首',
     'deadRecon'          => '亡者雷根',
     'diavel'             => '提亞貝魯',
     'eagle'              => '陸行戰鬥鷹',
@@ -39,15 +38,15 @@ define('PLAYER_CHARACTER', [
     'geodude'            => '星爆小拳石',
     'ggoKirito'          => 'GGO桐人',
     'godfree'            => '哥德夫利',
-    // 'godRecon'           => '神',
+    'godRecon'           => '神',
     'goldenRecon'        => '黃金雷根',
     'gorilla'            => '猩爆戰象',
     'gorillaCrow'        => '猩爆鴉',
-    // 'gorillaKing'        => '猩爆首領',
+    'gorillaKing'        => '猩爆首領',
     'graveler'           => '星爆隆隆石',
     'guanYu'             => '關羽',
     'hatsumi'            => '初見泉',
-    // 'heathcliff'         => '希茲克利夫',    # 希茲克利夫（漢壽亭侯），作者（茅場晶彥）帳號，應該是不可用角色
+    'heathcliff'         => '希茲克利夫',    # 希茲克利夫（漢壽亭侯），作者（茅場晶彥）帳號，應該是不可用角色
     'hina'               => '天野陽菜',
     'hinamori'           => '雛森桃',
     'hitsugaya'          => '日番谷冬獅郎',
@@ -81,10 +80,10 @@ define('PLAYER_CHARACTER', [
     'starburstFace'      => '星爆臉',
     'stone'              => '石頭',
     'sunsetAndTwoSwords' => '夕陽下的雙刀',
-    // 'tenThousand'        => '一萬',
+    'tenThousand'        => '一萬',
     'theGleameyes'       => '閃耀魔眼',
     'theYuuki'           => '有紀',          # 真正的有紀，不是牙紀
-    // 'uwKirito'           => 'Underworld桐人',
+    'uwKirito'           => 'Underworld桐人',
     'xmasAgil'           => '兩隻麋鹿',
     'xmasGleameyes'      => '聖誕魔眼',
     'xmasKirito'         => '聖誕桐人',
@@ -93,7 +92,7 @@ define('PLAYER_CHARACTER', [
     'xmasSilica'         => '聖誕西莉卡',
     'xmasSinon'          => '聖誕詩乃',
     'yuuki'              => '有紀',
-    // 'yuuki24'            => '有紀'           # 玩家列表榜首有紀，用來拿真・有紀的 NPC，應該是不可用角色
+    'yuuki24'            => '有紀'           # 玩家列表榜首有紀，用來拿真・有紀的 NPC，應該是不可用角色
 ]);
 
 /**
@@ -118,7 +117,7 @@ define('AVATAR_CHARACTER', [
     'asuna'              => 'asuna',
     'awakenedKobatz'     => 'awakenedKobatz',    # 柯巴茲（覺醒之人）
     'blackRabbit'        => 'blackRabbit',
-    // 'blacktea'           => 'blacktea',
+    'blacktea'           => 'blacktea',
     'blueRecon'          => 'blueRecon',
     'bradley'            => 'bradley',
     'bradley2'           => 'bradley',           # 金·布拉德雷（人造人「憤怒」）
@@ -126,9 +125,9 @@ define('AVATAR_CHARACTER', [
     'charizardX'         => 'charizardX',
     'connie'             => 'connie',
     'coolEugeo'          => 'eugeo',             # 尤吉歐（Cool尤吉歐），死亡狀態
-    // 'coolKirito'         => 'coolKirito',
-    // 'dagger'             => 'dagger',
-    // 'dagger2'            => 'dagger2',           # 帶毒的匕首（強大風精靈所持有的短刀）
+    'coolKirito'         => 'coolKirito',
+    'dagger'             => 'dagger',
+    'dagger2'            => 'dagger',           # 帶毒的匕首（強大風精靈所持有的短刀）
     'deadRecon'          => 'deadRecon',
     'diavel'             => 'diavel',
     'eagle'              => 'eagle',
@@ -140,16 +139,16 @@ define('AVATAR_CHARACTER', [
     'geodude'            => 'geodude',
     'ggoKirito'          => 'ggoKirito',
     'godfree'            => 'godfree',
-    // 'godRecon'           => 'godRecon',
+    'godRecon'           => 'godRecon',
     'goldenRecon'        => 'goldenRecon',
     'gorilla'            => 'gorilla',
     'gorillaCrow'        => 'gorillaCrow',
-    // 'gorillaKing'        => 'gorillaKing',
+    'gorillaKing'        => 'gorillaKing',
     'graveler'           => 'graveler',
     'guanYu'             => 'guanYu',
     'guanYuDevil'        => 'guanYu',            # 關羽（魔）
     'hatsumi'            => 'hatsumi',
-    // 'heathcliff'         => 'heathcliff',        # 希茲克利夫（漢壽亭侯），作者（茅場晶彥）帳號
+    'heathcliff'         => 'heathcliff',        # 希茲克利夫（漢壽亭侯），作者（茅場晶彥）帳號
     'hina'               => 'hina',
     'hinamori'           => 'hinamori',
     'hinamori-killed'    => 'hinamori',          # 雛森桃（刀鞘），死亡狀態
@@ -189,10 +188,10 @@ define('AVATAR_CHARACTER', [
     'starburstFace'      => 'starburstFace',
     'stone'              => 'stone',
     'sunsetAndTwoSwords' => 'sunsetAndTwoSwords',
-    // 'tenThousand'        => 'tenThousand',
+    'tenThousand'        => 'tenThousand',
     'theGleameyes'       => 'theGleameyes',
     'theYuuki'           => 'theYuuki',          # 真正的有紀，不是牙紀
-    // 'uwKirito2'          => 'uwKirito',
+    'uwKirito2'          => 'uwKirito',
     'xmasAgil'           => 'xmasAgil',
     'xmasGleameyes'      => 'xmasGleameyes',
     'xmasKirito'         => 'xmasKirito',
@@ -201,5 +200,5 @@ define('AVATAR_CHARACTER', [
     'xmasSilica'         => 'xmasSilica',
     'xmasSinon'          => 'xmasSinon',
     'yuuki'              => 'yuuki',             # 牙紀
-    // 'yuuki24'            => 'yuuki24'            # 玩家列表榜首有紀，用來拿真・有紀的 NPC，應該是不可轉生
+    'yuuki24'            => 'yuuki24'            # 玩家列表榜首有紀，用來拿真・有紀的 NPC，應該是不可轉生
 ]);
