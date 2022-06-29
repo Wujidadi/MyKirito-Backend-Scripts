@@ -205,7 +205,8 @@ try
         }
 
         # 從玩家基本資訊中取出玩家角色、最後挑戰時間與死亡狀態
-        $myCharacter = explode('.', $response['avatar'])[0];
+        $avatar = explode('.', $response['avatar'])[0];
+        $myCharacter = AVATAR_CHARACTER[$avatar];
         $lastChallenge = $response['lastChallenge'];
         $playerIsDead = $response['dead'];
 

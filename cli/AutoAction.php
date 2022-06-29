@@ -290,7 +290,8 @@ try
         }
 
         # 從玩家基本資訊中取出玩家角色、等級、最後行動時間、最後領取樓層獎勵時間、當前所在樓層與死亡狀態
-        $myCharacter = explode('.', $response['avatar'])[0];
+        $avatar = explode('.', $response['avatar'])[0];
+        $myCharacter = AVATAR_CHARACTER[$avatar];
         $myLevel = $response['lv'];
         $lastAction = $response['lastAction'];
         $lastFloorBonus = $response['lastFloorBonus'] ?? null;
