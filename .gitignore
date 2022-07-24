@@ -24,4 +24,5 @@ cli/Test.php
 configs/Players.php
 configs/TelegramBot.php
 storage/others/PlayerListToCheckAlive.php
+storage/AllUsers*.7z
 storage/AllUsers*.tsv
