@@ -22,7 +22,7 @@ $scriptName = basename(__FILE__);
 $cliName = basename(__FILE__, '.php');
 
 # 由命令行參數指定玩家暱稱、行動標的、是否領取樓層獎勵、是否自動復活及輸出模式
-$option = getopt('', ['player:', 'action:', 'no-bonus', 'rez', 'output']);
+$option = getopt('', ['player:', 'action:', 'no-bonus', 'rez', 'after70:', 'output']);
 
 # 玩家暱稱
 if (!isset($option['player']) || $option['player'] === '')
@@ -207,6 +207,17 @@ $noBonus = isset($option['no-bonus']);
 # 自動復活（預設為不自動復活）
 $resurrect = isset($option['rez']);
 
+# 滿等以後行動模式（-1 = 停止腳本；0 = 停止動作但腳本繼續執行；1 = 繼續動作
+$after70 = isset($option['after70']) ? (int) $option['after70'] : 0;
+if ($after70 < -1)
+{
+    $after70 = -1;
+}
+else if ($after70 > 1)
+{
+    $after70 = 1;
+}
+
 # 輸出模式（預設為僅寫入檔案，不顯示於終端機）
 $syncOutput = isset($option['output']);
 
@@ -215,8 +226,9 @@ $argPlayer  = " --player={$player}";
 $argAction  = " --action={$inputAction}";
 $argNoBonus = $noBonus ? ' --no-bonus' : '';
 $argRez     = $resurrect ? ' --rez' : '';
+$argAfter70 = " --after70={$after70}"; 
 $argOutput  = $syncOutput ? ' --output' : '';
-$fullCommand = "{$scriptName}{$argPlayer}{$argAction}{$argNoBonus}{$argRez}{$argOutput}";
+$fullCommand = "{$scriptName}{$argPlayer}{$argAction}{$argNoBonus}{$argRez}{$argAfter70}{$argOutput}";
 
 # 自動通知訊息的標題（首段）
 $notificationTitle = '自動行動腳本停止執行';
@@ -267,7 +279,7 @@ try
                     echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                 }
 
-                if (STRICT_GO_TO_END_WHEN_FAIL)
+                if (STRICT_GO_TO_END_WHEN_FAIL || $result['httpStatusCode'] == 401)
                 {
                     if (USE_TELEGRAM_BOT)
                     {
@@ -298,17 +310,69 @@ try
         $floor = $response['floor'];
         $playerIsDead = $response['dead'];
 
-        # 取得現在時間
-        $now = Helper::Timestamp() * 1000;
-
-        # 已過行動冷卻時間
-        if (($now - $lastAction) > (Constant::ActionCD + Constant::CooldownBuffer))
+        # 滿等以後的行動模式
+        if ($myLevel >= 70)
         {
-            # 確認玩家本身是否存活
-            if ($playerIsDead)
+            switch ($after70)
+            {
+                # 1 = 依設定繼續行動，直接跳出 switch case
+                case 1:
+                    break;
+
+                # -1 = 中斷腳本，記錄 Log 後直接跳到終點
+                case -1:
+                    $logTime = Helper::Time();
+                    $logMessage = '滿等後自動結束腳本運行';
+                    Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+                    goto Endpoint;
+
+                # 0（預設值） = 停止行動但腳本繼續執行，會檢查玩家是否死亡
+                case 0:
+                default:
+                    $logTime = Helper::Time();
+                    $logMessage = '滿等後不採取行動';
+                    Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+                    break;
+            }
+        }
+
+        # 確認玩家本身是否存活
+        if ($playerIsDead)
+        {
+            $logTime = Helper::Time();
+            $logMessage = "玩家 {$player} 已死亡";
+            Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+
+            if ($syncOutput)
+            {
+                echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
+            }
+
+            # 自動復活
+            if ($resurrect)
+            {
+                $rezResult = $myKirito->autoRez($player, $myCharacter, $logFiles, $syncOutput);
+                if (!$rezResult)
+                {
+                    if (USE_TELEGRAM_BOT)
+                    {
+                        $message = "玩家 {$player} 已死亡，自動復活失敗";
+                        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'error', $logTime);
+                        TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                        $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                        Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                    }
+
+                    $exitStatus = CLI_ERROR;
+                    goto Endpoint;
+                }
+            }
+            # 不自動復活
+            else
             {
                 $logTime = Helper::Time();
-                $logMessage = "玩家 {$player} 已死亡";
+                $logMessage = "不自動復活玩家 {$player}";
                 Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
                 if ($syncOutput)
@@ -316,53 +380,33 @@ try
                     echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
                 }
 
-                # 自動復活
-                if ($resurrect)
+                if (USE_TELEGRAM_BOT)
                 {
-                    $rezResult = $myKirito->autoRez($player, $myCharacter, $logFiles, $syncOutput);
-                    if (!$rezResult)
-                    {
-                        if (USE_TELEGRAM_BOT)
-                        {
-                            $message = "玩家 {$player} 已死亡，自動復活失敗";
-                            $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'error', $logTime);
-                            TelegramBot::getInstance()->sendMessage($notificationMessage);
+                    $message = "玩家 {$player} 已死亡，不自動復活";
+                    $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                    TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-                            $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
-                            Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
-                        }
-
-                        $exitStatus = CLI_ERROR;
-                        goto Endpoint;
-                    }
+                    $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                    Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
                 }
-                # 不自動復活
-                else
-                {
-                    $logTime = Helper::Time();
-                    $logMessage = "不自動復活玩家 {$player}";
-                    Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
-                    if ($syncOutput)
-                    {
-                        echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
-                    }
-
-                    if (USE_TELEGRAM_BOT)
-                    {
-                        $message = "玩家 {$player} 已死亡，不自動復活";
-                        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
-                        TelegramBot::getInstance()->sendMessage($notificationMessage);
-
-                        $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
-                        Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
-                    }
-
-                    $exitStatus = CLI_OK;
-                    goto Endpoint;
-                }
+                $exitStatus = CLI_OK;
+                goto Endpoint;
             }
+        }
 
+        # 設定滿等後不動作，檢查完死活即準備跳到下一循環
+        if ($myLevel >= 70 && $after70 === 0)
+        {
+            goto LoopWithoutAction;
+        }
+
+        # 取得現在時間
+        $now = Helper::Timestamp() * 1000;
+
+        # 已過行動冷卻時間
+        if (($now - $lastAction) > (Constant::ActionCD + Constant::CooldownBuffer))
+        {
             # 決定行動標的
             # 輸入的行動標的為數字或字串（未以 JSON 指定）
             if (!$inputActionIsArray)
@@ -579,6 +623,9 @@ try
                 }
             }
         }
+
+        # 跳過循環行動，等待後直接進入下一輪
+        LoopWithoutAction:
 
         # 每次執行間隔
         sleep(Constant::ActionRoundInterval);

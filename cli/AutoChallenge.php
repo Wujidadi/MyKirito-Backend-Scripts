@@ -62,42 +62,42 @@ if (!isset($option['opp']) || $option['opp'] === '')
     exit(CLI_ERROR);
 }
 $opponents = explode(',', $option['opp']);
-foreach ($opponents as $opp)
-{
-    $invalidOpponent = false;
-    $warningMessage = '';
+// foreach ($opponents as $opp)
+// {
+//     $invalidOpponent = false;
+//     $warningMessage = '';
 
-    $result = $myKirito->getPlayerByName($opp);
-    if (!isset($result['response']['userList']) || count($result['response']['userList']) <= 0)
-    {
-        $invalidOpponent = true;
-        $warningMessage = "對手玩家 {$opp} 不存在";
-    }
-    else if ($result['response']['userList'][0]['color'] === 'grey')
-    {
-        $invalidOpponent = true;
-        $warningMessage = "對手玩家 {$opp} 已死亡";
-    }
-    else if ($result['response']['userList'][0]['nickname'] === $player)
-    {
-        $invalidOpponent = true;
-        $warningMessage = "你怎麼能跟自己單挑呢？";
-    }
+//     $result = $myKirito->getPlayerByName($opp);
+//     if (!isset($result['response']['userList']) || count($result['response']['userList']) <= 0)
+//     {
+//         $invalidOpponent = true;
+//         $warningMessage = "對手玩家 {$opp} 不存在";
+//     }
+//     else if ($result['response']['userList'][0]['color'] === 'grey')
+//     {
+//         $invalidOpponent = true;
+//         $warningMessage = "對手玩家 {$opp} 已死亡";
+//     }
+//     else if ($result['response']['userList'][0]['nickname'] === $player)
+//     {
+//         $invalidOpponent = true;
+//         $warningMessage = "你怎麼能跟自己單挑呢？";
+//     }
 
-    if ($invalidOpponent)
-    {
-        $index = array_search($opp, $opponents);
-        unset($opponents[$index]);
-        echo CliHelper::colorText($warningMessage, CLI_TEXT_CAUTION, true);
-    }
-}
-$opponents = array_values($opponents);
-if (count($opponents) <= 0)
-{
-    echo CliHelper::colorText('指定的對手玩家要不都不存在，要不就是死了，不然就是你亂定！', CLI_TEXT_ERROR, true);
-    unset($myKirito);
-    exit(CLI_ERROR);
-}
+//     if ($invalidOpponent)
+//     {
+//         $index = array_search($opp, $opponents);
+//         unset($opponents[$index]);
+//         echo CliHelper::colorText($warningMessage, CLI_TEXT_CAUTION, true);
+//     }
+// }
+// $opponents = array_values($opponents);
+// if (count($opponents) <= 0)
+// {
+//     echo CliHelper::colorText('指定的對手玩家要不都不存在，要不就是死了，不然就是你亂定！', CLI_TEXT_ERROR, true);
+//     unset($myKirito);
+//     exit(CLI_ERROR);
+// }
 $opponent = implode(',', $opponents);
 
 # 挑戰類型
@@ -182,7 +182,7 @@ try
                     echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
                 }
 
-                if (STRICT_GO_TO_END_WHEN_FAIL)
+                if (STRICT_GO_TO_END_WHEN_FAIL || $result['httpStatusCode'] == 401)
                 {
                     if (USE_TELEGRAM_BOT)
                     {
@@ -210,17 +210,43 @@ try
         $lastChallenge = $response['lastChallenge'];
         $playerIsDead = $response['dead'];
 
-        # 更新現在時間
-        $now = Helper::Timestamp() * 1000;
-
-        # 已過挑戰冷卻時間
-        if (($now - $lastChallenge) > (Constant::ChallengeCD + Constant::CooldownBuffer))
+        # 確認玩家本身是否存活
+        if ($playerIsDead)
         {
-            # 確認玩家本身是否存活
-            if ($playerIsDead)
+            $logTime = Helper::Time();
+            $logMessage = "玩家 {$player} 已死亡";
+            Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+
+            if ($syncOutput)
+            {
+                echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
+            }
+
+            # 自動復活
+            if ($resurrect)
+            {
+                $rezResult = $myKirito->autoRez($player, $myCharacter, $logFiles, $syncOutput);
+                if (!$rezResult)
+                {
+                    if (USE_TELEGRAM_BOT)
+                    {
+                        $message = "玩家 {$player} 已死亡，自動復活失敗";
+                        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'error', $logTime);
+                        TelegramBot::getInstance()->sendMessage($notificationMessage);
+
+                        $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                        Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                    }
+
+                    $exitStatus = CLI_ERROR;
+                    goto Endpoint;
+                }
+            }
+            # 不自動復活
+            else
             {
                 $logTime = Helper::Time();
-                $logMessage = "玩家 {$player} 已死亡";
+                $logMessage = "不自動復活玩家 {$player}";
                 Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
                 if ($syncOutput)
@@ -228,75 +254,46 @@ try
                     echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
                 }
 
-                # 自動復活
-                if ($resurrect)
+                if (USE_TELEGRAM_BOT)
                 {
-                    $rezResult = $myKirito->autoRez($player, $myCharacter, $logFiles, $syncOutput);
-                    if (!$rezResult)
-                    {
-                        if (USE_TELEGRAM_BOT)
-                        {
-                            $message = "玩家 {$player} 已死亡，自動復活失敗";
-                            $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'error', $logTime);
-                            TelegramBot::getInstance()->sendMessage($notificationMessage);
+                    $message = "玩家 {$player} 已死亡，不自動復活";
+                    $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                    TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-                            $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
-                            Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
-                        }
-
-                        $exitStatus = CLI_ERROR;
-                        goto Endpoint;
-                    }
+                    $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                    Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
                 }
-                # 不自動復活
-                else
-                {
-                    $logTime = Helper::Time();
-                    $logMessage = "不自動復活玩家 {$player}";
-                    Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
-                    if ($syncOutput)
-                    {
-                        echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
-                    }
-
-                    if (USE_TELEGRAM_BOT)
-                    {
-                        $message = "玩家 {$player} 已死亡，不自動復活";
-                        $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
-                        TelegramBot::getInstance()->sendMessage($notificationMessage);
-
-                        $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
-                        Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
-                    }
-
-                    $exitStatus = CLI_OK;
-                    goto Endpoint;
-                }
+                $exitStatus = CLI_OK;
+                goto Endpoint;
             }
+        }
 
-            # 選擇挑戰對手
-            if (!isset($oppKey))
+        # 更新現在時間
+        $now = Helper::Timestamp() * 1000;
+
+        # 已過挑戰冷卻時間
+        if (($now - $lastChallenge) > (Constant::ChallengeCD + Constant::CooldownBuffer))
+        {
+            # 取得挑戰對手序數
+            $oppKeyFile = STORAGE_DIR . DIRECTORY_SEPARATOR . 'flags' . DIRECTORY_SEPARATOR . 'AutoChallenge' . DIRECTORY_SEPARATOR . 'oppkeys' . DIRECTORY_SEPARATOR . $player . '.oppkey'; 
+            $oppKey = (int) trim(file_get_contents($oppKeyFile));
+
+            # 初始化或重置「這個對手我打過了！」旗標
+            if (!isset($iveFoughtThisOpp) || $iveFoughtThisOpp === true)
             {
-                # 首輪：隨機抽選一位幸運對手
-                // $oppKey = count($opponents) > 1 ? mt_rand(0, count($opponents) - 1) : 0;
-
-                # 從指定對手列表中的第一位開始毆打（不隨機抽選了）
-                $oppKey = 0;
-
-                # 「這個對手我打過了！」旗標
                 $iveFoughtThisOpp = false;
-            }
-            else if ($iveFoughtThisOpp)
-            {
-                # 第二輪以後：按照指定的對手玩家列表依序毆打
+
+                # 更新挑戰對手序數
                 $oppKey++;
                 if ($oppKey >= count($opponents))
                 {
                     $oppKey = 0;
-                    $iveFoughtThisOpp = false;
                 }
+                file_put_contents($oppKeyFile, $oppKey);
             }
+
+            # 選定挑戰對手
             $opponent = $opponents[$oppKey];
 
             # 重置重試次數
@@ -377,32 +374,32 @@ try
                         echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
                     }
 
-                    # 將對手玩家暱稱從對手清單中移除
-                    unset($opponents[$oppKey]);
-                    $opponents = array_values($opponents);
+                    // # 將對手玩家暱稱從對手清單中移除
+                    // unset($opponents[$oppKey]);
+                    // $opponents = array_values($opponents);
 
-                    # 對手清單被清空時跳出
-                    if (count($opponents) <= 0)
-                    {
-                        $message = '所有對手玩家均已死亡，且不自動復活';
+                    // # 對手清單被清空時跳出
+                    // if (count($opponents) <= 0)
+                    // {
+                    //     $message = '所有對手玩家均已死亡，且不自動復活';
 
-                        if ($syncOutput)
-                        {
-                            echo CliHelper::colorText($message, CLI_TEXT_WARNING, true);
-                        }
+                    //     if ($syncOutput)
+                    //     {
+                    //         echo CliHelper::colorText($message, CLI_TEXT_WARNING, true);
+                    //     }
 
-                        if (USE_TELEGRAM_BOT)
-                        {
-                            $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
-                            TelegramBot::getInstance()->sendMessage($notificationMessage);
+                    //     if (USE_TELEGRAM_BOT)
+                    //     {
+                    //         $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                    //         TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-                            $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
-                            Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
-                        }
+                    //         $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                    //         Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                    //     }
 
-                        $exitStatus = CLI_OK;
-                        goto Endpoint;
-                    }
+                    //     $exitStatus = CLI_OK;
+                    //     goto Endpoint;
+                    // }
 
                     continue;
                 }
@@ -424,11 +421,11 @@ try
                 {
                     CliHelper::logError($result, $logFiles, $context, $syncOutput);
 
-                    # 400 冷卻中直接前往下一輪
+                    # 400 冷卻中直接前往下一輪（保持當前對手）
                     if ($result['httpStatusCode'] === 400 &&
                         isset($result['response']['error']) && $result['response']['error'] === '還在冷卻中')
                     {
-                        $iveFoughtThisOpp = true;
+                        $iveFoughtThisOpp = false;
                         sleep(Constant::GotoNextRoundInterval);
                         continue 2;
                     }
@@ -561,32 +558,32 @@ try
                                 echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
                             }
 
-                            # 將對手玩家暱稱從對手清單中移除
-                            unset($opponents[$oppKey]);
-                            $opponents = array_values($opponents);
+                            // # 將對手玩家暱稱從對手清單中移除
+                            // unset($opponents[$oppKey]);
+                            // $opponents = array_values($opponents);
 
-                            # 對手清單被清空時跳出
-                            if (count($opponents) <= 0)
-                            {
-                                $message = '所有對手玩家均已死亡，且不自動復活';
+                            // # 對手清單被清空時跳出
+                            // if (count($opponents) <= 0)
+                            // {
+                            //     $message = '所有對手玩家均已死亡，且不自動復活';
 
-                                if ($syncOutput)
-                                {
-                                    echo CliHelper::colorText($message, CLI_TEXT_WARNING, true);
-                                }
+                            //     if ($syncOutput)
+                            //     {
+                            //         echo CliHelper::colorText($message, CLI_TEXT_WARNING, true);
+                            //     }
 
-                                if (USE_TELEGRAM_BOT)
-                                {
-                                    $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
-                                    TelegramBot::getInstance()->sendMessage($notificationMessage);
+                            //     if (USE_TELEGRAM_BOT)
+                            //     {
+                            //         $notificationMessage = NotificationHelper::buildNotificationMessage($notificationTitle, $fullCommand, $message, 'normal', $logTime);
+                            //         TelegramBot::getInstance()->sendMessage($notificationMessage);
 
-                                    $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
-                                    Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
-                                }
+                            //         $notificationMessage = NotificationHelper::buildNotificationLogMessage($notificationMessage);
+                            //         Logger::getInstance()->log($notificationMessage, $notificationLogFile, false, $logTime);
+                            //     }
 
-                                $exitStatus = CLI_OK;
-                                goto Endpoint;
-                            }
+                            //     $exitStatus = CLI_OK;
+                            //     goto Endpoint;
+                            // }
                         }
                     }
                     # 無人死亡
