@@ -374,6 +374,8 @@ try
                         echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
                     }
 
+                    $iveFoughtThisOpp = true;
+
                     // # 將對手玩家暱稱從對手清單中移除
                     // unset($opponents[$oppKey]);
                     // $opponents = array_values($opponents);
