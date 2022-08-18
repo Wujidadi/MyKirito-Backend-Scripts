@@ -279,18 +279,22 @@ try
             $oppKeyFile = STORAGE_DIR . DIRECTORY_SEPARATOR . 'flags' . DIRECTORY_SEPARATOR . 'AutoChallenge' . DIRECTORY_SEPARATOR . 'oppkeys' . DIRECTORY_SEPARATOR . $player . '.oppkey'; 
             $oppKey = (int) trim(file_get_contents($oppKeyFile));
 
-            # 初始化或重置「這個對手我打過了！」旗標
+            # 第二次循環起更新挑戰對手序數
             if (!isset($iveFoughtThisOpp) || $iveFoughtThisOpp === true)
             {
-                $iveFoughtThisOpp = false;
-
                 # 更新挑戰對手序數
-                $oppKey++;
-                if ($oppKey >= count($opponents))
+                if ($iveFoughtThisOpp === true)
                 {
-                    $oppKey = 0;
+                    $oppKey++;
+                    if ($oppKey >= count($opponents))
+                    {
+                        $oppKey = 0;
+                    }
+                    file_put_contents($oppKeyFile, $oppKey);
                 }
-                file_put_contents($oppKeyFile, $oppKey);
+
+                # 初始化或重置「這個對手我打過了！」旗標
+                $iveFoughtThisOpp = false;
             }
 
             # 選定挑戰對手
