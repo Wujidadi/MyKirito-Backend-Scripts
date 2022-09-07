@@ -581,29 +581,40 @@ class MyKirito
             'useResetBoss' => false
         ];
 
-        # 注意：為了簡化並節省 log 空間，此處所列 reincarnation 方法的參數並非實際應代入的 payload，而是角色名稱
-        if ($isOpp)
-        {
-            $context = "MyKirito::reincarnation('{$character}', '{$pRez}')";
-        }
-        else
-        {
-            $context = "MyKirito::reincarnation('{$character}')";
-        }
+        # 取得目前轉生點配點
+        $userId = $this->getPlayerByName($player)['response']['userList'][0]['uid'];
+        $rattrs = array_sum($this->getPlayerById($userId)['response']['profile']['rattrs']);
+        $newRattrs = $rattrs;
 
         # 重試次數
         $retry = 0;
 
         # 在最大重試次數內，發送轉生請求
-        while ($retry < Constant::MaxRetry)
+        do
         {
             $result = $this->reincarnation($payload, $pRez);
+
+            # 注意：為了簡化並節省 log 空間，此處所列 reincarnation 方法的參數並非實際應代入的 payload，而是角色名稱
+            $context = "MyKirito::reincarnation('{$character}'" . ($isOpp ? ", '{$pRez}'" : '') . ')';
 
             if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
             {
                 CliHelper::logError($result, $logFiles, $context, $syncOutput);
 
-                $retry++;
+                # 轉生點有變化時，總是加在智力
+                if ($result['httpStatusCode'] === 400 && $result['response']['error'] === '點數分配錯誤')
+                {
+                    if (!$payload['useReset']) $payload['useReset'] = true;
+                    $payload['rattrs']['int'] = ++$newRattrs;
+
+                    $logMessage = "嘗試以 {$newRattrs} 點轉生點全加智力復活……";
+                    $logTime = Helper::Time();
+                    Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
+                }
+                else
+                {
+                    $retry++;
+                }
 
                 # 每次重試間隔
                 sleep(Constant::RetryInterval);
@@ -611,11 +622,27 @@ class MyKirito
             else
             {
                 $logTime = Helper::Time();
-                $jsonResult = json_encode($result, 320);
+
+                if (($addedRattrs = $newRattrs - $rattrs) > 0)
+                {
+                    $briefLog = "{$oppNote}玩家 {$player} 已復活，新增轉生點：{$addedRattrs}";
+                    $detailLog = json_encode([
+                        'result' => $result,
+                        'resetPoint' => $newRattrs,
+                        'addedPoint' => $addedRattrs
+                    ], 320);
+                }
+                else
+                {
+                    $briefLog = "{$oppNote}玩家 {$player} 已復活";
+                    $detailLog = json_encode($result, 320);
+                }
+
                 $logMessage = [
-                    'brief' => "{$oppNote}玩家 {$player} 已復活",
-                    'detail' => $jsonResult
+                    'brief' => $briefLog,
+                    'detail' => $detailLog
                 ];
+
                 Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
 
                 if ($syncOutput)
@@ -627,6 +654,7 @@ class MyKirito
                 break;
             }
         }
+        while ($retry < Constant::MaxRetry);
 
         # 達到重試次數上限仍然失敗
         if ($retry >= Constant::MaxRetry)
