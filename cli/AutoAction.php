@@ -59,7 +59,7 @@ $action = [];
 $inputActionIsValid = false;
 if (!isset($option['action']) || $option['action'] === '')
 {
-    echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6 或 1h、2h、4h、8h 四種修行時數，並以逗號分隔；或以 JSON 格式指定較複雜的等級與比例），將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
+    echo CliHelper::colorText('未指定行動標的（action：須為數字 0～6，1h、2h、4h、8h 四種修行時數，或 f 領取樓層獎勵，並以逗號分隔；或以 JSON 格式指定較複雜的等級與比例），將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
     $action = range(0, 6);
 }
 else
@@ -92,7 +92,7 @@ else
         }
         else
         {
-            echo CliHelper::colorText('行動標的（action：須為數字 0～6 或 1h、2h、4h、8h 四種修行時數，並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
+            echo CliHelper::colorText('行動標的（action：須為數字 0～6，1h、2h、4h、8h 四種修行時數，或 f 領取樓層獎勵，並以逗號分隔）未正確指定，將從 7 種一般行動中隨機執行！', CLI_TEXT_CAUTION, true);
             $action = range(0, 6);
         }
     }
@@ -122,7 +122,7 @@ else
                             {
                                 $actionIsInt = true;
                             }
-                            else if (in_array($item, Constant::PracticeAction))
+                            else if (in_array($item, Constant::PracticeAction) || $item === 'f')
                             {
                                 $actionIsInt = false;
                             }
@@ -467,6 +467,16 @@ try
                 if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
                 {
                     CliHelper::logError($result, $logFiles, $context, $syncOutput);
+
+                    // 當前行動為領取樓層獎勵，但未過冷卻時間，直接睡到冷卻時間結束
+                    if ($result['httpStatusCode'] === 400 && $result['response']['error'] === '還在冷卻中')
+                    {
+                        $sleepingTime = ceil($lastFloorBonus / 1000) + 60 * 60 * 4 - time();
+                        $logMessage = "未過領取樓層獎勵冷卻時間，繼續沉睡 {$sleepingTime} 秒";
+                        Logger::getInstance()->log($logMessage, $logFiles);
+                        sleep($sleepingTime);
+                        goto LoopWithoutAction;
+                    }
 
                     $retry++;
 

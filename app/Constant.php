@@ -103,21 +103,22 @@ class Constant
     ];
 
     /**
-     * 可自動化行動列表（不含領取樓層獎勵）  
-     * 為 `self::NormalAction` 及 `self::PracticeAction` 的總和，且與 `MyKirito::ACTION` 中對應項的 key 一致
+     * 可自動化行動列表  
+     * 與 `MyKirito::ACTION` 中對應項的 key 一致
      */
     const AutoableAction = [
-        '0' => 'Hunt',
-        '1' => 'Train',
-        '2' => 'Eat',
-        '3' => 'Girl',
-        '4' => 'Good',
-        '5' => 'Sit',
-        '6' => 'Fish',
+        '0'  => 'Hunt',
+        '1'  => 'Train',
+        '2'  => 'Eat',
+        '3'  => 'Girl',
+        '4'  => 'Good',
+        '5'  => 'Sit',
+        '6'  => 'Fish',
         '1h' => '1h',
         '2h' => '2h',
         '4h' => '4h',
-        '8h' => '8h'
+        '8h' => '8h',
+        'f'  => 'Bonus'
     ];
 
     /**
