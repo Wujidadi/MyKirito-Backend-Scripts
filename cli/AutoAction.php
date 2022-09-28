@@ -433,6 +433,7 @@ try
                     'Action' => []
                 ];
 
+                # 自動行動游標
                 $actionRatioCursor = 0;
                 foreach ($actionsByLevel['Actions'] as $stageAction)
                 {
@@ -443,7 +444,10 @@ try
                     }
                 }
 
-                if (!isset($stageActionCounter) || $stageActionCounter >= $actionsByLevel['FullRatio'])
+                # 三種情況令自動行動游標歸零：
+                if (!isset($stageActionCounter) ||                            // 1. 自動行動游標尚未建立
+                    $stageActionCounter >= $actionsByLevel['FullRatio'] ||    // 2. 自動行動游標已經跑完一輪
+                    isset($prevLevel) && $prevLevel !== $myLevel)             // 3. 玩家升級
                 {
                     $stageActionCounter = 0;
                 }
@@ -505,6 +509,7 @@ try
                     if (isset($result['response']['gained']['prevLV']) && isset($result['response']['gained']['nextLV']) &&
                         $result['response']['gained']['prevLV'] !== $result['response']['gained']['nextLV'])
                     {
+                        $actionRatioCursor = 0;    // 自動行動游標歸零
                         $logMessage['brief'] = "{$logMessage['brief']}，升到 {$result['response']['gained']['nextLV']} 級";
                     }
 
@@ -605,6 +610,7 @@ try
                         if (isset($result['response']['gained']['prevLV']) && isset($result['response']['gained']['nextLV']) &&
                             $result['response']['gained']['prevLV'] !== $result['response']['gained']['nextLV'])
                         {
+                            $actionRatioCursor = 0;    // 自動行動游標歸零
                             $logMessage['brief'] = "{$logMessage['brief']}，升到 {$result['response']['gained']['nextLV']} 級";
                         }
 
@@ -633,6 +639,11 @@ try
                 }
             }
         }
+
+        # 將一開始取得的當前等級存起來，下一輪可比較是否升級
+        # 雖然上面行動/領樓層後也會記錄升級並刷新自動行動游標，但可能有其他外部因素造成升級
+        # （如手動操作、自動挑戰等升級）所以仍然需要這一動
+        $prevLevel = $myLevel;
 
         # 跳過循環行動，等待後直接進入下一輪
         LoopWithoutAction:
