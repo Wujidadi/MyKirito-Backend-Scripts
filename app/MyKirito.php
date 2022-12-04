@@ -18,7 +18,7 @@ class MyKirito
      *
      * @var array
      */
-    const DEFAULT_RESPONSE = [
+    public const DEFAULT_RESPONSE = [
         'httpStatusCode' => 0,
         'error' => [
             'code' => 0,
@@ -32,7 +32,7 @@ class MyKirito
      *
      * @var string[]
      */
-    const ACTION = [
+    public const ACTION = [
         'Bonus' => 'floorBonus',
         'Hunt'  => 'hunt2',
         'Train' => 'train2',
@@ -54,7 +54,7 @@ class MyKirito
      *
      * @var string[]
      */
-    const SECRET = [
+    public const SECRET = [
         'Klein'     => 'ebd2aQD/CK8=',    // 克萊因
         'Kibaou'    => 'j2dp1BEaPak=',    // 牙王
         'Hitsugaya' => '96Qge9WpEi0=',    // 日番谷冬獅郎
@@ -92,7 +92,9 @@ class MyKirito
      */
     public static function getInstance(string $player)
     {
-        if (self::$_uniqueInstance === null) self::$_uniqueInstance = new self($player);
+        if (self::$_uniqueInstance === null) {
+            self::$_uniqueInstance = new self($player);
+        }
         return self::$_uniqueInstance;
     }
 
@@ -139,19 +141,18 @@ class MyKirito
     /**
      * 行動
      *
-     * @param  string  $action  行動代碼  
-     *                          可用值（參見 `self::ACTION` 行動列表常數）：  
-     *                          - `Bonus`: 領取樓層獎勵  
-     *                          - `Hunt`:  狩獵兔肉  
-     *                          - `Train`: 自主訓練  
-     *                          - `Eat`:   外出野餐  
-     *                          - `Girl`:  汁妹  
-     *                          - `Good`:  做善事  
-     *                          - `Sit`:   坐下休息  
-     *                          - `Fish`:  釣魚  
-     *                          - `1h`:    修行1小時  
-     *                          - `2h`:    修行2小時  
-     *                          - `4h`:    修行4小時  
+     * @param  string  $action  行動代碼，參見 `self::ACTION` 行動列表常數）：
+     *                          - `Bonus`: 領取樓層獎勵
+     *                          - `Hunt`:  狩獵兔肉
+     *                          - `Train`: 自主訓練
+     *                          - `Eat`:   外出野餐
+     *                          - `Girl`:  汁妹
+     *                          - `Good`:  做善事
+     *                          - `Sit`:   坐下休息
+     *                          - `Fish`:  釣魚
+     *                          - `1h`:    修行1小時
+     *                          - `2h`:    修行2小時
+     *                          - `4h`:    修行4小時
      *                          - `8h`:    修行8小時
      * @return array
      */
@@ -182,7 +183,7 @@ class MyKirito
     }
 
     /**
-     * 搜尋指定暱稱的玩家（完全比對）  
+     * 搜尋指定暱稱的玩家（完全比對）
      * 可查到簡略的基本資料，可從其中的 `uid` 進一步呼叫 `self::getPlayerById` 查詢較詳細的資料
      *
      * @param  string   $userName  要搜尋的玩家暱稱
@@ -223,8 +224,7 @@ class MyKirito
         if (is_array($userData) &&
             is_array($userData['response']) &&
             is_array($userData['response']['userList']) &&
-            count($userData['response']['userList']) > 0)
-        {
+            count($userData['response']['userList']) > 0) {
             # 查得玩家 ID
             $userId = $userData['response']['userList'][0]['uid'];
             return $this->_conn->get("profile/{$userId}", $token);
@@ -237,12 +237,11 @@ class MyKirito
      * 指定對手暱稱及挑戰類型進行對戰
      *
      * @param  string   $userName       對手玩家暱稱
-     * @param  integer  $challengeType  挑戰類型  
-     *                                  可用值： 
-     *                                  - `0`: 友好切磋 
-     *                                  - `1`: 認真對決  
-     *                                  - `2`: 決一死戰  
-     *                                  - `3`: 我要超渡你  
+     * @param  integer  $challengeType  挑戰類型
+     *                                  - `0`: 友好切磋
+     *                                  - `1`: 認真對決
+     *                                  - `2`: 決一死戰
+     *                                  - `3`: 我要超渡你
      * @param  string   $shout          喊話內容，可忽略
      * @return array
      */
@@ -251,8 +250,7 @@ class MyKirito
         $token = PLAYER[$this->_player]['Token'];
 
         $opponent = $this->getDetailByPlayerName($userName);
-        if (isset($opponent['response']['profile']))
-        {
+        if (isset($opponent['response']['profile'])) {
             $opponentUID = $opponent['response']['profile']['_id'];
             $opponentLevel = $opponent['response']['profile']['lv'];
             $payload = [
@@ -265,8 +263,7 @@ class MyKirito
             # 對戰
             $result = $this->_conn->post('challenge', $token, $payload);
 
-            if (isset($result['response']['myKirito']))
-            {
+            if (isset($result['response']['myKirito'])) {
                 # 從對戰時間取得戰報 ID
                 $challengeTime = $result['response']['myKirito']['lastChallenge'];
                 $report = $this->getThisAttackReport($opponentUID, $challengeTime);
@@ -279,9 +276,8 @@ class MyKirito
 
                 # 建構回應資料
                 if (is_array($report) && isset($report['_id']) &&
-                    is_array($personalData) && isset($personalData['response']) && is_array($personalData['response']) &&
-                    is_array($opponentData) && isset($opponentData['response']) && is_array($opponentData['response']) && isset($opponentData['response']['profile']))
-                {
+                    $this->isPersonalDataLegal($personalData) &&
+                    $this->isOpponentDataLegal($opponentData)) {
                     $result['reportId'] = $report['_id'];
                     $result['dead']['me'] = $personalData['response']['dead'];
                     $result['dead']['opponent'] = $opponentData['response']['profile']['dead'];
@@ -293,6 +289,21 @@ class MyKirito
 
         # 對手不存在時或回應錯誤時，返回預設的空值陣列
         return self::DEFAULT_RESPONSE;
+    }
+
+    private function isPersonalDataLegal(array $personalData): bool
+    {
+        return is_array($personalData) &&
+               isset($personalData['response']) &&
+               is_array($personalData['response']);
+    }
+
+    private function isOpponentDataLegal(array $opponentData): bool
+    {
+        return is_array($opponentData) &&
+               isset($opponentData['response']) &&
+               is_array($opponentData['response']) &&
+               isset($opponentData['response']['profile']);
     }
 
     /**
@@ -315,17 +326,14 @@ class MyKirito
         # 對戰
         $result = $this->_conn->post('boss/challenge', PLAYER[$this->_player]['Token']);
 
-        if (isset($result['response']['myKirito']) && isset($result['response']['myKirito']['lastBossChallenge']))
-        {
+        if (isset($result['response']['myKirito']) && isset($result['response']['myKirito']['lastBossChallenge'])) {
             # 從對戰時間取得戰報 ID，並加入回應資料
             $challengeTime = $result['response']['myKirito']['lastBossChallenge'];
             $report = $this->getThisBossReport($challengeTime);
             $result['reportId'] = $report['_id'];
 
             return $result;
-        }
-        else
-        {
+        } else {
             return $result;
         }
     }
@@ -374,16 +382,16 @@ class MyKirito
     /**
      * 令當前玩家轉生
      *
-     * @param  array   $payload  轉生設定  
-     *                           因為轉生帶的參數比較多，故由使用者在呼叫本方法前先設定好再代入  
-     *                           可用的選項有：  
-     *                           - `character`: 角色名稱，如 `kirito`、`klein` 等  
-     *                                          設為未解鎖角色會回 `400 Bad Request`  
-     *                           - `rattrs`: 轉生點分配，其下又分為 `hp`（HP）、`atk`（攻擊）、  
-     *                                       `def`（防禦）、`stm`（體力）、`agi`（敏捷）、`spd`（反應速度）、  
-     *                                       `tec`（技巧）、`int`（智力）、`lck`（幸運）共 9 項  
-     *                                       亂設（超出可設範圍）會回 `400 Bad Request` 及 `error: 點數分配錯誤`  
-     *                           - `useReset`: 是否使用洗白點數  
+     * @param  array   $payload  轉生設定
+     *                           因為轉生帶的參數比較多，故由使用者在呼叫本方法前先設定好再代入
+     *                           可用的選項有：
+     *                           - `character`: 角色名稱，如 `kirito`、`klein` 等
+     *                                          設為未解鎖角色會回 `400 Bad Request`
+     *                           - `rattrs`: 轉生點分配，其下又分為 `hp`（HP）、`atk`（攻擊）、
+     *                                       `def`（防禦）、`stm`（體力）、`agi`（敏捷）、`spd`（反應速度）、
+     *                                       `tec`（技巧）、`int`（智力）、`lck`（幸運）共 9 項
+     *                                       亂設（超出可設範圍）會回 `400 Bad Request` 及 `error: 點數分配錯誤`
+     *                           - `useReset`: 是否使用洗白點數
      *                           - `useResetBoss`: 是否重置樓層
      * @param  string  $player   玩家暱稱；忽略時自動代入當前玩家暱稱
      * @return array
@@ -425,13 +433,10 @@ class MyKirito
     public function getThisAttackReport(string $opponentId, int $timestamp): array
     {
         $result = $this->getAttackReports();
-        if (isset($result['response']) && is_array($result['response']) && isset($result['response']['reports']))
-        {
+        if (isset($result['response']) && is_array($result['response']) && isset($result['response']['reports'])) {
             $reports = $result['response']['reports'];
-            foreach ($reports as $report)
-            {
-                if ($report['b']['uid'] === $opponentId && $report['timestamp'] === $timestamp)
-                {
+            foreach ($reports as $report) {
+                if ($report['b']['uid'] === $opponentId && $report['timestamp'] === $timestamp) {
                     return $report;
                 }
             }
@@ -459,10 +464,8 @@ class MyKirito
     {
         $result = $this->getBossReports();
         $reports = $result['response']['reports'];
-        foreach ($reports as $report)
-        {
-            if ($report['timestamp'] === $timestamp)
-            {
+        foreach ($reports as $report) {
+            if ($report['timestamp'] === $timestamp) {
                 return $report;
             }
         }
@@ -487,8 +490,8 @@ class MyKirito
      *
      * 背後其實是傳遞一個帶特定密鑰的 POST 請求給伺服器
      *
-     * @param  string $character  角色名稱  
-     *                            截至 2022-02-10 為止，可用 4 個角色，輸入值分別為：  
+     * @param  string $character  角色名稱
+     *                            截至 2022-02-10 為止，可用 4 個角色，輸入值分別為：
      *                            - `Klein`：克萊因
      *                            - `Kibaou`：牙王
      *                            - `Hitsugaya`：日番谷冬獅郎
@@ -512,14 +515,11 @@ class MyKirito
      */
     public static function getNewestUnlockedCharacter(array $result): array
     {
-        if (isset($result['response']) && is_array($result['response']))
-        {
+        if (isset($result['response']) && is_array($result['response'])) {
             $response = $result['response'];
-            if (isset($response['myKirito']) && is_array($response['myKirito']))
-            {
+            if (isset($response['myKirito']) && is_array($response['myKirito'])) {
                 $myKirito = $response['myKirito'];
-                if (isset($myKirito['unlockedCharacters']) && is_array($myKirito['unlockedCharacters']))
-                {
+                if (isset($myKirito['unlockedCharacters']) && is_array($myKirito['unlockedCharacters'])) {
                     $unlockedCharacters = $myKirito['unlockedCharacters'];
                     $last = count($unlockedCharacters) - 1;
                     return $unlockedCharacters[$last];
@@ -548,8 +548,7 @@ class MyKirito
         $pRez = null;
         $oppNote = '';
 
-        if ($isOpp)
-        {
+        if ($isOpp) {
             $pRez = $player;
             $oppNote = '對手';
         }
@@ -558,8 +557,7 @@ class MyKirito
         $logMessage = "自動復活{$oppNote}玩家 {$player}……";
         Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
-        if ($syncOutput)
-        {
+        if ($syncOutput) {
             echo CliHelper::colorText($logMessage, CLI_TEXT_WARNING, true);
         }
 
@@ -590,50 +588,42 @@ class MyKirito
         $retry = 0;
 
         # 在最大重試次數內，發送轉生請求
-        do
-        {
+        do {
             $result = $this->reincarnation($payload, $pRez);
 
             # 注意：為了簡化並節省 log 空間，此處所列 reincarnation 方法的參數並非實際應代入的 payload，而是角色名稱
             $context = "MyKirito::reincarnation('{$character}'" . ($isOpp ? ", '{$pRez}'" : '') . ')';
 
-            if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== ''))
-            {
+            if ($result['httpStatusCode'] !== 200 || ($result['error']['code'] !== 0 || $result['error']['message'] !== '')) {
                 CliHelper::logError($result, $logFiles, $context, $syncOutput);
 
                 # 轉生點有變化時，總是加在智力
-                if ($result['httpStatusCode'] === 400 && $result['response']['error'] === '點數分配錯誤')
-                {
-                    if (!$payload['useReset']) $payload['useReset'] = true;
+                if ($result['httpStatusCode'] === 400 && $result['response']['error'] === '點數分配錯誤') {
+                    if (!$payload['useReset']) {
+                        $payload['useReset'] = true;
+                    }
                     $payload['rattrs']['int'] = ++$newRattrs;
 
                     $logMessage = "嘗試以 {$newRattrs} 點轉生點全加智力復活……";
                     $logTime = Helper::Time();
                     Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
-                }
-                else
-                {
+                } else {
                     $retry++;
                 }
 
                 # 每次重試間隔
                 sleep(Constant::RetryInterval);
-            }
-            else
-            {
+            } else {
                 $logTime = Helper::Time();
 
-                if (($addedRattrs = $newRattrs - $rattrs) > 0)
-                {
+                if (($addedRattrs = $newRattrs - $rattrs) > 0) {
                     $briefLog = "{$oppNote}玩家 {$player} 已復活，新增轉生點：{$addedRattrs}";
                     $detailLog = json_encode([
                         'result' => $result,
                         'resetPoint' => $newRattrs,
                         'addedPoint' => $addedRattrs
                     ], 320);
-                }
-                else
-                {
+                } else {
                     $briefLog = "{$oppNote}玩家 {$player} 已復活";
                     $detailLog = json_encode($result, 320);
                 }
@@ -645,26 +635,22 @@ class MyKirito
 
                 Logger::getInstance()->log($logMessage, $logFiles, true, $logTime);
 
-                if ($syncOutput)
-                {
+                if ($syncOutput) {
                     # 命令行輸出
                     echo CliHelper::colorText($logMessage['brief'], CLI_TEXT_WARNING, true);
                 }
 
                 break;
             }
-        }
-        while ($retry < Constant::MaxRetry);
+        } while ($retry < Constant::MaxRetry);
 
         # 達到重試次數上限仍然失敗
-        if ($retry >= Constant::MaxRetry)
-        {
+        if ($retry >= Constant::MaxRetry) {
             $logTime = Helper::Time();
             $logMessage = "{$context} 重試 {$retry} 次失敗";
             Logger::getInstance()->log($logMessage, $logFiles, false, $logTime);
 
-            if ($syncOutput)
-            {
+            if ($syncOutput) {
                 echo CliHelper::colorText($logMessage, CLI_TEXT_ERROR, true);
             }
 
