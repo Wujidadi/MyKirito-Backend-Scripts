@@ -2,11 +2,11 @@
 
 namespace App;
 
-use Lib\Helpers\Helper;
+use Lib\FakeAPI;
 use Lib\Helpers\CliHelper;
+use Lib\Helpers\Helper;
 use Lib\Log\Logger;
 use Lib\MyKiritoAPI;
-use Lib\FakeAPI;
 
 /**
  * 「我的桐人」動作處理類別
@@ -66,7 +66,7 @@ class MyKirito
      *
      * @var MyKiritoAPI
      */
-    protected $_conn;
+    protected $connection;
 
     /**
      * 當前玩家暱稱
@@ -75,14 +75,14 @@ class MyKirito
      *
      * @var string
      */
-    protected $_player;
+    protected $player;
 
     /**
      * 物件單一實例
      *
      * @var self|null
      */
-    protected static $_uniqueInstance = null;
+    protected static $uniqueInstance = null;
 
     /**
      * 取得物件實例
@@ -92,10 +92,10 @@ class MyKirito
      */
     public static function getInstance(string $player)
     {
-        if (self::$_uniqueInstance === null) {
-            self::$_uniqueInstance = new self($player);
+        if (self::$uniqueInstance === null) {
+            self::$uniqueInstance = new self($player);
         }
-        return self::$_uniqueInstance;
+        return self::$uniqueInstance;
     }
 
     /**
@@ -106,8 +106,8 @@ class MyKirito
      */
     protected function __construct(string $player)
     {
-        $this->_conn = MyKiritoAPI::getInstance();
-        $this->_player = $player;
+        $this->connection = MyKiritoAPI::getInstance();
+        $this->player = $player;
     }
 
     /**
@@ -117,8 +117,8 @@ class MyKirito
      */
     public function getPersonalData(): array
     {
-        $token = PLAYER[$this->_player]['Token'];
-        return $this->_conn->get('my-kirito', $token);
+        $token = PLAYER[$this->player]['Token'];
+        return $this->connection->get('my-kirito', $token);
     }
 
     /**
@@ -131,11 +131,11 @@ class MyKirito
      */
     public function updatePersonalStatus(string $status): array
     {
-        $token = PLAYER[$this->_player]['Token'];
+        $token = PLAYER[$this->player]['Token'];
         $payload = [
             'status' => $status
         ];
-        return $this->_conn->post('my-kirito/status', $token, $payload);
+        return $this->connection->post('my-kirito/status', $token, $payload);
     }
 
     /**
@@ -159,14 +159,14 @@ class MyKirito
     public function doAction(string $action): array
     {
         # 偽請求
-        // return FakeAPI::getInstance($this->_player)->request();
+        // return FakeAPI::getInstance($this->player)->request();
 
-        $uid = PLAYER[$this->_player]['ID'];
-        $token = PLAYER[$this->_player]['Token'];
+        $uid = PLAYER[$this->player]['ID'];
+        $token = PLAYER[$this->player]['Token'];
         $payload = [
             'action' => self::ACTION[$action]
         ];
-        return $this->_conn->post("my-kirito/doaction?u={$uid}", $token, $payload);
+        return $this->connection->post("my-kirito/doaction?u={$uid}", $token, $payload);
     }
 
     /**
@@ -178,8 +178,8 @@ class MyKirito
      */
     public function getUserList(int $playerLevel, int $listPage): array
     {
-        $token = PLAYER[$this->_player]['Token'];
-        return $this->_conn->get("user-list?lv={$playerLevel}&page={$listPage}", $token);
+        $token = PLAYER[$this->player]['Token'];
+        return $this->connection->get("user-list?lv={$playerLevel}&page={$listPage}", $token);
     }
 
     /**
@@ -191,9 +191,9 @@ class MyKirito
      */
     public function getPlayerByName(string $userName): array
     {
-        $token = PLAYER[$this->_player]['Token'];
+        $token = PLAYER[$this->player]['Token'];
         $userName = urlencode($userName);
-        return $this->_conn->get("search?nickname={$userName}", $token);
+        return $this->connection->get("search?nickname={$userName}", $token);
     }
 
     /**
@@ -204,8 +204,8 @@ class MyKirito
      */
     public function getPlayerById(string $userId): array
     {
-        $token = PLAYER[$this->_player]['Token'];
-        return $this->_conn->get("profile/{$userId}", $token);
+        $token = PLAYER[$this->player]['Token'];
+        return $this->connection->get("profile/{$userId}", $token);
     }
 
     /**
@@ -218,16 +218,18 @@ class MyKirito
      */
     public function getDetailByPlayerName(string $userName): array
     {
-        $token = PLAYER[$this->_player]['Token'];
+        $token = PLAYER[$this->player]['Token'];
         $userName = urlencode($userName);
-        $userData = $this->_conn->get("search?nickname={$userName}", $token);
-        if (is_array($userData) &&
+        $userData = $this->connection->get("search?nickname={$userName}", $token);
+        if (
+            is_array($userData) &&
             is_array($userData['response']) &&
             is_array($userData['response']['userList']) &&
-            count($userData['response']['userList']) > 0) {
+            count($userData['response']['userList']) > 0
+        ) {
             # 查得玩家 ID
             $userId = $userData['response']['userList'][0]['uid'];
-            return $this->_conn->get("profile/{$userId}", $token);
+            return $this->connection->get("profile/{$userId}", $token);
         }
 
         return self::DEFAULT_RESPONSE;
@@ -247,7 +249,7 @@ class MyKirito
      */
     public function challenge(string $userName, int $challengeType, string $shout = ''): array
     {
-        $token = PLAYER[$this->_player]['Token'];
+        $token = PLAYER[$this->player]['Token'];
 
         $opponent = $this->getDetailByPlayerName($userName);
         if (isset($opponent['response']['profile'])) {
@@ -261,7 +263,7 @@ class MyKirito
             ];
 
             # 對戰
-            $result = $this->_conn->post('challenge', $token, $payload);
+            $result = $this->connection->post('challenge', $token, $payload);
 
             if (isset($result['response']['myKirito'])) {
                 # 從對戰時間取得戰報 ID
@@ -275,9 +277,11 @@ class MyKirito
                 $opponentData = $this->getDetailByPlayerName($userName);
 
                 # 建構回應資料
-                if (is_array($report) && isset($report['_id']) &&
+                if (
+                    is_array($report) && isset($report['_id']) &&
                     $this->isPersonalDataLegal($personalData) &&
-                    $this->isOpponentDataLegal($opponentData)) {
+                    $this->isOpponentDataLegal($opponentData)
+                ) {
                     $result['reportId'] = $report['_id'];
                     $result['dead']['me'] = $personalData['response']['dead'];
                     $result['dead']['opponent'] = $opponentData['response']['profile']['dead'];
@@ -294,16 +298,16 @@ class MyKirito
     private function isPersonalDataLegal(array $personalData): bool
     {
         return is_array($personalData) &&
-               isset($personalData['response']) &&
-               is_array($personalData['response']);
+            isset($personalData['response']) &&
+            is_array($personalData['response']);
     }
 
     private function isOpponentDataLegal(array $opponentData): bool
     {
         return is_array($opponentData) &&
-               isset($opponentData['response']) &&
-               is_array($opponentData['response']) &&
-               isset($opponentData['response']['profile']);
+            isset($opponentData['response']) &&
+            is_array($opponentData['response']) &&
+            isset($opponentData['response']['profile']);
     }
 
     /**
@@ -313,7 +317,7 @@ class MyKirito
      */
     public function getBoss(): array
     {
-        return $this->_conn->get('boss', PLAYER[$this->_player]['Token']);
+        return $this->connection->get('boss', PLAYER[$this->player]['Token']);
     }
 
     /**
@@ -324,7 +328,7 @@ class MyKirito
     public function challengeBoss(): array
     {
         # 對戰
-        $result = $this->_conn->post('boss/challenge', PLAYER[$this->_player]['Token']);
+        $result = $this->connection->post('boss/challenge', PLAYER[$this->player]['Token']);
 
         if (isset($result['response']['myKirito']) && isset($result['response']['myKirito']['lastBossChallenge'])) {
             # 從對戰時間取得戰報 ID，並加入回應資料
@@ -345,7 +349,7 @@ class MyKirito
      */
     public function getAchievements(): array
     {
-        return $this->_conn->get('achievements', PLAYER[$this->_player]['Token']);
+        return $this->connection->get('achievements', PLAYER[$this->player]['Token']);
     }
 
     /**
@@ -355,7 +359,7 @@ class MyKirito
      */
     public function getAchievementRank(): array
     {
-        return $this->_conn->get('achievement-ranking', PLAYER[$this->_player]['Token']);
+        return $this->connection->get('achievement-ranking', PLAYER[$this->player]['Token']);
     }
 
     /**
@@ -365,7 +369,7 @@ class MyKirito
      */
     public function getHallOfFame(): array
     {
-        return $this->_conn->get('hall-of-fame', PLAYER[$this->_player]['Token']);
+        return $this->connection->get('hall-of-fame', PLAYER[$this->player]['Token']);
     }
 
     /**
@@ -376,7 +380,7 @@ class MyKirito
      */
     public function getUnlockedCharacters(): array
     {
-        return $this->_conn->get('my-kirito/unlocked-characters', PLAYER[$this->_player]['Token']);
+        return $this->connection->get('my-kirito/unlocked-characters', PLAYER[$this->player]['Token']);
     }
 
     /**
@@ -398,9 +402,9 @@ class MyKirito
      */
     public function reincarnation(array $payload, string $player = null): array
     {
-        $player = $player ?? $this->_player;
+        $player = $player ?? $this->player;
         $token = PLAYER[$player]['Token'];
-        return $this->_conn->post('my-kirito/reincarnation', $token, $payload);
+        return $this->connection->post('my-kirito/reincarnation', $token, $payload);
     }
 
     /**
@@ -410,7 +414,7 @@ class MyKirito
      */
     public function getDefenseReports(): array
     {
-        return $this->_conn->get('reports?filter=def', PLAYER[$this->_player]['Token']);
+        return $this->connection->get('reports?filter=def', PLAYER[$this->player]['Token']);
     }
 
     /**
@@ -420,7 +424,7 @@ class MyKirito
      */
     public function getAttackReports(): array
     {
-        return $this->_conn->get('reports?filter=atk', PLAYER[$this->_player]['Token']);
+        return $this->connection->get('reports?filter=atk', PLAYER[$this->player]['Token']);
     }
 
     /**
@@ -451,7 +455,7 @@ class MyKirito
      */
     public function getBossReports(): array
     {
-        return $this->_conn->get('reports?filter=boss', PLAYER[$this->_player]['Token']);
+        return $this->connection->get('reports?filter=boss', PLAYER[$this->player]['Token']);
     }
 
     /**
@@ -500,11 +504,11 @@ class MyKirito
      */
     public function unlockCharacterBySecret(string $character): array
     {
-        $token = PLAYER[$this->_player]['Token'];
+        $token = PLAYER[$this->player]['Token'];
         $payload = [
             'secret' => self::SECRET[$character]
         ];
-        return $this->_conn->post('my-kirito/unlock', $token, $payload);
+        return $this->connection->post('my-kirito/unlock', $token, $payload);
     }
 
     /**
@@ -536,11 +540,11 @@ class MyKirito
     /**
      * 自動復活
      *
-     * @param  string   $player         玩家暱稱
-     * @param  string   $character      玩家的角色名稱
-     * @param  array[]  $logFiles       日誌檔案路徑
-     * @param  boolean  $syncOutput     是否同步輸出於終端機
-     * @param  boolean  $isOpp          是否對手玩家，預設為 `false`
+     * @param  string   $player      玩家暱稱
+     * @param  string   $character   玩家的角色名稱
+     * @param  array[]  $logFiles    日誌檔案路徑
+     * @param  boolean  $syncOutput  是否同步輸出於終端機
+     * @param  boolean  $isOpp       是否對手玩家，預設為 `false`
      * @return boolean
      */
     public function autoRez(string $player, string $character, array $logFiles, bool $syncOutput, bool $isOpp = false): bool
