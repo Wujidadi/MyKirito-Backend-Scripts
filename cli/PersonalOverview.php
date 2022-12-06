@@ -78,7 +78,7 @@ try {
         '總行動次數' => $response['actionCount'],
         '總挑戰次數' => $response['challengeCount'],
         '玻璃值'     => $response['murder'],
-        '洗白點數'   => $response['resurrect'],
+        '復活次數'   => $response['resurrect'],
         '進保護模式所需被殺次數'     => $response['murder'] * 5 - $response['defDeath'] + ($response['murder'] <= 0 ? 2 : 1),
         '最後一次更新個人狀態的時間' => @Helper::TimeDisplay($response['lastStatus'] / 1000),
         '最後一次行動的時間'         => @Helper::TimeDisplay($response['lastAction'] / 1000),
